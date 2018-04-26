@@ -1,4 +1,5 @@
 import Vue from 'vue'
+// import BaiduMap from 'vue-baidu-map'
 
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 
@@ -16,7 +17,10 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 Vue.use(ElementUI, { locale })
-
+// Vue.use(BaiduMap, {
+//   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+//   ak: '93xi2EVIQxNlCz8z4v7WpGqGuusDWApE'
+// })
 Vue.config.productionTip = false
 
 new Vue({

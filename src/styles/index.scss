@@ -8,7 +8,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family:'微软雅黑',Microsoft YaHei, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,  Arial, sans-serif;
 }
 
 html {
@@ -56,4 +56,13 @@ a:hover {
 
 .app-container {
   padding: 20px;
+}
+.app-item{
+  margin:20px 0;
+}
+.w20{
+  width: 20rem;
+}
+.w10{
+  width: 10rem;
 }
