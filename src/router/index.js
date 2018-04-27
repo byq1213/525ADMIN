@@ -40,6 +40,7 @@ export const constantRouterMap = [
   {
     path: '/example',
     component: Layout,
+    hidden:true,
     redirect: '/example/table',
     name: 'Example',
     meta: { title: 'Example', icon: 'example' },
@@ -62,6 +63,8 @@ export const constantRouterMap = [
   {
     path: '/form',
     component: Layout,
+    hidden: true,
+    
     children: [
       {
         path: 'index',
@@ -74,12 +77,40 @@ export const constantRouterMap = [
   {
     path: '/House',
     component: Layout,
+    meta: { title: '房源数据', icon: 'form' },
     children: [
       {
         path: 'index',
-        name: 'House',
-        component: () => import('@/views/house/add'),
-        meta: { title: 'House', icon: 'form' }
+        name: 'HouseAdd',
+        component: () => import('@/views/house/addIndex'),
+        meta: { title: '添加房源', icon: 'form' }
+      },
+      {
+        path: 'addNew',
+        name: 'HouseAdd1',
+        hidden:true,
+        component: () => import('@/views/house/addNew'),
+        meta: { title: '添加新房', icon: 'form' }
+      },
+      {
+        path: 'add2',
+        name: 'HouseAdd2',
+        hidden:true,
+        component: () => import('@/views/house/add2'),
+        meta: { title: '添加二手房', icon: 'form' }
+      },
+      {
+        path: 'add3',
+        name: 'HouseAdd3',
+        hidden:true,
+        component: () => import('@/views/house/add3'),
+        meta: { title: '添加租房', icon: 'form' }
+      },
+      {
+        path: 'list',
+        name: 'HouseList',
+        component: () => import('@/views/house/list'),
+        meta: { title: '房源列表', icon: 'form' }
       }
     ]
   },

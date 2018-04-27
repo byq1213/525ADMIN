@@ -4,7 +4,7 @@
     <el-form :model="form" label-width="100px">
       <el-card class="app-item">
         <div slot="header">
-          基本信息
+          基本信息（二手房）
         </div>
       <el-form-item label="房源编号">
         <el-input v-model="form.code" placeholder="请输入房源编号" class="w20"></el-input>
@@ -47,8 +47,13 @@
       </el-form-item>
       <el-form-item label="楼层">
         <el-select v-model="form.level" placeholder="" >
-          <el-option value="中楼层" label="中楼层"></el-option>
+          <el-option value="1" label="低楼层"></el-option>
+          <el-option value="2" label="中楼层"></el-option>
+          <el-option value="3" label="高楼层"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="所属小区">
+        <el-input v-model="form.cell" placeholder="" class="w20"></el-input>
       </el-form-item>
       </el-card>
       <el-card class="app-item">
@@ -56,11 +61,25 @@
           房屋设施
         </div>
         <el-form-item label="">
-           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+           <el-checkbox size="big" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;"></div>
-            <el-checkbox-group v-model="checkedFacility" @change="handlecheckedFacilityChange">
+            <el-checkbox-group v-model="form.checkAll" @change="handlecheckedFacilityChange">
               <el-checkbox v-for="item in facility" :label="item" :key="item">{{item}}</el-checkbox>
             </el-checkbox-group>
+        </el-form-item>
+      </el-card>
+      <el-card class="app-item">
+        <div slot="header">
+          房源图片
+        </div>
+        <el-form-item label="">
+          <el-upload
+          action="http://127.0.0.1:7001/uploadFile"
+          list-type="picture-card"
+          :on-remove="uploadRemove"
+          :on-success="uploadSuccess">
+          <i class="el-icon-plus"></i>
+          </el-upload>
         </el-form-item>
       </el-card>
       <el-card class="app-item">
@@ -77,7 +96,7 @@
           <el-input v-model="form.rim" type="textarea" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="户型介绍">
-          <el-input v-model="form.highlight" type="textarea" placeholder=""></el-input>
+          <el-input v-model="form.housIntroduce" type="textarea" placeholder=""></el-input>
         </el-form-item>
         <el-form-item label="小区介绍">
           <el-input v-model="form.estate" type="textarea" placeholder=""></el-input>
@@ -100,22 +119,20 @@ const facilityOptions = ["洗衣机", "彩电", "冰箱"];
 // import LocalSearch from 'vue-baidu-map/components/Search/LocalSearch.vue'
 import url from "@/utils/url";
 export default {
-  mounted() {
-
-  },
-  components: {
-  },
+  mounted() {},
+  components: {},
   data() {
     return {
       form: {
         code: new Date().getTime(),
-        payType: {}
+        payType: {},
+        imgPath: []
       },
       // 选择房屋设施
       isIndeterminate: true,
       checkedFacility: ["洗衣机", "彩电", "冰箱"],
       facility: facilityOptions,
-      checkAll: false,
+      checkAll: false
       // map: {
       //   ak: "93xi2EVIQxNlCz8z4v7WpGqGuusDWApE",
       //   keyword: "长风画卷",
@@ -125,10 +142,26 @@ export default {
   },
   methods: {
     // 提交表单上传数据
-    saveData(){
-    url.post("/house",this.form).then(res => {
-      console.log(res);
-    });
+    saveData() {
+      url.post("/house2", this.form).then(res => {
+        console.log(res);
+      });
+    },
+    // 上传图片
+    uploadSuccess(response, file, fileList) {
+      // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
+      this.uploadFile(fileList);
+    },
+    uploadRemove(file, fileList) {
+      this.uploadFile(fileList);
+    },
+    // 处理最后上传的数据
+    uploadFile(fileList) {
+      let data = [];
+      fileList.forEach(list => {
+        data.push(list.response.files[0]);
+      });
+      this.form.imgPath = data;
     },
     handleCheckAllChange(val) {
       this.checkedFacility = val ? facilityOptions : [];
