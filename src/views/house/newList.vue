@@ -1,14 +1,12 @@
 <template>
-  <el-main>
-    <!-- 房源列表 -->
-    <el-tabs type="card">
-      <el-tab-pane label="租房信息" >
-        <el-form :model="form1" :inline="true">
+  <div>
+    <!-- 新房列表 -->
+    <el-form :model="formNew" :inline="true">
           <el-form-item label="关键词">
-            <el-input v-model="form1.keyword" placeholder="可搜索编号、名称"></el-input>
+            <el-input v-model="formNew.keyword" placeholder="可搜索编号、名称"></el-input>
           </el-form-item>
           <el-form-item label="出租类型" >
-            <el-select v-model="form1.type" class="w10" placeholder="">
+            <el-select v-model="formNew.type" class="w10" placeholder="">
               <el-option label="整租" value="1"></el-option>
               <el-option label="合租" value="0"></el-option>
             </el-select>
@@ -17,7 +15,7 @@
             <el-button type="primary">搜索</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="lists1">
+        <el-table :data="listNew">
           <el-table-column label="编号" prop="code"></el-table-column>
           <el-table-column label="名称" prop="name"></el-table-column>
           <el-table-column label="租金" prop="rent"></el-table-column>
@@ -36,38 +34,31 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-tab-pane>
-      <el-tab-pane label="新房列表">
-        <newList></newList>
-      </el-tab-pane>
-    </el-tabs>
-  </el-main>
+  </div>
 </template>
 
 <script>
-import url from "@/utils/url";
-import newList from './newList'
-export default {
-  components:{
-    newList
-  },
-  data() {
-    return {
-      form1:{},
-      lists1: [],
-    };
-  },
-  mounted() {
-    this.getHouseLists1();
-  },
-  methods: {
-    getHouseLists1() {
-      url.get("/house").then(res => {
-        this.lists1 = res.data;
-      });
-    }
+import url from '@/utils/url'
+  export default {
+    data() {
+      return {
+        formNew:{},
+        listNew:[]
+      }
+    },
+    mounted(){
+      this.getHouseNewList()
+    },
+    methods: {
+      getHouseNewList() {
+        url.get('/houseNew')
+          .then(res =>{
+            console.log(res);
+            
+          })
+      }
+    },
   }
-};
 </script>
 
 <style scoped>

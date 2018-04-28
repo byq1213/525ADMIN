@@ -40,9 +40,6 @@
       <el-form-item label="位置">
         <el-input v-model="form.address" placeholder="请输入楼盘地址" class="w20"></el-input>
       </el-form-item>
-
-
-
       <!-- <el-form-item label="楼盘朝向">
         <el-input v-model="form.code" placeholder="请输入楼盘朝向" class="w20"></el-input>
       </el-form-item> -->
@@ -53,10 +50,14 @@
       </el-card>
       <el-card class="app-item">
         <div slot="header">
+          <span>
           户型介绍
+          </span>
+
         </div>
            <div v-for="(item,index) in (form.houseType)" :key="index">
-            <el-card class="app-item">
+            <el-card class="app-item" style="display:flex">
+              <el-button type="danger" size="small" style="display:flex;justify-content:flex-end" @click="  delHouseType(index)">删除</el-button>
               <el-form  size="small" label-width="100px">
                 <el-form-item label="户型名称">
                   <el-input v-model="item.name" placeholder="" class="w20"></el-input>
@@ -85,6 +86,11 @@
               </el-form>
             </el-card>
            </div>
+           <p>
+                       <span>
+            <el-button type="success" @click="form.houseType.push({})">添加户型</el-button>
+          </span>
+           </p>
       </el-card>
       <el-card class="app-item">
         <div slot="header">
@@ -155,18 +161,23 @@ export default {
     return {
       form: {
         code: new Date().getTime(),
-        payType: {},
         imgPath: [],
-        houseType: [{ name: "三室两厅" }, { name: "三室两厅" }]
+        houseType: [{}]
       },
       // 选择房屋设施
       isIndeterminate: true
     };
   },
   methods: {
+    // 删除户型
+    delHouseType(index){
+      console.log('test');
+      
+      this.form.houseType.splice(index,1)
+    },
     // 提交表单上传数据
     saveData() {
-      url.post("/house", this.form).then(res => {
+      url.post("/houseNew", this.form).then(res => {
         console.log(res);
       });
     },
@@ -182,7 +193,9 @@ export default {
     uploadFile(fileList) {
       let data = [];
       fileList.forEach(list => {
-        data.push(list.response.files[0]);
+        if (list.response) {
+          data.push(list.response.files[0]);
+        }
       });
       this.form.imgPath = data;
     },
