@@ -128,6 +128,7 @@
         </el-form-item>
         <el-form-item label="">
           <el-button type="" @click="saveData">保存</el-button>
+          <el-button type="success" @click="saveData">保存并通知经纪人</el-button>
         </el-form-item>
       </el-card>
     </el-form>  

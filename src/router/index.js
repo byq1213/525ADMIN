@@ -114,6 +114,25 @@ export const constantRouterMap = [
       }
     ]
   },
+  {
+    path: '/broker',
+    component: Layout,
+    meta: { title: '经纪人管理', icon: 'form' },
+    children: [
+      {
+        path: 'list',
+        name: 'brokerList',
+        component: () => import('@/views/broker/list'),
+        meta: { title: '经纪人列表', icon: 'form' }
+      },
+      {
+        path: 'add',
+        name: 'brokerAdd',
+        component: () => import('@/views/broker/add'),
+        meta: { title: '添加经纪人', icon: 'form' }
+      }
+    ]
+  },
 
   { path: '*', redirect: '/404', hidden: true }
 ]
