@@ -36,44 +36,6 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-
-  {
-    path: '/example',
-    component: Layout,
-    hidden:true,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    hidden: true,
-    
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
   {
     path: '/House',
     component: Layout,
@@ -134,7 +96,6 @@ export const constantRouterMap = [
     ]
   },
 
-  { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
@@ -143,3 +104,28 @@ export default new Router({
   routes: constantRouterMap
 })
 
+export const asyncRouterMap = [
+  {
+    path: '/permission',
+    component: Layout,
+    redirect:'/permission/index',
+    alwaysShow:false,
+    meta: { title: '权限管理', icon: 'form' },
+    children: [
+      {
+        path: 'index',
+        name: 'permissionList',
+        component: () => import('@/views/broker/list'),
+        meta: { title: '权限管理', icon: 'form',roles:['view'] }
+      },
+      {
+        path: 'index1',
+        name: 'permissionList1',
+        component: () => import('@/views/broker/list'),
+        meta: { title: '权限管理1', icon: 'form', roles: ['view'] }
+      },
+    ]
+  },
+
+  { path: '*', redirect: '/404', hidden: true }
+];

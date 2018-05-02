@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
       class="card-box login-form">
-      <h3 class="title">vue-element-admin</h3>
+      <h3 class="title">XX租房、二手房</h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
@@ -38,6 +38,8 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
+        console.log(value);
+        
         callback(new Error('请输入正确的用户名'))
       } else {
         callback()
@@ -52,7 +54,7 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        username: 'admin111',
         password: 'admin'
       },
       loginRules: {

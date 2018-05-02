@@ -26,11 +26,17 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      // return this.$router.options.routes
+      return this.$store.getters.permission_routers
     },
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  mounted(){
+    console.log( this.$router)
+    console.log(this.$store);
+    
   }
 }
 </script>

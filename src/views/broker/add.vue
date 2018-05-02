@@ -12,11 +12,11 @@
           <el-input v-model="form.phone" placeholder="请输入联系方式" class="w20"></el-input>
         </el-form-item>
         <el-form-item label="登录密码">
-          <el-input v-model="form.password" type="password" placeholder="" class="w20"></el-input>
+          <el-input v-model="form.pwd" type="password" placeholder="" class="w20"></el-input>
         </el-form-item>
         
         <el-form-item label="">
-          <el-button type="">保存</el-button>
+          <el-button type="" @click="saveData">保存</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -24,11 +24,22 @@
 </template>
 
 <script>
+import url from '@/utils/url'
 export default {
+  
   data() {
     return {
       form:{}
     };
+  },
+  methods:{
+    saveData(){
+      url.post('/broker',this.form)
+        .then(res =>{
+          console.log(res.data);
+          
+        })      
+    }
   }
 };
 </script>
