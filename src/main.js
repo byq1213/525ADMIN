@@ -15,6 +15,10 @@ import store from './store'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+// import ECharts from 'vue-echarts'  //Baidu Echarts
+// import 'echarts/lib/chart/bar'
+// import 'echarts/lib/component/tooltip'
+// Vue.component('chart', ECharts)
 
 Vue.use(ElementUI, { locale })
 // Vue.use(BaiduMap, {
@@ -22,7 +26,6 @@ Vue.use(ElementUI, { locale })
 //   ak: '93xi2EVIQxNlCz8z4v7WpGqGuusDWApE'
 // })
 Vue.config.productionTip = false
-
 new Vue({
   el: '#app',
   router,

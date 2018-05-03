@@ -29,7 +29,6 @@ function filterAsyncRouter(asyncRouterMap, roles) {
     }
     return false
   })
-  console.log(accessedRouters)
   return accessedRouters
 }
 
@@ -46,14 +45,12 @@ const permission = {
   },
   actions: {
     GenerateRoutes({ commit }, data) {
-      console.log('store/modules/permission.js',data);
       
       return new Promise(resolve => {
         const { roles } = data
         let accessedRouters
         if (roles.indexOf('admin') >= 0) {
           accessedRouters = asyncRouterMap
-          console.log(accessedRouters);
           
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)

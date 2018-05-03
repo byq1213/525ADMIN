@@ -16,7 +16,7 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles.length === 0) {
         store.dispatch('GetInfo').then(res => { // 拉取info
           const roles = res.data.roles;
-          console.log('src/permission.js/用户信息',res);
+          // console.log('src/permission.js/用户信息',res);
           
           store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表

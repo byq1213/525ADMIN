@@ -95,6 +95,25 @@ export const constantRouterMap = [
       }
     ]
   },
+  {
+    path: '/index',
+    component: Layout,
+    meta: { title: '数据分析', icon: 'form' },
+    children: [
+      {
+        path: 'data',
+        name: 'data_index',
+        component: () => import('@/views/data/index'),
+        meta: { title: '数据分析', icon: 'form' }
+      },
+      {
+        path: 'view',
+        name: 'data_view',
+        component: () => import('@/views/data/view'),
+        meta: { title: '访问量', icon: 'form' }
+      },
+    ]
+  },
 
 ]
 
@@ -104,6 +123,7 @@ export default new Router({
   routes: constantRouterMap
 })
 
+// 用户权限设置
 export const asyncRouterMap = [
   {
     path: '/permission',

@@ -8,7 +8,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family:'微软雅黑',Microsoft YaHei, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,  Arial, sans-serif;
+  // font-family:'微软雅黑',Microsoft YaHei, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,  Arial, sans-serif;
+  font-family: "SF Pro SC","SF Pro Text","SF Pro Icons","PingFang SC","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
 
 html {
@@ -96,4 +97,17 @@ tbody tr td{
     width: 90px;
     margin-left: 10px;
     vertical-align: bottom;
+  }
+  //首页数据面板
+  .count{
+    text-align: center;
+    span{
+  
+      &.num{
+            font-size: 1.6em;
+      display: block;
+      margin:.5em 0;
+      }
+    }
+
   }
