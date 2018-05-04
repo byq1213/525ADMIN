@@ -114,6 +114,20 @@ export const constantRouterMap = [
       },
     ]
   },
+  {
+    path: '/setting',
+    component: Layout,
+    meta: { title: '页面管理', icon: 'form' },
+    children: [
+      {
+        path: 'index',
+        name: 'setting_index',
+        component: () => import('@/views/setting/pageSetting'),
+        meta: { title: '首页设置', icon: 'form' }
+      },
+      
+    ]
+  },
 
 ]
 

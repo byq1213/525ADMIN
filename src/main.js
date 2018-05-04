@@ -12,14 +12,14 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import router from './router'
 import store from './store'
-
+import { timetrans} from '@/utils/index'
 import '@/icons' // icon
 import '@/permission' // permission control
 // import ECharts from 'vue-echarts'  //Baidu Echarts
 // import 'echarts/lib/chart/bar'
 // import 'echarts/lib/component/tooltip'
 // Vue.component('chart', ECharts)
-
+Vue.prototype.timetrans = timetrans
 Vue.use(ElementUI, { locale })
 // Vue.use(BaiduMap, {
 //   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */

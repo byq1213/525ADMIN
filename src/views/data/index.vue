@@ -15,6 +15,11 @@
             >
           </el-date-picker>
       </el-form-item>
+      <el-form-item label="经纪人">
+        <el-select v-model="form.broker" placeholder="">
+          <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="">
         <el-button type="primary">查询</el-button>
       </el-form-item>
@@ -35,6 +40,9 @@
       <div slot="header">
         访问量
         （总访问<span class="Num"> 79</span> 次）
+        <span class="fr">
+          <el-button type="success" size="mini"> 查看详情</el-button>
+        </span>
       </div>
       <div>
         <chart :options="view" :theme='theme'></chart>
@@ -79,7 +87,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this);
+    
   }
 };
 </script>
