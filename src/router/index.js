@@ -96,6 +96,19 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/userAnalyze',
+    component: Layout,
+    meta: { title: '用户分析', icon: 'form' },
+    children: [
+      {
+        path: 'list',
+        name: 'userList',
+        component: () => import('@/views/broker/list'),
+        meta: { title: '用户信息', icon: 'form' }
+      },
+    ]
+  },
+  {
     path: '/index',
     component: Layout,
     meta: { title: '数据分析', icon: 'form' },
@@ -128,6 +141,7 @@ export const constantRouterMap = [
       
     ]
   },
+
 
 ]
 
