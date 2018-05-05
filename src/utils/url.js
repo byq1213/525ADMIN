@@ -13,6 +13,13 @@ service.interceptors.response.use(function (response) {
       message: '请求成功',
       type:'success'
     });
+  } else if (response.data.code == 300){
+    Message({
+      message: '请求失败',
+      type: 'warning'
+    });
+  }else{
+
   }
   return response;
 }, function (error) {

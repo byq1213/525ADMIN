@@ -33,8 +33,8 @@
       </el-form-item> -->
       <el-form-item label="出租方式">
         <el-select v-model="form.type" placeholder="出租方式">
-          <el-option value='整租' label="整租" ></el-option>
-          <el-option value='合租' label="合租" ></el-option>
+          <el-option value='0' label="整租" ></el-option>
+          <el-option value='1' label="合租" ></el-option>
         </el-select>
       </el-form-item> 
       <el-form-item label="支付方式">

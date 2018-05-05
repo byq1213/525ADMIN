@@ -44,8 +44,26 @@
         <el-input v-model="form.code" placeholder="请输入楼盘朝向" class="w20"></el-input>
       </el-form-item> -->
       <el-form-item label="楼盘标签">
-        <el-tag type="">五证齐全</el-tag>
-        <el-tag type="">车位重组</el-tag>
+       <el-tag
+            :key="tag"
+            v-for="tag in form.tags"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)">
+            {{tag}}
+          </el-tag>
+          <el-input
+              class="input-new-tag"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              size="small"
+              @keyup.enter.native="handleInputConfirm"
+              @blur="handleInputConfirm"
+            >
+          </el-input>
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加自定义标签</el-button>
+          
       </el-form-item>
       </el-card>
       <el-card class="app-item">
@@ -112,7 +130,7 @@
           楼盘特色
         </div>
       <el-form-item label="产权年限">
-        <el-input v-model="form.property" placeholder="请输入楼盘产权年限" class="w20"></el-input>
+        <el-input v-model="form.ageLimit" placeholder="请输入楼盘产权年限" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="占地面积">
         <el-input v-model="form.coveringArea" placeholder="请输入楼盘占地面积" class="w20"></el-input>
@@ -162,18 +180,41 @@ export default {
       form: {
         code: new Date().getTime(),
         imgPath: [],
-        houseType: [{}]
+        houseType: [{}],
+        tags: ["南北通透", "领包入住", "精装修", "免中介费"]
       },
+      inputValue: "",
+      inputVisible: false,
       // 选择房屋设施
       isIndeterminate: true
     };
   },
   methods: {
+    // 删除标签
+    handleClose(tag) {
+      this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+    },
+        showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.form.tags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = "";
+    },
+
+
     // 删除户型
-    delHouseType(index){
-      console.log('test');
-      
-      this.form.houseType.splice(index,1)
+    delHouseType(index) {
+      console.log("test");
+
+      this.form.houseType.splice(index, 1);
     },
     // 提交表单上传数据
     saveData() {
@@ -220,7 +261,6 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 
 </style>

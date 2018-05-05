@@ -25,6 +25,7 @@
                  <img class="houseImg" :src="BASE_API+'uploads/'+scope.row.houseImg[0]" alt="">
                </template>
              </el-table-column>
+             <el-table-column label="参考价格" prop="houseRent"></el-table-column>
              <el-table-column label="添加时间" prop="time">
                <template slot-scope="scope">
                  <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
@@ -51,6 +52,8 @@
              <el-table :data="house3Lists" size="mini" >
                <el-table-column label="编号" prop="code"></el-table-column>
                <el-table-column label="名称" prop="name"></el-table-column>
+               <el-table-column label="参考价格" prop="rent"></el-table-column>
+               
                <el-table-column label="图片" prop="imgPath">
                  <template slot-scope="scope">
                  <img v-if="scope.row.imgPath" class="houseImg" :src="BASE_API+'uploads/'+scope.row.imgPath[0]" alt="">
@@ -63,6 +66,23 @@
                    <el-button type="primary" size="mini" @click="chooseHouse(scope.$index,3)">选择</el-button>
                  </template>
                  
+               </el-table-column>
+             </el-table>
+           </el-tab-pane>
+           <el-tab-pane label="新房">
+             <el-table :data="house1Lists" size="mini" >
+               <el-table-column label="编号" prop="code"></el-table-column>
+               <el-table-column label="名称" prop="name"></el-table-column>
+               <el-table-column label="参考价格" prop="rent"></el-table-column>
+               <el-table-column label="图片" prop="imgPath">
+                 <template slot-scope="scope">
+                 <img v-if="scope.row.imgPath" class="houseImg" :src="BASE_API+'uploads/'+scope.row.imgPath[0]" alt="">
+                 </template>
+               </el-table-column>
+               <el-table-column label="选择">
+                 <template slot-scope="scope">
+                   <el-button type="primary" size="mini" @click="chooseHouse(scope.$index,1)">选择</el-button>
+                 </template>
                </el-table-column>
              </el-table>
            </el-tab-pane>
@@ -105,10 +125,31 @@ import url from '@/utils/url'
       addHouse(){
         this.addHouseDialog = true;
         // 当租房列表为空时 从服务器端获取租房数据
+        if(this.house1Lists.length == 0){
+          this.getHouse1Lists();
+        }
+        // if(this.house2Lists.length == 0){
+        //   this.getHouse2Lists();
+        // }
         if(this.house3Lists.length == 0){
           this.getHouse3Lists();
         }
       },
+      // 获取新房列表
+      getHouse1Lists(){
+        url.get('/houseNew')
+          .then(res =>{
+            this.house1Lists = res.data
+          })
+      },
+      // 获取二手房列表
+      getHouse2Lists(){
+        url.get('/house2')
+          .then(res =>{
+            this.house3Lists = res.data
+          })
+      },
+      //获取租房列表
       getHouse3Lists(){
         url.get('/house')
           .then(res =>{
@@ -118,11 +159,16 @@ import url from '@/utils/url'
 
       //选择推荐房源
       chooseHouse(houseIndex,houseType){
-        let houseInfo = this.house3Lists[houseIndex]
+        let houseInfo = this[`house${houseType }Lists`][houseIndex]
+        console.log(houseInfo);
+        
+        // let houseInfo = this.house3Lists[houseIndex]
         url.post('/recommend',{
           houseType:houseType,
           houseName:houseInfo.name,
           houseImg:houseInfo.imgPath,
+          houseRent:houseInfo.rent,//参考价格
+          houseTags:houseInfo.tags, //标签
           time:Date.parse(new Date()),
           code:houseInfo.code
         })
