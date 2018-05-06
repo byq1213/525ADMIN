@@ -78,6 +78,7 @@
           list-type="picture-card"
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
+          :before-upload="this.beforeUpload"
           multiple="">
           <i class="el-icon-plus"></i>
           </el-upload>
@@ -150,7 +151,7 @@ export default {
         code: new Date().getTime(),
         payType: {},
         imgPath: [],
-        tags: ["南北通透","领包入住","精装修","免中介费",]
+        tags: ["南北通透", "领包入住", "精装修", "免中介费"]
       },
       // 选择房屋设施
       isIndeterminate: true,
@@ -205,10 +206,13 @@ export default {
     uploadFile(fileList) {
       let data = [];
       fileList.forEach(list => {
-        data.push(list.response.files[0]);
+        if (list.response) {
+          data.push(list.response.files[0]);
+        }
       });
       this.form.imgPath = data;
     },
+
     handleCheckAllChange(val) {
       this.checkedFacility = val ? facilityOptions : [];
       this.isIndeterminate = false;

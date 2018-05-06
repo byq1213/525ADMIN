@@ -12,7 +12,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import router from './router'
 import store from './store'
-import { timetrans} from '@/utils/index'
+import { timetrans,beforeUpload} from '@/utils/index'
 import '@/icons' // icon
 import '@/permission' // permission control
 // import ECharts from 'vue-echarts'  //Baidu Echarts
@@ -20,6 +20,7 @@ import '@/permission' // permission control
 // import 'echarts/lib/component/tooltip'
 // Vue.component('chart', ECharts)
 Vue.prototype.timetrans = timetrans
+Vue.prototype.beforeUpload = beforeUpload
 Vue.use(ElementUI, { locale })
 // Vue.use(BaiduMap, {
 //   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */

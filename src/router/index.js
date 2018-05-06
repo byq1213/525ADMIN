@@ -103,9 +103,9 @@ export const constantRouterMap = [
       {
         path: 'list',
         name: 'userList',
-        component: () => import('@/views/broker/list'),
+        component: () => import('@/views/userAnalyze/list'),
         meta: { title: '用户信息', icon: 'form' }
-      },
+      }
     ]
   },
   {

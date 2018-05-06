@@ -55,7 +55,13 @@ const app = {
         Cookies.set('sidebarStatus', 0)
       }
       state.sidebar.opened = !state.sidebar.opened
-    }
+    },
+    beforeUpload(file) {
+      if(file.size>1024000){
+        this.$message('您上传的图片太大了');
+        return false;
+      }
+    },
   },
   actions: {
     ToggleSideBar: ({ commit }) => {
@@ -64,6 +70,9 @@ const app = {
     GetBroker:()=>{
       console.log('GetBroker');
       
+    },
+    beforeUpload:({commit})=>{
+      console.log(commit)
     }
   }
 }

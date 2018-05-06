@@ -72,3 +72,9 @@ export  function timetrans(date) {
   var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
   return Y + M + D + h + m + s;
 }
+export function beforeUpload(file) {
+  if(file.size>1024000){
+    this.$message('您上传的图片太大了');
+    return false;
+  }
+}
