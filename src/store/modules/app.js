@@ -40,6 +40,13 @@ const app = {
       { label: '二手房', value: '2' },
       { label: '租房', value: '3' }
     ],
+    room:[
+      {label:'一居室',value:'1'},
+      {label:'两居室',value:'2'},
+      {label:'三居室',value:'3'},
+      {label:'四居室',value:'4'},
+      {label:'四居室以上',value:'5'},
+    ],
     brokers:[
       {
         label:'王五',value:'12312341234'
