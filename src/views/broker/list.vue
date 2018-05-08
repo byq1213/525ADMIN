@@ -4,13 +4,18 @@
      -->
      <el-main>
        <el-table :data="lists">
-         <el-table-column label="工作照" prop="img"></el-table-column>
-         <el-table-column label="经纪人姓名" prop="name"></el-table-column>
-         <el-table-column label="联系方式" prop="phone"></el-table-column>
+         <el-table-column label="工作照" >
+           <template slot-scope='scope'>
+              <img  :src="BASE_API +'uploads/' + scope.row.brokerInfo.brokerAvatarUrl" alt="" class="avatarUrl">
+           </template>
+         </el-table-column>
+         <el-table-column label="经纪人姓名" prop="brokerInfo.brokerName"></el-table-column>
+         <el-table-column label="联系方式" prop="brokerInfo.brokerPhone"></el-table-column>
          <el-table-column label="操作" prop="">
            <template slot-scope="scope">
-
-           <el-button type="primary" size="mini" >修改</el-button>
+             <router-link :to="`edit/${scope.row._id}`">
+              <el-button type="primary" size="mini" @click="editBroker">修改</el-button>
+            </router-link>
            </template>
          </el-table-column>
        </el-table>
@@ -19,25 +24,26 @@
 </template>
 
 <script>
-import url from '@/utils/url'
+import url from "@/utils/url";
 export default {
   data() {
     return {
-      lists: [{
-
-      }]
+      BASE_API: process.env.BASE_API,
+      lists: []
     };
   },
-  mounted(){
-    this.getLists()
+  mounted() {
+    this.getLists();
   },
   methods: {
+    //修改
+    editBroker(){
+
+    },
     getLists() {
-      url.get('/broker')
-        .then(res=>{
-          this.lists = res.data.data
-          
-        })
+      url.get("/broker").then(res => {
+        this.lists = res.data.data;
+      });
     }
   }
 };

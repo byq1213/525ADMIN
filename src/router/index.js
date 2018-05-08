@@ -92,7 +92,14 @@ export const constantRouterMap = [
         name: 'brokerAdd',
         component: () => import('@/views/broker/add'),
         meta: { title: '添加经纪人', icon: 'form' }
-      }
+      },
+      {
+        path: 'edit/:id',
+        name: 'brokerEdit',
+        hidden:true,
+        component: () => import('@/views/broker/add'),
+        meta: { title: '修改经纪人', icon: 'form' }
+      },
     ]
   },
   {

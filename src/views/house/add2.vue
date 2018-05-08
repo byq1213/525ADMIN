@@ -12,8 +12,12 @@
       <el-form-item label="房源名称">
         <el-input v-model="form.name" placeholder="请输入房源名称" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源租金">
-        <el-input v-model="form.rent" placeholder="请输入房源租金" class="w20"></el-input>
+      <el-form-item label="参考价格">
+        <el-input v-model="form.rent" placeholder="请输入房源租金" class="w20">
+          <template slot="append">
+            万
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="房源面积">
         <el-input v-model="form.proportion" placeholder="请输入房源面积" class="w20">
@@ -21,9 +25,24 @@
         </el-input>
       </el-form-item>
       <el-form-item label="房源户型" >
-        <el-select v-model="form.room" placeholder="请选择居室数量">
+        <el-input v-model="form.room.s" placeholder="" size="small" class="w10">
+          <template slot="append">
+            室
+          </template>
+        </el-input>
+        <el-input v-model="form.room.t" placeholder="" size="small" class="w10">
+          <template slot="append">
+            厅
+          </template>
+        </el-input>
+        <el-input v-model="form.room.w" placeholder="" size="small" class="w10">
+          <template slot="append">
+            卫
+          </template>
+        </el-input>
+        <!-- <el-select v-model="form.room" placeholder="请选择居室数量">
           <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>
+        </el-select> -->
       </el-form-item>
       <el-form-item label="房源年代">
         <el-date-picker v-model="form.age"
@@ -39,14 +58,14 @@
           <el-option value='合租' label="合租" ></el-option>
         </el-select>
       </el-form-item>  -->
-      <el-form-item label="支付方式">
+      <!-- <el-form-item label="支付方式">
           <el-input v-model="form.payType.charge" placeholder="" class="w10">
             <template slot="prepend">押</template>
           </el-input>
           <el-input v-model="form.payType.pair" placeholder="" class="w10">
             <template slot="prepend">付</template>
           </el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="楼层">
         <el-select v-model="form.level" placeholder="" >
           <el-option value="1" label="低楼层"></el-option>
@@ -54,11 +73,17 @@
           <el-option value="3" label="高楼层"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="商圈">
+        <el-input v-model="form.tradingArea" placeholder="请输入商圈" class="w20"></el-input>
+      </el-form-item>
+      <el-form-item label="装修">
+        <el-input v-model="form.decoration" placeholder="精装修" class="w20"></el-input>
+      </el-form-item>
       <el-form-item label="所属小区">
         <el-input v-model="form.cell" placeholder="" class="w20"></el-input>
       </el-form-item>
       </el-card>
-      <el-card class="app-item">
+      <el-card class="app-item" v-if="false">
         <div slot="header">
           房屋设施
         </div>
@@ -126,7 +151,6 @@
         </el-form-item>
         <el-form-item label="坐标选择">
           <div id="mapNode" ref="mapNode" style="height:300px;width:100%;margin-bottom:20px"></div>
-
             <!-- <el-form-item label="地区">
               <el-input v-model="addressChoose.area" placeholder=""></el-input>
             </el-form-item>
@@ -138,14 +162,17 @@
               <el-input size="mini" v-model="form.address" placeholder="请选择详细地址" class="w20"></el-input>
               <el-button type="" size="mini" @click="searchaddress">查询</el-button>
             </el-form-item>
+            <el-form-item label="坐标">
+              <el-input v-model="form.addressLatLng.lat" disabled="" placeholder="" size="mini" class="w20"></el-input>
+              <div></div>
+              <el-input v-model="form.addressLatLng.lng"  disabled="" placeholder="" size="mini" class="w20"></el-input>
+            </el-form-item>
             <!-- <el-form-item label="区域">
               <el-input size="mini" v-model="form.addressComponents.district" placeholder="请选择区域" class="w20"></el-input>
             </el-form-item>
             <el-form-item label="街道">
               <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
             </el-form-item> -->
-
-
         </el-form-item>
         <el-form-item label="" >
           <el-button type="" @click="saveData">保存</el-button>
@@ -174,12 +201,18 @@ export default {
         payType: {},
         imgPath: [],
         tags: ["南北通透", "领包入住", "精装修", "免中介费"],
-        address: "",
-        addressComponents: {}
+        address: "太原市",
+        addressComponents: {},
+        addressLatLng:{},
+        room:{
+          s:1,
+          t:1,
+          w:1,
+        }
       },
-      addressChoose: {
-        area: ""
-      },
+      // addressChoose: {
+      //   area: ""
+      // },
       // 选择房屋设施
       isIndeterminate: true,
       checkedFacility: ["洗衣机", "彩电", "冰箱"],
@@ -199,14 +232,16 @@ export default {
   methods: {
     searchaddress() {
       const _this = this;
-
-      this.geocoder.getLocation(this.form.address);
+      let l = this.geocoder.getLocation(this.form.address);
       this.geocoder.setComplete(function(result) {
-        _this.setAddress(result)
-        _this.addressMap.setCenter(result.detail.location);
+        let loc =result.detail.location
+        _this.selectLatLng = loc
+        console.log('result',result);
+        _this.setAddress(result);
+        _this.addressMap.setCenter(loc);
         var marker = new qmap.Marker({
           map: _this.addressMap,
-          position: result.detail.location
+          position: loc
         });
       });
     },
@@ -242,7 +277,7 @@ export default {
         map.setCenter(event.latLng);
         this.geocoder.getAddress(event.latLng);
         this.geocoder.setComplete(res => {
-          this.setAddress(res)
+          this.setAddress(res);
           //获取到详细街道信息
           // {
           //   address: "中国山西省太原市万柏林区迎泽西大街102号";
@@ -326,7 +361,13 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.facility.length;
     }
+  },  
+  watch:{
+    selectLatLng(res){
+      this.form.addressLatLng = res
+    }
   }
+
 };
 </script>
 

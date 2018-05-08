@@ -13,15 +13,23 @@
         <el-input v-model="form.name" placeholder="请输入房源名称" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="房源租金">
-        <el-input v-model="form.rent" placeholder="请输入房源租金" class="w20"></el-input>
+        <el-input v-model="form.rent" placeholder="请输入房源租金" class="w20" :disabled="mian">
+          <template slot="append">元/月</template>
+        </el-input>
+        <el-checkbox label="面议" v-model="mian"></el-checkbox>
       </el-form-item>
       <el-form-item label="房源面积">
         <el-input v-model="form.proportion" placeholder="请输入房源面积" class="w20">
           <template slot="append">㎡</template>
         </el-input>
       </el-form-item>
+      <el-form-item label="房源朝向">
+        <el-input v-model="form.orientation" placeholder="" class="w20"></el-input>
+      </el-form-item>
       <el-form-item label="房源户型">
-        <el-input v-model="form.houseType" placeholder="请输入房源户型" class="w20"></el-input>
+        <el-select v-model="form.room" placeholder="请选择居室数量">
+          <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="房源年代">
         <el-date-picker v-model="form.age"
@@ -52,6 +60,9 @@
           <el-option value="3" label="高楼层"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="商圈">
+        <el-input v-model="form.tradingArea" placeholder="请输入商圈" class="w20"></el-input>
+      </el-form-item>
       <el-form-item label="所属小区">
         <el-input v-model="form.cell" placeholder="" class="w20"></el-input>
       </el-form-item>
@@ -61,10 +72,10 @@
           房屋设施
         </div>
         <el-form-item label="">
-           <el-checkbox size="big" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+          <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;"></div>
-            <el-checkbox-group v-model="form.checkAll" @change="handlecheckedFacilityChange">
-              <el-checkbox v-for="item in facility" :label="item" :key="item">{{item}}</el-checkbox>
+            <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+              <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
       </el-card>
@@ -125,7 +136,30 @@
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加自定义标签</el-button>
         </el-form-item>
         <el-form-item label="坐标选择">
+          <div id="mapNode" ref="mapNode" style="height:300px;width:100%;margin-bottom:20px"></div>
 
+            <!-- <el-form-item label="地区">
+              <el-input v-model="addressChoose.area" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="">
+              <el-button type="success" @click="searchAddress">查询</el-button> -->
+            <!-- </el-form-item>
+            <div  id="infoDiv" ref="infoDiv"></div> -->
+            <el-form-item label="详细地址">
+              <el-input size="mini" v-model="form.address" placeholder="请选择详细地址" class="w20"></el-input>
+              <el-button type="" size="mini" @click="searchaddress">查询</el-button>
+            </el-form-item>
+            <el-form-item label="坐标">
+              <el-input v-model="form.addressLatLng.lat" disabled="" placeholder="" size="mini" class="w20"></el-input>
+              <div></div>
+              <el-input v-model="form.addressLatLng.lng" disabled="" placeholder="" size="mini" class="w20"></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="区域">
+              <el-input size="mini" v-model="form.addressComponents.district" placeholder="请选择区域" class="w20"></el-input>
+            </el-form-item>
+            <el-form-item label="街道">
+              <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
+            </el-form-item> -->
         </el-form-item>
         <el-form-item label="">
           <el-button type="" @click="saveData">保存</el-button>
@@ -138,12 +172,24 @@
 </template>
 
 <script>
-const facilityOptions = ["洗衣机", "彩电", "冰箱"];
+const cityOptions = [
+  "热水器",
+  "卫生间",
+  "洗衣机",
+  "冰箱",
+  "电视",
+  "床",
+  "衣柜"
+];
 // import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
 // import LocalSearch from 'vue-baidu-map/components/Search/LocalSearch.vue'
 import url from "@/utils/url";
+import qmap from "qmap";
+
 export default {
-  mounted() {},
+  mounted() {
+    this.createMap();
+  },
   components: {},
   data() {
     return {
@@ -151,24 +197,124 @@ export default {
         code: new Date().getTime(),
         payType: {},
         imgPath: [],
-        tags: ["南北通透", "领包入住", "精装修", "免中介费"]
+        tags: ["南北通透", "领包入住", "精装修", "免中介费"],
+        address: "太原市",
+        addressComponents: {},
+        addressLatLng: {}
       },
       // 选择房屋设施
-      isIndeterminate: true,
-      checkedFacility: ["洗衣机", "彩电", "冰箱"],
-      facility: facilityOptions,
       checkAll: false,
+      checkedCities: [],
+      cities: cityOptions,
+      isIndeterminate: true,
       inputValue: "",
-      inputVisible: false
+      inputVisible: false,
 
-      // map: {
-      //   ak: "93xi2EVIQxNlCz8z4v7WpGqGuusDWApE",
-      //   keyword: "长风画卷",
-      //   location: "太原"
-      // }
+      //地图
+      markers: [],
+      addressMap: {}, //地图
+      searchService: {},
+      selectLatLng: {},
+      cityLocation: {},
+      geocoder: {},
+
+      //租金面议
+      mian: false
     };
   },
   methods: {
+    searchaddress() {
+      const _this = this;
+      let l = this.geocoder.getLocation(this.form.address);
+      this.geocoder.setComplete(function(result) {
+        let loc =result.detail.location
+        _this.selectLatLng = loc
+        console.log('result',result);
+        _this.setAddress(result);
+        _this.addressMap.setCenter(loc);
+        var marker = new qmap.Marker({
+          map: _this.addressMap,
+          position: loc
+        });
+      });
+    },
+
+    // 新增地图
+    createMap() {
+      let mapNode = this.$refs.mapNode;
+      // 初始化地图、
+      this.addressMap = new qmap.Map(mapNode, {
+        center: new qmap.LatLng(37.853441, 112.562485),
+        zoom: 13 //缩放等级
+      });
+
+      // 获取区域信息  无用
+      this.cityLocation = new qmap.CityService({
+        complete: res => {
+          this.addressMap.setCenter(res.detail.latLng);
+          console.log("res :", res);
+        }
+      });
+
+      // 获取详细信息
+      this.geocoder = new qmap.Geocoder();
+
+      qmap.event.addListener(this.searchService, "click", res => {
+        console.log("res :", res);
+      });
+      // 添加点击事件
+      qmap.event.addListener(this.addressMap, "click", event => {
+        // 获取到坐标
+        this.selectLatLng = event.latLng;
+        const map = this.addressMap;
+        map.setCenter(event.latLng);
+        this.geocoder.getAddress(event.latLng);
+        this.geocoder.setComplete(res => {
+          this.setAddress(res);
+          //获取到详细街道信息
+          // {
+          //   address: "中国山西省太原市万柏林区迎泽西大街102号";
+          //   addressComponents: {
+          //     city: "太原市";
+          //   country: "中国";
+          //   district: "万柏林区";
+          //   province: "山西省";
+          //   street: "迎泽西大街";
+          //   streetNumber: "迎泽西大街102号";
+          //   town: "千峰街道";
+          //   village: "";
+          //   }
+          // }
+        });
+        let marker = new qmap.Marker({
+          position: event.latLng,
+          map: this.addressMap
+        });
+        qmap.event.addListener(map, "click", function(event) {
+          marker.setMap(null);
+        });
+      });
+    },
+    // 设置区域
+    setAddress(res) {
+      let a = res.detail.addressComponents;
+      console.log(a);
+      let b = a.streetNumber ? a.streetNumber : a.street;
+      this.form.address = a.city + a.district + b;
+      this.form.addressComponents = a;
+    },
+
+    // 房屋设施
+    handleCheckAllChange(val) {
+      this.checkedCities = val ? cityOptions : [];
+      this.isIndeterminate = false;
+    },
+    handleCheckedCitiesChange(value) {
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.cities.length;
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.cities.length;
+    },
     // 删除标签
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
@@ -190,6 +336,8 @@ export default {
     },
     // 提交表单上传数据
     saveData() {
+      console.log(this.form);
+
       url.post("/house", this.form).then(res => {
         console.log(res);
       });
@@ -211,17 +359,19 @@ export default {
         }
       });
       this.form.imgPath = data;
+    }
+  },
+  watch: {
+    checkedCities(res) {
+      this.form.facility = res;
     },
-
-    handleCheckAllChange(val) {
-      this.checkedFacility = val ? facilityOptions : [];
-      this.isIndeterminate = false;
+    selectLatLng(res) {
+      this.form.addressLatLng = res;
     },
-    handlecheckedFacilityChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.facility.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.facility.length;
+    mian(res) {
+      if (res) {
+        this.form.rent = 0;
+      }
     }
   }
 };
