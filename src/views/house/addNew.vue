@@ -19,12 +19,14 @@
         <el-input v-model="form.developers" placeholder="请输入开发商名称" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="楼盘参考价格">
-        <el-input v-model="form.rent" placeholder="请输入楼盘租金" class="w20"></el-input>
+        <el-input v-model="form.rent" placeholder="‘100万元’ 或 ‘200-220万元’" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="开盘时间">
         <el-date-picker v-model="form.openDate"
          placeholder=""
-         type="date"></el-date-picker>
+         type="month"
+         
+         value-format="yyyy-MM"></el-date-picker>
       </el-form-item>
       <el-form-item label="楼盘类型">
         <el-select v-model="form.scale" placeholder="">
@@ -32,14 +34,20 @@
           <el-option label="别墅" value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="楼盘面积">
-        <el-input v-model="form.proportion" placeholder="请输入楼盘面积" class="w20">
-          <template slot="append">㎡</template>
-        </el-input>
+      <el-form-item label="预售许可证">
+        <el-input v-model="form.license" placeholder="" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="位置">
+      <el-form-item label="发证日期">
+        <el-date-picker 
+        v-model="form.licenseDate"
+         placeholder=""
+         type="month"
+         value-format="yyyy-MM"
+         ></el-date-picker>
+      </el-form-item>
+      <!-- <el-form-item label="位置">
         <el-input v-model="form.address" placeholder="请输入楼盘地址" class="w20"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <!-- <el-form-item label="楼盘朝向">
         <el-input v-model="form.code" placeholder="请输入楼盘朝向" class="w20"></el-input>
       </el-form-item> -->
@@ -75,19 +83,28 @@
         </div>
            <div v-for="(item,index) in (form.houseType)" :key="index">
             <el-card class="app-item" style="display:flex">
-              <el-button type="danger" size="small" style="display:flex;justify-content:flex-end" @click="  delHouseType(index)">删除</el-button>
+              
               <el-form  size="small" label-width="100px">
+                
                 <el-form-item label="户型名称">
-                  <el-input v-model="item.name" placeholder="" class="w20"></el-input>
+                  <el-input v-model="item.name" placeholder="" class="w20" placeholder="一室两厅"></el-input>
                 </el-form-item>
                 <el-form-item label="户型面积">
-                  <el-input v-model="item.proportion" placeholder="" class="w20"></el-input>
+                  <el-input v-model="item.proportion" placeholder="" class="w20">
+                    <template slot="append">
+                      ㎡
+                    </template>
+                  </el-input>
                 </el-form-item>
                 <el-form-item label="户型约价">
-                  <el-input v-model="item.rent" placeholder="" class="w20"></el-input>
+                  <el-input v-model="item.rent" placeholder="" class="w20">
+                    <template slot="append">
+                      万元
+                    </template>
+                  </el-input>
                 </el-form-item>
                 <el-form-item label="户型朝向">
-                  <el-input v-model="item.orientation" placeholder="" class="w20"></el-input>
+                  <el-input v-model="item.orientation" placeholder="" class="w20" placeholder="南北朝向"></el-input>
                 </el-form-item>
                 <el-form-item label="户型上传">
                   <el-upload
@@ -101,11 +118,14 @@
                   <i class="el-icon-plus"></i>
                   </el-upload>
                 </el-form-item>
-              </el-form>
+                <el-form-item label="">
+                  <el-button type="danger" size="small" style="display:flex;justify-content:flex-end" @click="  delHouseType(index)">删除</el-button>
+                </el-form-item>              
+                </el-form>
             </el-card>
            </div>
            <p>
-                       <span>
+          <span>
             <el-button type="success" @click="form.houseType.push({})">添加户型</el-button>
           </span>
            </p>
@@ -130,10 +150,25 @@
           楼盘特色
         </div>
       <el-form-item label="产权年限">
-        <el-input v-model="form.ageLimit" placeholder="请输入楼盘产权年限" class="w20"></el-input>
+        <el-input v-model="form.ageLimit" placeholder="请输入楼盘产权年限" class="w20">          
+          <template slot="append">年</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="占地面积">
-        <el-input v-model="form.coveringArea" placeholder="请输入楼盘占地面积" class="w20"></el-input>
+        <el-input v-model="form.coveringArea" placeholder="请输入楼盘占地面积" class="w20">
+          <template slot="append">㎡</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="建筑面积">
+        <el-input v-model="form.proportion" placeholder="请输入楼盘面积" class="w20">
+          <template slot="append">㎡</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="容积率">
+        <el-input-number v-model="form.plotRatio" placeholder="5" class="w20"></el-input-number>
+      </el-form-item>
+      <el-form-item label="绿化率">
+        <el-input-number v-model="form.greeningRate" placeholder="50" class="w20"></el-input-number> <span>%</span>
       </el-form-item>
       <el-form-item label="规划停车位">
         <el-input v-model="form.park" placeholder="请输入楼盘规划停车位" class="w20"></el-input>
@@ -144,6 +179,31 @@
       <el-form-item label="物业费">
         <el-input v-model="form.propertyCost" placeholder="请输入楼盘物业费用" class="w20"></el-input>
       </el-form-item>
+      <el-form-item label="坐标选择">
+          <div id="mapNode" ref="mapNode" style="height:300px;width:100%;margin-bottom:20px"></div>
+            <!-- <el-form-item label="地区">
+              <el-input v-model="addressChoose.area" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="">
+              <el-button type="success" @click="searchAddress">查询</el-button> -->
+            <!-- </el-form-item>
+            <div  id="infoDiv" ref="infoDiv"></div> -->
+            <el-form-item label="详细地址">
+              <el-input size="mini" v-model="form.address" placeholder="请选择详细地址" class="w20"></el-input>
+              <el-button type="" size="mini" @click="searchaddress">查询</el-button>
+            </el-form-item>
+            <el-form-item label="坐标">
+              <el-input v-model="form.addressLatLng.lat" disabled="" placeholder="" size="mini" class="w20"></el-input>
+              <div></div>
+              <el-input v-model="form.addressLatLng.lng"  disabled="" placeholder="" size="mini" class="w20"></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="区域">
+              <el-input size="mini" v-model="form.addressComponents.district" placeholder="请选择区域" class="w20"></el-input>
+            </el-form-item>
+            <el-form-item label="街道">
+              <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
+            </el-form-item> -->
+        </el-form-item>
         <!-- <el-form-item label="楼盘亮点">
           <el-input v-model="form.highlight" type="textarea" placeholder=""></el-input>
         </el-form-item>
@@ -171,9 +231,12 @@
 </template>
 
 <script>
+import qmap from "qmap";
 import url from "@/utils/url";
 export default {
-  mounted() {},
+  mounted() {
+    this.createMap();
+  },
   components: {},
   data() {
     return {
@@ -181,20 +244,108 @@ export default {
         code: new Date().getTime(),
         imgPath: [],
         houseType: [{}],
-        tags: ["南北通透", "领包入住", "精装修", "免中介费"]
+        tags: ["南北通透", "领包入住", "精装修", "免中介费"],
+        address: "太原市",
+        addressComponents: {},
+        addressLatLng: {}
       },
       inputValue: "",
       inputVisible: false,
-      // 选择房屋设施
-      isIndeterminate: true
+
+      markers: [],
+      addressMap: {}, //地图
+      searchService: {},
+      selectLatLng: {},
+      cityLocation: {},
+      geocoder: {}
     };
   },
   methods: {
+    searchaddress() {
+      const _this = this;
+      let l = this.geocoder.getLocation(this.form.address);
+      this.geocoder.setComplete(function(result) {
+        let loc = result.detail.location;
+        _this.selectLatLng = loc;
+        console.log("result", result);
+        _this.setAddress(result);
+        _this.addressMap.setCenter(loc);
+        var marker = new qmap.Marker({
+          map: _this.addressMap,
+          position: loc
+        });
+      });
+    },
+
+    // 新增地图
+    createMap() {
+      let mapNode = this.$refs.mapNode;
+      // 初始化地图、
+      this.addressMap = new qmap.Map(mapNode, {
+        center: new qmap.LatLng(37.853441, 112.562485),
+        zoom: 13 //缩放等级
+      });
+
+      // 获取区域信息  无用
+      this.cityLocation = new qmap.CityService({
+        complete: res => {
+          this.addressMap.setCenter(res.detail.latLng);
+          console.log("res :", res);
+        }
+      });
+
+      // 获取详细信息
+      this.geocoder = new qmap.Geocoder();
+
+      qmap.event.addListener(this.searchService, "click", res => {
+        console.log("res :", res);
+      });
+      // 添加点击事件
+      qmap.event.addListener(this.addressMap, "click", event => {
+        // 获取到坐标
+        this.selectLatLng = event.latLng;
+        const map = this.addressMap;
+        map.setCenter(event.latLng);
+        this.geocoder.getAddress(event.latLng);
+        this.geocoder.setComplete(res => {
+          this.setAddress(res);
+          //获取到详细街道信息
+          // {
+          //   address: "中国山西省太原市万柏林区迎泽西大街102号";
+          //   addressComponents: {
+          //     city: "太原市";
+          //   country: "中国";
+          //   district: "万柏林区";
+          //   province: "山西省";
+          //   street: "迎泽西大街";
+          //   streetNumber: "迎泽西大街102号";
+          //   town: "千峰街道";
+          //   village: "";
+          //   }
+          // }
+        });
+        let marker = new qmap.Marker({
+          position: event.latLng,
+          map: this.addressMap
+        });
+        qmap.event.addListener(map, "click", function(event) {
+          marker.setMap(null);
+        });
+      });
+    },
+    // 设置区域
+    setAddress(res) {
+      let a = res.detail.addressComponents;
+      console.log(a);
+      let b = a.streetNumber ? a.streetNumber : a.street;
+      this.form.address = a.city + a.district + b;
+      this.form.addressComponents = a;
+    },
     // 删除标签
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
     },
-        showInput() {
+    showInput() {
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
@@ -208,7 +359,6 @@ export default {
       this.inputVisible = false;
       this.inputValue = "";
     },
-
 
     // 删除户型
     delHouseType(index) {
@@ -257,6 +407,11 @@ export default {
         data.push(list.response.files[0]);
       });
       this.form.houseType[index].imgPath = data;
+    }
+  },
+  watch: {
+    selectLatLng(res) {
+      this.form.addressLatLng = res;
     }
   }
 };

@@ -185,7 +185,7 @@ import url from '@/utils/url'
   }
 </script>
 
-<style scoped>
+<style >
   .houseImg{
     max-height: 2em;
   }

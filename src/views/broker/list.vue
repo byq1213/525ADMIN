@@ -11,6 +11,7 @@
          </el-table-column>
          <el-table-column label="经纪人姓名" prop="brokerInfo.brokerName"></el-table-column>
          <el-table-column label="联系方式" prop="brokerInfo.brokerPhone"></el-table-column>
+         <el-table-column label="客户总量" prop="count"></el-table-column>
          <el-table-column label="操作" prop="">
            <template slot-scope="scope">
              <router-link :to="`edit/${scope.row._id}`">

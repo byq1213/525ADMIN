@@ -148,6 +148,20 @@ export const constantRouterMap = [
       
     ]
   },
+  {
+    path: '/finish',
+    component: Layout,
+    meta: { title: '成交房源', icon: 'form' },
+    children: [
+      {
+        path: 'index',
+        name: 'createFinish',
+        component: () => import('@/views/finish/add'),
+        meta: { title: '添加成交', icon: 'form' }
+      },
+      
+    ]
+  },
 
 
 ]
