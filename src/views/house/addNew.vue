@@ -30,8 +30,14 @@
       </el-form-item>
       <el-form-item label="楼盘类型">
         <el-select v-model="form.scale" placeholder="">
-          <el-option label="住宅" value="0"></el-option>
-          <el-option label="别墅" value="1"></el-option>
+          <el-option label="高楼层" value="0"></el-option>
+          <el-option label="低楼层" value="1"></el-option>
+        </el-select>
+      </el-form-item>      
+      <el-form-item label="建筑类型">
+        <el-select v-model="form.height" placeholder="">
+          <el-option label="高楼层" value="0"></el-option>
+          <el-option label="低楼层" value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="预售许可证">
@@ -160,7 +166,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="建筑面积">
-        <el-input v-model="form.proportion" placeholder="请输入楼盘面积" class="w20">
+        <el-input v-model="form.proportion" placeholder="请输入建筑面积" class="w20">
           <template slot="append">㎡</template>
         </el-input>
       </el-form-item>

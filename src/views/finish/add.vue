@@ -10,16 +10,21 @@
         </el-select>
       </el-form-item>
       <el-form-item label="房源信息">
+        <el-input v-model="form.houseName" placeholder="" class="w20"></el-input>
         <el-button type="primary" @click="showHouse">选择房源信息</el-button>
       </el-form-item>
       <el-form-item label="成交时间">
-        <el-date-picker v-model="form.time" type="datetime" placeholder=""> </el-date-picker>
+        <el-date-picker
+        v-model="form.time"
+        type="datetime"
+        placeholder=""
+        > </el-date-picker>
       </el-form-item>
       <el-form-item label="备注">
         <el-input v-model="form.remark" placeholder="" type="textarea" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="">
-        <el-button type="success" >确认成交</el-button>
+        <el-button type="success" @click="saveData">确认成交</el-button>
       </el-form-item>
     </el-form>
     <el-dialog 
@@ -32,19 +37,15 @@
                <el-table-column label="编号" prop="code"></el-table-column>
                <el-table-column label="名称" prop="name"></el-table-column>
                <el-table-column label="参考价格" prop="rent"></el-table-column>
-               
                <el-table-column label="图片" prop="imgPath">
                  <template slot-scope="scope">
                  <img v-if="scope.row.imgPath" class="houseImg" :src="BASE_API+'uploads/'+scope.row.imgPath[0]" alt="">
-                   
                  </template>
                </el-table-column>
                <el-table-column label="选择">
                  <template slot-scope="scope">
-                   
                    <el-button type="primary" size="mini" @click="chooseHouse(scope.$index,3)">选择</el-button>
                  </template>
-                 
                </el-table-column>
              </el-table>
            </el-tab-pane>
@@ -121,6 +122,26 @@ export default {
       url.get("/house").then(res => {
         this.house3Lists = res.data;
       });
+    },
+     chooseHouse(houseIndex,houseType){
+        let houseInfo = this[`house${houseType }Lists`][houseIndex]
+        this.form.houseName = houseInfo.name;
+        this.form.houseId =  houseInfo._id;
+        this.form.houseType = houseType
+        this.addHouseDialog = false
+     },
+     saveData(){
+       console.log(this.form);
+       url.post('/finish',this.form)
+        .then(res =>{
+          console.log(res);
+          
+        })
+     }
+  },
+  watch:{
+    'form.time'(res){
+      this.form.time = Date.parse(new Date(res))
     }
   }
 };
