@@ -6,7 +6,7 @@
     <el-form :model="form" label-width="100px">
       <el-form-item label="添加经纪人">
         <el-select v-model="form.brokerId" placeholder="">
-          <el-option v-for="(item,index) in brokerList" :key="index" :label="item.label" :value="item.value"></el-option>
+          <el-option v-for="(item,index) in brokerList" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="房源信息">
@@ -19,6 +19,9 @@
         type="datetime"
         placeholder=""
         > </el-date-picker>
+      </el-form-item>
+      <el-form-item label="售出价格">
+        <el-input v-model="form.price" placeholder="“1000元/月” 或 “100万/套”"></el-input>
       </el-form-item>
       <el-form-item label="备注">
         <el-input v-model="form.remark" placeholder="" type="textarea" class="w20"></el-input>
@@ -76,6 +79,9 @@
 import url from "@/utils/url";
 
 export default {
+  mounted(){
+    this.getBrokerList()
+  },
   data() {
     return {
       form: {
@@ -128,6 +134,7 @@ export default {
         this.form.houseName = houseInfo.name;
         this.form.houseId =  houseInfo._id;
         this.form.houseType = houseType
+        this.form.houseImg = houseInfo.imgPath
         this.addHouseDialog = false
      },
      saveData(){
@@ -135,7 +142,13 @@ export default {
        url.post('/finish',this.form)
         .then(res =>{
           console.log(res);
-          
+        })
+     },
+     getBrokerList(){
+       url.get('/broker')
+        .then(res =>{
+          console.log(res);
+          this.brokerList = res.data.data
         })
      }
   },

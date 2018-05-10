@@ -21,9 +21,18 @@ import Layout from '../views/layout/Layout'
     icon: 'svg-name'             the icon show in the sidebar,
   }
 **/
-export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/404', component: () => import('@/views/404'), hidden: true },
+export const constantRouterMap = [{
+    path: '/login',
+    component: () =>
+      import ('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () =>
+      import ('@/views/404'),
+    hidden: true
+  },
 
   {
     path: '/',
@@ -33,134 +42,225 @@ export const constantRouterMap = [
     hidden: true,
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: () =>
+        import ('@/views/dashboard/index')
     }]
   },
   {
     path: '/House',
     component: Layout,
-    meta: { title: '房源数据', icon: 'form' },
-    children: [
-      {
+    meta: {
+      title: '房源数据',
+      icon: 'form'
+    },
+    children: [{
         path: 'index',
         name: 'HouseAdd',
-        component: () => import('@/views/house/addIndex'),
-        meta: { title: '添加房源', icon: 'form' }
+        component: () =>
+          import ('@/views/house/addIndex'),
+        meta: {
+          title: '添加房源',
+          icon: 'form'
+        }
       },
       {
         path: 'addNew',
         name: 'HouseAdd1',
-        hidden:true,
-        component: () => import('@/views/house/addNew'),
-        meta: { title: '添加新房', icon: 'form' }
+        hidden: true,
+        component: () =>
+          import ('@/views/house/addNew'),
+        meta: {
+          title: '添加新房',
+          icon: 'form'
+        }
       },
       {
         path: 'add2',
         name: 'HouseAdd2',
-        hidden:true,
-        component: () => import('@/views/house/add2'),
-        meta: { title: '添加二手房', icon: 'form' }
+        hidden: true,
+        component: () =>
+          import ('@/views/house/add2'),
+        meta: {
+          title: '添加二手房',
+          icon: 'form'
+        }
       },
       {
         path: 'add3',
         name: 'HouseAdd3',
-        hidden:true,
-        component: () => import('@/views/house/add3'),
-        meta: { title: '添加租房', icon: 'form' }
+        hidden: true,
+        component: () =>
+          import ('@/views/house/add3'),
+        meta: {
+          title: '添加租房',
+          icon: 'form'
+        }
       },
       {
         path: 'list',
         name: 'HouseList',
-        component: () => import('@/views/house/list'),
-        meta: { title: '房源列表', icon: 'form' }
+        component: () =>
+          import ('@/views/house/list'),
+        meta: {
+          title: '房源列表',
+          icon: 'form'
+        }
       }
     ]
   },
   {
     path: '/broker',
     component: Layout,
-    meta: { title: '经纪人管理', icon: 'form' },
-    children: [
-      {
+    meta: {
+      title: '经纪人管理',
+      icon: 'form'
+    },
+    children: [{
         path: 'list',
         name: 'brokerList',
-        component: () => import('@/views/broker/list'),
-        meta: { title: '经纪人列表', icon: 'form' }
+        component: () =>
+          import ('@/views/broker/list'),
+        meta: {
+          title: '经纪人列表',
+          icon: 'form'
+        }
       },
       {
         path: 'add',
         name: 'brokerAdd',
-        component: () => import('@/views/broker/add'),
-        meta: { title: '添加经纪人', icon: 'form' }
+        component: () =>
+          import ('@/views/broker/add'),
+        meta: {
+          title: '添加经纪人',
+          icon: 'form'
+        }
       },
       {
         path: 'edit/:id',
         name: 'brokerEdit',
-        hidden:true,
-        component: () => import('@/views/broker/add'),
-        meta: { title: '修改经纪人', icon: 'form' }
+        hidden: true,
+        component: () =>
+          import ('@/views/broker/add'),
+        meta: {
+          title: '修改经纪人',
+          icon: 'form'
+        }
       },
     ]
   },
   {
     path: '/userAnalyze',
     component: Layout,
-    meta: { title: '用户分析', icon: 'form' },
-    children: [
-      {
-        path: 'list',
-        name: 'userList',
-        component: () => import('@/views/userAnalyze/list'),
-        meta: { title: '用户信息', icon: 'form' }
+    meta: {
+      title: '用户分析',
+      icon: 'form'
+    },
+    children: [{
+      path: 'list',
+      name: 'userList',
+      component: () =>
+        import ('@/views/userAnalyze/list'),
+      meta: {
+        title: '用户信息',
+        icon: 'form'
       }
-    ]
+    }]
   },
   {
     path: '/index',
     component: Layout,
-    meta: { title: '数据分析', icon: 'form' },
-    children: [
-      {
+    meta: {
+      title: '数据分析',
+      icon: 'form'
+    },
+    children: [{
         path: 'data',
         name: 'data_index',
-        component: () => import('@/views/data/index'),
-        meta: { title: '数据分析', icon: 'form' }
+        component: () =>
+          import ('@/views/data/index'),
+        meta: {
+          title: '数据分析',
+          icon: 'form'
+        }
       },
       {
         path: 'view',
         name: 'data_view',
-        component: () => import('@/views/data/view'),
-        meta: { title: '访问量', icon: 'form' }
+        component: () =>
+          import ('@/views/data/view'),
+        meta: {
+          title: '访问量',
+          icon: 'form'
+        }
       },
     ]
   },
   {
     path: '/setting',
     component: Layout,
-    meta: { title: '页面管理', icon: 'form' },
-    children: [
-      {
+    meta: {
+      title: '页面管理',
+      icon: 'form'
+    },
+    children: [{
         path: 'index',
         name: 'setting_index',
-        component: () => import('@/views/setting/pageSetting'),
-        meta: { title: '首页设置', icon: 'form' }
+        component: () =>
+          import ('@/views/setting/pageSetting'),
+        meta: {
+          title: '首页设置',
+          icon: 'form'
+        }
       },
-      
+
     ]
   },
   {
     path: '/finish',
     component: Layout,
-    meta: { title: '成交房源', icon: 'form' },
-    children: [
-      {
+    meta: {
+      title: '成交房源',
+      icon: 'form'
+    },
+    children: [{
         path: 'index',
         name: 'createFinish',
-        component: () => import('@/views/finish/add'),
-        meta: { title: '添加成交', icon: 'form' }
+        component: () =>
+          import ('@/views/finish/add'),
+        meta: {
+          title: '添加成交',
+          icon: 'form'
+        }
+      }, {
+        path: 'list',
+        name: 'finishList',
+        component: () =>
+          import ('@/views/finish/list'),
+        meta: {
+          title: '成交列表',
+          icon: 'form'
+        }
       },
-      
+
     ]
+  },
+  {
+    path: '/storeSetting',
+    component: Layout,
+    meta: {
+      title: '店铺设置',
+      icon: 'form'
+    },
+    children: [{
+      path: 'index',
+      name: 'storeSetting',
+      component: () =>
+        import ('@/views/setting/index'),
+      meta: {
+        title: '店铺设置',
+        icon: 'form'
+      }
+    }]
   },
 
 
@@ -168,33 +268,50 @@ export const constantRouterMap = [
 
 export default new Router({
   // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRouterMap
 })
 
 // 用户权限设置
-export const asyncRouterMap = [
-  {
+export const asyncRouterMap = [{
     path: '/permission',
     component: Layout,
-    redirect:'/permission/index',
-    alwaysShow:false,
-    meta: { title: '权限管理', icon: 'form' },
-    children: [
-      {
+    redirect: '/permission/index',
+    alwaysShow: false,
+    meta: {
+      title: '权限管理',
+      icon: 'form'
+    },
+    children: [{
         path: 'index',
         name: 'permissionList',
-        component: () => import('@/views/broker/list'),
-        meta: { title: '权限管理', icon: 'form',roles:['view'] }
+        component: () =>
+          import ('@/views/broker/list'),
+        meta: {
+          title: '权限管理',
+          icon: 'form',
+          roles: ['view']
+        }
       },
       {
         path: 'index1',
         name: 'permissionList1',
-        component: () => import('@/views/broker/list'),
-        meta: { title: '权限管理1', icon: 'form', roles: ['view'] }
+        component: () =>
+          import ('@/views/broker/list'),
+        meta: {
+          title: '权限管理1',
+          icon: 'form',
+          roles: ['view']
+        }
       },
     ]
   },
 
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ];
