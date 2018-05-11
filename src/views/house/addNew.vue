@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item label="开发商">
         <el-input v-model="form.developers" placeholder="请输入开发商名称" class="w20"></el-input>
-      </el-form-item>
+      </el-form-item· ·>
       <el-form-item label="楼盘参考价格">
         <el-input v-model="form.rent" placeholder="‘100万元’ 或 ‘200-220万元’" class="w20"></el-input>
       </el-form-item>
