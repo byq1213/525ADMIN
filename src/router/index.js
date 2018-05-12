@@ -252,15 +252,26 @@ export const constantRouterMap = [{
       icon: 'form'
     },
     children: [{
-      path: 'index',
-      name: 'storeSetting',
-      component: () =>
-        import ('@/views/setting/index'),
-      meta: {
-        title: '店铺设置',
-        icon: 'form'
+        path: 'index',
+        name: 'storeSetting',
+        component: () =>
+          import ('@/views/setting/index'),
+        meta: {
+          title: '店铺设置',
+          icon: 'form'
+        }
+      },
+      {
+        path: '',
+        name: 'swiperSetting',
+        component: () =>
+          import ('@/views/setting/swiper'),
+        meta: {
+          title: '轮播设置',
+          icon: 'form'
+        }
       }
-    }]
+    ]
   },
 
 

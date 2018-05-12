@@ -34,7 +34,7 @@
       <el-table :data="lists" border>
         <el-table-column label="头像" prop="uid.avatarUrl">
           <template slot-scope='scope'>
-             <img :src="scope.row.uid.avatarUrl" class="avatarUrl" alt="">
+             <img v-if="scope.row.uid.avatarUrl" :src="scope.row.uid.avatarUrl" class="avatarUrl" alt="">
           </template>
         </el-table-column>
         <el-table-column label="昵称" prop="uid.nickName"></el-table-column>
@@ -44,7 +44,34 @@
              <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
           </template>
         </el-table-column>
-        <el-table-column label="访问房源" prop="houseName"></el-table-column>
+        <el-table-column label="访问房源" prop="houseName">
+          <template slot-scope='scope'>
+             <el-popover
+              placement="right"
+              width="200"
+              trigger="click"
+              @show="getHouseInfo(scope.row.houseType,scope.row.houseId)">
+                <div >
+                  <p v-if="scope.row.houseType == 1">新房</p>
+                  <p v-else-if="scope.row.houseType ==2">二手房</p>
+                  <p v-else>新房</p>
+                  <p style="text-align:center">
+                    <img :src="BASE_API + '/uploads/'+scope.row.houseImg[0]" alt="" class="houseImg" style="width:100%">
+                  </p>
+                  <p> 房源编号：<span v-text="popoverHouseInfo.code"></span></p>
+                  <p>地址 ：<span v-text="popoverHouseInfo.address"></span></p>
+                  <p>价格 ：<span v-text="popoverHouseInfo.rent"></span></p>
+                  <p>面积 ：<span v-text="popoverHouseInfo.proportion"></span></p>
+                  <p>户型 ：
+                    <span v-if="scope.row.houseType == 2 && popoverHouseInfo.room"  v-text="popoverHouseInfo.room.s + '室' +popoverHouseInfo.room.t + '厅' +popoverHouseInfo.room.w + '卫'"></span>
+                    <span v-if="scope.row.houseType == 3" v-text="popoverHouseInfo.room + '室'"></span>
+                  </p>
+
+                </div>
+              <a slot="reference" v-text="scope.row.houseName" ></a>
+            </el-popover>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope='scope'>
             <el-button type="" size="small">删除</el-button>
@@ -64,6 +91,10 @@ export default {
   },
   data() {
     return {
+      BASE_API: process.env.BASE_API,
+      popoverHouseInfo:{
+        room:{s:1,t:1,w:2}
+      },
       form: {
         type: "0"
       },
@@ -75,11 +106,22 @@ export default {
       url.get("/views").then(res => {
         this.lists = res.data.lists;
       });
+    },
+    getHouseInfo(houseType,houseId){
+      this.popoverHouseInfo = {};
+      url.post('/views/popoverHouseInfo',{houseType,houseId})
+        .then(res =>{
+          this.popoverHouseInfo = res.data
+          
+        })
+
     }
   }
 };
 </script>
 
 <style scoped>
-
+/* .houseImg{
+  width: 100px;
+} */
 </style>

@@ -40,7 +40,7 @@
            </el-table>
          </el-tab-pane>
          <el-tab-pane label="轮播图设置">
-
+           
          </el-tab-pane>
        </el-tabs>
        <el-dialog 

@@ -41,7 +41,7 @@
 
     <el-card class="countChart">
       <div slot="header">
-        访问量
+        数据图表
         <!-- （总访问<span class="Num"> 79</span> 次） -->
         <span class="fr">
           <el-button type="success" size="mini"> 查看详情</el-button>
@@ -59,7 +59,7 @@
 // import io from 'socket.io-client'
 import chart from "vue-echarts";
 import url from "@/utils/url";
-import { dataChart, chartIndex,getBrokerLists } from "@/utils/data";
+import { dataChart, chartIndex, getBrokerLists } from "@/utils/data";
 
 export default {
   components: {
@@ -68,9 +68,10 @@ export default {
   data() {
     return {
       form: {
-        time:[new Date().getTime()-24*3600*7,new Date()]
+        time: [, ],
+        broker:''
       },
-      brokerLists:[],
+      brokerLists: [],
       count: [
         { label: "访问量", value: "123", url: "/" },
         { label: "成交量", value: "123", url: "/" },
@@ -79,6 +80,9 @@ export default {
       ],
       theme: "light", //更换主题
       view: {
+        legend: {
+          data: ["访问量", "成交量", "发布量", "需求量"]
+        },
         xAxis: {
           type: "category",
           data: []
@@ -86,9 +90,39 @@ export default {
         yAxis: {
           type: "value"
         },
+        tooltip: {
+          trigger: "axis"
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
         series: [
           {
-            data: [],
+            name: "访问量",
+            data: [1, 1],
+            type: "line"
+          },
+          {
+            name: "成交量",
+            data: [0, 0],
+            type: "line"
+          },
+          {
+            name: "发布量",
+            data: [1, 1],
+            type: "line"
+          },
+          {
+            name: "需求量",
+            data: [1, 1],
             type: "line"
           }
         ]
@@ -96,33 +130,54 @@ export default {
     };
   },
   methods: {
-    search(){
-      //查询  
+    search() {
+      //查询
       /**@augments
        * 传入 开始时间- 结束时间
        * 经纪人ID
        */
-      let {time,broker} = this.form
-      this.getViewChart(time[1],time[0],broker)
+      let { time, broker } = this.form;
+      this.getViewChart(time[1], time[0], broker);
+      this.getFinishChart(time[1], time[0], broker);
+      this.getIssueChart(time[1], time[0], broker);
+      this.getNeedChart(time[1], time[0], broker);
     },
-    async getViewChart(lt,gt,broker) {
-      console.log(lt,gt,broker);
-       
-      let data =await chartIndex("/data/views",lt,gt)
-      this.view.xAxis.data = data.xData
-      this.view.series[0].data = data.yData
-      this.count[0].value = data.count
+    // 获取访问量
+    async getViewChart(lt, gt, broker) {
+      let viewData = await chartIndex("/data/views", lt, gt, broker);
+      this.view.xAxis.data = viewData.xData;
+      this.view.series[0].data = viewData.yData;
+      this.count[0].value = viewData.count;
     },
-    async BrokerLists(){
-      let a =  await getBrokerLists();
-      console.log(a);
-      this.brokerLists = a.data
+    // 获取成交量
+    async getFinishChart(lt, gt, broker) {
+      let finishData = await chartIndex("/data/finish", lt, gt, broker);
+      this.view.series[1].data = finishData.yData;
+      this.count[1].value = finishData.count;
+    },
+    // 获取发布量
+    async getIssueChart(lt, gt, broker) {
+      let issuedData = await chartIndex("/data/issue/1", lt, gt, broker);
+      this.view.series[2].data = issuedData.yData;
+      this.count[2].value = issuedData.count;
+    },
+    async getNeedChart(lt, gt, broker) {
+      let issuedData = await chartIndex("/data/issue/0", lt, gt, broker);
+      this.view.series[3].data = issuedData.yData;
+      this.count[3].value = issuedData.count;
+    },
+    async BrokerLists() {
+      let a = await getBrokerLists();
+      this.brokerLists = a.data;
     }
   },
   created() {},
   async mounted() {
-    this.getViewChart()
-    this.BrokerLists()
+    this.getViewChart();
+    this.getFinishChart();
+    this.getIssueChart();
+    this.getNeedChart();
+    this.BrokerLists();
   }
 };
 </script>

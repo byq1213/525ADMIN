@@ -18,6 +18,8 @@
         v-model="form.time"
         type="datetime"
         placeholder=""
+         value-format="timestamp"
+        
         > </el-date-picker>
       </el-form-item>
       <el-form-item label="售出价格">
@@ -86,7 +88,7 @@ export default {
     return {
       form: {
         brokerId: "",
-        time: new Date()
+        time: new Date().getTime()
       },
         BASE_API:process.env.BASE_API,
       
@@ -152,16 +154,12 @@ export default {
         })
      }
   },
-  watch:{
-    'form.time'(res){
-      this.form.time = Date.parse(new Date(res))
-    }
-  }
+
 };
 </script>
 
 <style scoped>
-  .houseImg{
-    max-height: 2em;
-  }
+.houseImg {
+  max-height: 2em;
+}
 </style>

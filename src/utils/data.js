@@ -14,12 +14,12 @@ export function dataChart(arr) {
       let xDate = `${time.getMonth() +1}-${time.getDate()}`; //分钟
       item = {
         time,
-        getFullYear,
-        getMonth,
-        getDate,
-        getDay,
-        getMinutes,
-        getHours,
+        // getFullYear,
+        // getMonth,
+        // getDate,
+        // getDay,
+        // getMinutes,
+        // getHours,
         xDate
       }
       outDate.push(item)
@@ -28,9 +28,8 @@ export function dataChart(arr) {
   return outDate
 }
 
-export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date().getTime() - 24 * 3600 * 7 * 1000) {
-  console.log(lt, gt);
-
+export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date().getTime() - 24 * 3600 * 7 * 1000,brokerId='') {
+  console.log(lt, gt,brokerId);
   let yData = [];
   let xData = []; //x轴
   let callback = {
@@ -47,7 +46,8 @@ export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date(
   xData = xData.reverse();
   let data = await url.post(urls, {
     gt,
-    lt
+    lt,
+    brokerId
   })
   data = dataChart(data.data.data);
   callback.count = data.length;
@@ -66,7 +66,6 @@ export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date(
 
 export async function getBrokerLists() {
   let lists = await url.post('/brokerLists')
-  console.log(lists);
-  
+
   return lists
 }
