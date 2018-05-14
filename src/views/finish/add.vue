@@ -30,6 +30,7 @@
       </el-form-item>
       <el-form-item label="">
         <el-button type="success" @click="saveData">确认成交</el-button>
+        <el-button type="success" @click="saveDataAndSend">成交并发送</el-button>
       </el-form-item>
     </el-form>
     <el-dialog 
@@ -81,8 +82,8 @@
 import url from "@/utils/url";
 
 export default {
-  mounted(){
-    this.getBrokerList()
+  mounted() {
+    this.getBrokerList();
   },
   data() {
     return {
@@ -90,13 +91,13 @@ export default {
         brokerId: "",
         time: new Date().getTime()
       },
-        BASE_API:process.env.BASE_API,
-      
+      BASE_API: process.env.BASE_API,
+
       addHouseDialog: false, //动态模糊狂
       house3Lists: [], //租房
       house2Lists: [], //二手房
       house1Lists: [], //新房
-      brokerList: [{ label: "经纪人1", value: "经纪人1" }]
+      brokerList: []
     };
   },
   methods: {
@@ -131,30 +132,33 @@ export default {
         this.house3Lists = res.data;
       });
     },
-     chooseHouse(houseIndex,houseType){
-        let houseInfo = this[`house${houseType }Lists`][houseIndex]
-        this.form.houseName = houseInfo.name;
-        this.form.houseId =  houseInfo._id;
-        this.form.houseType = houseType
-        this.form.houseImg = houseInfo.imgPath
-        this.addHouseDialog = false
-     },
-     saveData(){
-       console.log(this.form);
-       url.post('/finish',this.form)
-        .then(res =>{
-          console.log(res);
-        })
-     },
-     getBrokerList(){
-       url.get('/broker')
-        .then(res =>{
-          console.log(res);
-          this.brokerList = res.data.data
-        })
-     }
-  },
-
+    chooseHouse(houseIndex, houseType) {
+      let houseInfo = this[`house${houseType}Lists`][houseIndex];
+      this.form.houseName = houseInfo.name;
+      this.form.houseId = houseInfo._id;
+      this.form.houseType = houseType;
+      this.form.houseImg = houseInfo.imgPath;
+      this.addHouseDialog = false;
+    },
+    saveData() {
+      console.log(this.form);
+      url.post("/finish", this.form).then(res => {
+        console.log(res);
+      });
+    },
+    saveDataAndSend() {
+      this.saveData();
+      url.post("/send", this.form).then(res => {
+        console.log(res);
+      });
+    },
+    getBrokerList() {
+      url.post("/brokerLists").then(res => {
+        console.log(res);
+        this.brokerList = res.data;
+      });
+    }
+  }
 };
 </script>
 

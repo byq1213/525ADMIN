@@ -56,6 +56,12 @@
                <span v-else>否</span>
             </template>
           </el-table-column>
+          <el-table-column label="注册时间">
+            <template slot-scope='scope'>
+              <!-- <span v-text="scope.row.reg"></span> -->
+               <span v-text="new Date(Math.floor(scope.row.regTime)  ).toLocaleString()"></span>
+            </template>
+          </el-table-column>
           <el-table-column label="联系电话" prop="phone"></el-table-column>
           <el-table-column label="操作" prop="">
             <template slot-scope='scope'>

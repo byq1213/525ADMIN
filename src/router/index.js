@@ -193,11 +193,32 @@ export const constantRouterMap = [{
           icon: 'form'
         }
       },
+      {
+        path: 'issue',
+        name: 'data_issue',
+        component: () =>
+          import ('@/views/data/issue'),
+        meta: {
+          title: '发布量',
+          icon: 'form'
+        }
+      },
+      {
+        path: 'need',
+        name: 'data_need',
+        component: () =>
+          import ('@/views/data/need'),
+        meta: {
+          title: '需求量',
+          icon: 'form'
+        }
+      },
     ]
   },
   {
     path: '/setting',
     component: Layout,
+    hidden:true,
     meta: {
       title: '页面管理',
       icon: 'form'

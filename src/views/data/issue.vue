@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- 访问量 -->
+    <!-- 发布量 -->
     <el-main>
       <el-form :model="form" :inline="true" >
         <el-form-item label="时间段查询">
@@ -18,17 +18,15 @@
           </el-form-item>
           <el-form-item label="房源类型">
             <el-select v-model="form.type" placeholder="">
-              <el-option v-for="(item,index) in this.$store.state.app.houseType"
-               :key="index" 
-               :value="item.value"
-               :label="item.label"></el-option>
+              <el-option value="" label="全部"></el-option>
+              <el-option value="0" label="出售"></el-option>
+              <el-option value="1" label="出租"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="">
             <el-button type="primary" @click="search">查询</el-button>
           </el-form-item>
           <el-form-item label="">
-            <el-button type="warning">删除浏览记录</el-button>
           </el-form-item>
       </el-form>
       <el-table :data="lists" border >
@@ -40,44 +38,39 @@
         </el-table-column>
         <el-table-column label="昵称" prop="uid.nickName">
           <template slot-scope='scope'>
-          
             <span v-if="scope.row.uid.nickName" v-text="scope.row.uid.nickName" ></span>
              <span v-else v-text="'尚未提供信息'"></span>
           </template>
 
         </el-table-column>
-        <!-- <el-table-column label="电话" prop="uid.phone"></el-table-column> -->
-        <el-table-column label="访问时间" prop="">
+        <el-table-column label="姓名" prop="name"></el-table-column>
+        <el-table-column label="联系方式" prop="phone"></el-table-column>
+        <el-table-column label="发布类型" prop="mode">
           <template slot-scope='scope'>
-             <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
+             <span v-if="scope.row.mode ==2">租房</span>
+             <span v-else-if="scope.row.mode == 3">买房</span>
+             <span v-else-if="scope.row.mode == 0">出售</span>
+             <span v-else-if="scope.row.mode == 1">出租</span>
           </template>
         </el-table-column>
-        <el-table-column label="访问房源" prop="houseName">
+        <el-table-column label="房源面积" prop="area"></el-table-column>
+        <el-table-column label="房源地址" prop="address"></el-table-column>
+        <el-table-column label="出租方式" prop="rentMode">
           <template slot-scope='scope'>
-             <el-popover
-              placement="right"
-              width="200"
-              trigger="click"
-              @show="getHouseInfo(scope.row.houseType,scope.row.houseId)">
-                <div >
-                  <p v-if="scope.row.houseType == 1">新房</p>
-                  <p v-else-if="scope.row.houseType ==2">二手房</p>
-                  <p v-else>新房</p>
-                  <p style="text-align:center">
-                    <img :src="BASE_API + '/uploads/'+scope.row.houseImg[0]" alt="" class="houseImg" style="width:100%">
-                  </p>
-                  <p> 房源编号：<span v-text="popoverHouseInfo.code"></span></p>
-                  <p>地址 ：<span v-text="popoverHouseInfo.address"></span></p>
-                  <p>价格 ：<span v-text="popoverHouseInfo.rent"></span></p>
-                  <p v-if="popoverHouseInfo.proportion"> 面积 ：<span v-text="popoverHouseInfo.proportion"></span></p>
-                  <p v-if="popoverHouseInfo.room">户型 ：
-                    <span v-if="scope.row.houseType == 2 && popoverHouseInfo.room"  v-text="popoverHouseInfo.room.s + '室' +popoverHouseInfo.room.t + '厅' +popoverHouseInfo.room.w + '卫'"></span>
-                    <span v-if="scope.row.houseType == 3" v-text="popoverHouseInfo.room + '室'"></span>
-                  </p>
-
-                </div>
-              <a slot="reference" v-text="scope.row.houseName" ></a>
-            </el-popover>
+          <span v-if="scope.row.rentMode ==1"  >合租</span>
+          <span v-else-if="scope.row.rentMode ==0"  >整租</span>
+          <span v-else v-text="'---'"></span>
+          <!-- <span v-if="scope.row.rentMode = 1" v-text="合租"></span>
+          <span v-else-if="scope.row.rentMode = 0" v-text="整租"></span>
+          <span v-else v-text="'--'"></span> -->
+          </template>
+        </el-table-column>
+        <el-table-column label="房源描述" prop="remarks"></el-table-column>
+        <!-- <el-table-column label="操作" prop=""></el-table-column> -->
+        <!-- <el-table-column label="电话" prop="uid.phone"></el-table-column> -->
+        <el-table-column label="添加时间" prop="">
+          <template slot-scope='scope'>
+             <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -88,12 +81,12 @@
       </el-table>
       <div class="page">
         <el-pagination
-  background
-  layout="prev, pager, next"
-  :total="count"
-  @current-change="changePage"
-  :page-size="limit">
-</el-pagination>
+          background
+          layout="prev, pager, next"
+          :total="count"
+          @current-change="changePage"
+          :page-size="limit">
+        </el-pagination>
       </div>
     </el-main>
   </div>
@@ -109,9 +102,7 @@ export default {
   data() {
     return {
       BASE_API: process.env.BASE_API,
-      popoverHouseInfo: {
-        room: { s: 1, t: 1, w: 2 }
-      },
+
       form: {
         type: "",
         time: [new Date().getTime() - 3600 * 24 * 1000, new Date().getTime()]
@@ -125,7 +116,7 @@ export default {
   methods: {
     // 条件查询
     search() {
-      this.getViewsLists()
+      this.getViewsLists();
     },
 
     //改变页码
@@ -133,7 +124,7 @@ export default {
       this.getViewsLists(page - 1);
     },
     getViewsLists(skip = this.skip, limit = this.limit) {
-      // 获取访问记录列表
+      // 获取发布列表
       /**
        * body.lt 最大值 现在时间
        * body.gt 最小值 设定时间
@@ -142,29 +133,23 @@ export default {
         $lt: lt
       }
        */
-      let {time ,type} = this.form
+      let { time, type } = this.form;
       let condition = {
         time: {
           $gt: time[0],
           $lt: time[1]
         },
-        houseType: type
+        //全部还是  出租、出售 后台判断如果为‘’   则          $or: [{ mode: 1 }, { mode: 0 }]
+        mode: type
       };
       console.log(condition);
 
       url
-        .post(`/views`, { condition, limit: limit, skip: skip * limit })
+        .post(`/issue`, { condition, limit: limit, skip: skip * limit })
         .then(res => {
           this.lists = res.data.lists;
           this.count = res.data.count;
         });
-    },
-    getHouseInfo(houseType, houseId) {
-      //获取详细信息
-      this.popoverHouseInfo = {};
-      url.post("/views/popoverHouseInfo", { houseType, houseId }).then(res => {
-        this.popoverHouseInfo = res.data;
-      });
     }
   }
 };

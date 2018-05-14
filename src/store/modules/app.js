@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import url from '@/utils/url'
 const app = {
   state: {
-
+    limit: 5, //分页数量
     BASE_API: process.env.BASE_API,
     sidebar: {
       opened: !+Cookies.get('sidebarStatus')
@@ -34,25 +34,49 @@ const app = {
         }
       }]
     },
-    houseType: [
-      { label: '全部', value: '0' },
-      { label: '新房', value: '1' },
-      { label: '二手房', value: '2' },
-      { label: '租房', value: '3' }
-    ],
-    room:[
-      {label:'一居室',value:'1'},
-      {label:'两居室',value:'2'},
-      {label:'三居室',value:'3'},
-      {label:'四居室',value:'4'},
-      {label:'四居室以上',value:'5'},
-    ],
-    brokers:[
+    houseType: [{
+        label: '全部',
+        value: ''
+      },
       {
-        label:'王五',value:'12312341234'
+        label: '新房',
+        value: '1'
+      },
+      {
+        label: '二手房',
+        value: '2'
+      },
+      {
+        label: '租房',
+        value: '3'
       }
-    ]
-    
+    ],
+    room: [{
+        label: '一居室',
+        value: '1'
+      },
+      {
+        label: '两居室',
+        value: '2'
+      },
+      {
+        label: '三居室',
+        value: '3'
+      },
+      {
+        label: '四居室',
+        value: '4'
+      },
+      {
+        label: '四居室以上',
+        value: '5'
+      },
+    ],
+    brokers: [{
+      label: '王五',
+      value: '12312341234'
+    }]
+
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -64,21 +88,25 @@ const app = {
       state.sidebar.opened = !state.sidebar.opened
     },
     beforeUpload(file) {
-      if(file.size>1024000){
+      if (file.size > 1024000) {
         this.$message('您上传的图片太大了');
         return false;
       }
     },
   },
   actions: {
-    ToggleSideBar: ({ commit }) => {
+    ToggleSideBar: ({
+      commit
+    }) => {
       commit('TOGGLE_SIDEBAR')
     },
-    GetBroker:()=>{
+    GetBroker: () => {
       console.log('GetBroker');
-      
+
     },
-    beforeUpload:({commit})=>{
+    beforeUpload: ({
+      commit
+    }) => {
       console.log(commit)
     }
   }
