@@ -22,11 +22,11 @@
         <el-form-item label="工作照">
           <el-upload
             class="avatar-uploader"
-            action="http://127.0.0.1:7001/uploadFile"
+            :action="`${BASE_API}uploadFile`"
             :show-file-list="false"
             :on-success="uploadSuccess"
             :before-upload="beforeAvatarUpload">
-            <img v-if="form.brokerAvatarUrl" :src="'http://127.0.0.1:7001/uploads/'+ form.brokerAvatarUrl" class="avatar">
+            <img v-if="form.brokerAvatarUrl" :src="`${BASE_API}/uploads/${form.brokerAvatarUrl}`" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -82,6 +82,7 @@ export default {
   },
   data() {
     return {
+      BASE_API: process.env.BASE_API,
       form: {
         brokerAvatarUrl: ""
       },
@@ -124,7 +125,7 @@ export default {
     },
     getUserLists() {
       url.get("/users").then(res => {
-        this.userLists = res.data.data;
+        this.userLists = res.data.userList;
       });
     },
     // 选择某个用户
@@ -147,8 +148,6 @@ export default {
     },
     // 上传成功
     uploadSuccess(response, file, fileList) {
-      console.log(response);
-
       this.form.brokerAvatarUrl = response.files[0];
     }
   },

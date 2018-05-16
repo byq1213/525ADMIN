@@ -23,28 +23,36 @@
           <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="房源类型">
+        <el-select v-model="form.houseType" placeholder="">
+          <el-option v-for="item in houseType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="">
         <el-button type="primary" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
     <!-- 总体数据 点击进入详情  访问量 。。。 -->
     <el-row :gutter="20" class="count app-item">
-      <el-col :span="6"  v-for="(item,index) in count" :key="index">
-        <el-card>
-          <span class="num">
-            <router-link :to="item.url" v-text="item.value"></router-link>
+      <el-col :span="4"  v-for="(item,index) in count" :key="index" style="width:20%">
+        <el-card  >
+          <span class="num"  v-text="item.value"  @click="showTable(index)">
           </span>
           <span v-text="item.label"></span>
         </el-card>      
       </el-col>
     </el-row>
-
-    <el-card class="countChart">
+    <views v-if="showTableIndex == 0" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></views>
+    <finish v-if="showTableIndex == 1" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></finish>
+    <issue v-if="showTableIndex == 2" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></issue>
+    <need v-if="showTableIndex == 3" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></need>
+    <users v-if="showTableIndex == 4" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></users>
+    <el-card class="countChart" v-if="showTableIndex == 100">
       <div slot="header">
         数据图表
         <!-- （总访问<span class="Num"> 79</span> 次） -->
         <span class="fr">
-          <el-button type="success" size="mini"> 查看详情</el-button>
+          <!-- <el-button type="success" size="mini"> 查看详情</el-button> -->
         </span>
       </div>
       <div>
@@ -58,30 +66,53 @@
 <script>
 // import io from 'socket.io-client'
 import chart from "vue-echarts";
+import test from "./test";
+import views from "./view";
+import finish from "./finish";
+import issue from "./issue";
+import need from "./need";
+import users from "./users";
 import url from "@/utils/url";
 import { dataChart, chartIndex, getBrokerLists } from "@/utils/data";
 
 export default {
   components: {
-    chart
+    chart,
+    test,
+    views,
+    finish,
+    issue,
+    need,
+    users
   },
   data() {
     return {
       form: {
-        time: [, ],
-        broker:''
+        time: [
+          new Date().getTime() - 3600 * 24 * 7 * 1000,
+          new Date().getTime()
+        ],
+        broker: "",
+        houseType: ""
       },
+      houseType: [
+        { label: "全部", value: "" },
+        { label: "二手房", value: "2" },
+        { label: "租房", value: "3" },
+        { label: "新房", value: "1" }
+      ],
       brokerLists: [],
       count: [
         { label: "访问量", value: "123", url: "/" },
         { label: "成交量", value: "123", url: "/" },
         { label: "发布量", value: "123", url: "/" },
-        { label: "需求量", value: "123", url: "/" }
+        { label: "需求量", value: "123", url: "/" },
+        { label: "注册量", value: "123", url: "/" }
       ],
       theme: "light", //更换主题
       view: {
         legend: {
-          data: ["访问量", "成交量", "发布量", "需求量"]
+          data: ["访问量", "成交量", "发布量", "需求量", "注册量"]
         },
         xAxis: {
           type: "category",
@@ -108,64 +139,105 @@ export default {
           {
             name: "访问量",
             data: [1, 1],
-            type: "line"
+            type: "line",
+            areaStyle: {}
           },
           {
             name: "成交量",
             data: [0, 0],
-            type: "line"
+            type: "line",
+            areaStyle: {}
           },
           {
             name: "发布量",
             data: [1, 1],
-            type: "line"
+            type: "line",
+            areaStyle: {}
           },
           {
             name: "需求量",
             data: [1, 1],
-            type: "line"
+            type: "line",
+            areaStyle: {}
+          },
+          {
+            name: "注册量",
+            data: [100, 100],
+            type: "line",
+            areaStyle: {}
           }
         ]
-      }
+      },
+      showTableIndex: 100
     };
   },
   methods: {
+    showTable(i) {
+      console.log("点击", i);
+      this.showTableIndex = i;
+    },
     search() {
       //查询
       /**@augments
        * 传入 开始时间- 结束时间
        * 经纪人ID
        */
-      let { time, broker } = this.form;
-      this.getViewChart(time[1], time[0], broker);
-      this.getFinishChart(time[1], time[0], broker);
-      this.getIssueChart(time[1], time[0], broker);
-      this.getNeedChart(time[1], time[0], broker);
+      let { time, broker, houseType } = this.form;
+      this.getViewChart(time[1], time[0], broker, houseType);
+      this.getFinishChart(time[1], time[0], broker, houseType);
+      this.getIssueChart(time[1], time[0], broker, houseType);
+      this.getNeedChart(time[1], time[0], broker, houseType);
+      this.getUsersChart(time[1], time[0], broker, houseType);
     },
     // 获取访问量
-    async getViewChart(lt, gt, broker) {
-      let viewData = await chartIndex("/data/views", lt, gt, broker);
+    async getViewChart(lt, gt, broker, houseType) {
+      let viewData = await chartIndex("/data/views", lt, gt, broker, houseType);
       this.view.xAxis.data = viewData.xData;
       this.view.series[0].data = viewData.yData;
       this.count[0].value = viewData.count;
     },
     // 获取成交量
-    async getFinishChart(lt, gt, broker) {
-      let finishData = await chartIndex("/data/finish", lt, gt, broker);
+    async getFinishChart(lt, gt, broker, houseType) {
+      let finishData = await chartIndex(
+        "/data/finish",
+        lt,
+        gt,
+        broker,
+        houseType
+      );
       this.view.series[1].data = finishData.yData;
       this.count[1].value = finishData.count;
     },
     // 获取发布量
-    async getIssueChart(lt, gt, broker) {
-      let issuedData = await chartIndex("/data/issue/1", lt, gt, broker);
+    async getIssueChart(lt, gt, broker, houseType) {
+      let issuedData = await chartIndex(
+        "/data/issue/1",
+        lt,
+        gt,
+        broker,
+        houseType
+      );
       this.view.series[2].data = issuedData.yData;
       this.count[2].value = issuedData.count;
     },
-    async getNeedChart(lt, gt, broker) {
-      let issuedData = await chartIndex("/data/issue/0", lt, gt, broker);
+    async getNeedChart(lt, gt, broker, houseType) {
+      let issuedData = await chartIndex(
+        "/data/issue/0",
+        lt,
+        gt,
+        broker,
+        houseType
+      );
       this.view.series[3].data = issuedData.yData;
       this.count[3].value = issuedData.count;
     },
+
+    async getUsersChart(lt, gt, broker, houseType) {
+      let usersData = await chartIndex("/data/users", lt, gt, broker);
+      this.view.series[4].data = usersData.yData;
+      this.count[4].value = usersData.count;
+    },
+
     async BrokerLists() {
       let a = await getBrokerLists();
       this.brokerLists = a.data;
@@ -177,6 +249,7 @@ export default {
     this.getFinishChart();
     this.getIssueChart();
     this.getNeedChart();
+    this.getUsersChart();
     this.BrokerLists();
   }
 };
@@ -188,7 +261,7 @@ export default {
   width: 100%;
 }
 .countChart {
-  .Num {
+  .num {
     font-size: 1.5em;
   }
 }

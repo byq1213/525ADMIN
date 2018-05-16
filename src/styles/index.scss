@@ -3,13 +3,11 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
-
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  // font-family:'微软雅黑',Microsoft YaHei, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,  Arial, sans-serif;
-  font-family: "SF Pro SC","SF Pro Text","SF Pro Icons","PingFang SC","Helvetica Neue","Helvetica","Arial",sans-serif;
+  text-rendering: optimizeLegibility; // font-family:'微软雅黑',Microsoft YaHei, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,  Arial, sans-serif;
+  font-family: "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 html {
@@ -22,7 +20,7 @@ html {
   box-sizing: inherit;
 }
 
-div:focus{
+div:focus {
   outline: none;
 }
 
@@ -51,102 +49,113 @@ a:hover {
 }
 
 //main-container全局样式
-.app-main{
+.app-main {
   min-height: 100%
 }
 
 .app-container {
   padding: 20px;
 }
-.app-item{
-  margin:20px 0;
+
+.app-item {
+  margin: 20px 0;
 }
+
 .icon {
-    width: 100%; height: 100%;
-    vertical-align: -0.15em;
-    fill: currentColor;
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
 }
-thead .is-leaf{
-  background:#888;
-  color:#fff;
+
+thead .is-leaf {
+  background: #888;
+  color: #fff;
   text-align: center;
 }
-tbody tr td{
+
+tbody tr td {
   text-align: center;
 }
-.w20{
+
+.w20 {
   width: 20em;
 }
-.w10{
+
+.w10 {
   width: 10em;
 }
 
 // 标签添加
-  .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-  .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
-  //首页数据面板
-  .count{
-    text-align: center;
-    span{
-  
-      &.num{
-            font-size: 1.6em;
+.el-tag+.el-tag {
+  margin-left: 10px;
+}
+
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+} //首页数据面板
+.count {
+  text-align: center;
+  span {
+    &.num {
+      font-size: 1.6em;
       display: block;
-      margin:.5em 0;
-      }
+      margin: .5em 0;
+      text-decoration: underline;
+      color: #409EFF;
+      cursor:hand;
+      cursor: pointer;
     }
+  }
+} // 居右浮动
+.fr {
+  float: right;
+} // 头像信息
+.avatarUrl {
+  width: 50px;
+  max-height:50px;
+  border-radius: 50px;
+}
 
-  }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
-  // 居右浮动
-  .fr{
-    float: right;
-  }
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
 
-  // 头像信息
-  .avatarUrl{
-    width: 50px;
-    height: auto;
-    border-radius: 50px;
-  }
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-  .page{
-    text-align: center;
-    margin: 20px auto;
-  }
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.page {
+  text-align: center;
+  margin: 20px auto;
+}

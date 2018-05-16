@@ -101,7 +101,7 @@
         </div>
         <el-form-item label="">
           <el-upload
-          action="http://127.0.0.1:7001/uploadFile"
+          :action="BASE_API+'uploadFile'"
           list-type="picture-card"
           :on-remove="uploadRemove"
           :on-success="uploadSuccess">
@@ -175,7 +175,7 @@
             </el-form-item> -->
         </el-form-item>
         <el-form-item label="" >
-          <el-button type="" @click="saveData">保存</el-button>
+          <el-button type="" @click="saveData">立即上传</el-button>
         </el-form-item>
       </el-card>
     </el-form>  
@@ -192,15 +192,19 @@ import qmap from "qmap";
 export default {
   mounted() {
     this.createMap();
+    console.log(this.BASE_API);
+    
   },
   components: {},
   data() {
     return {
+        BASE_API: process.env.BASE_API,
+      
       form: {
         code: new Date().getTime(),
         payType: {},
         imgPath: [],
-        tags: ["南北通透", "领包入住", "精装修", "免中介费"],
+        tags: [],
         address: "太原市",
         addressComponents: {},
         addressLatLng:{},

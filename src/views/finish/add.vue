@@ -23,7 +23,7 @@
         > </el-date-picker>
       </el-form-item>
       <el-form-item label="售出价格">
-        <el-input v-model="form.price" placeholder="“1000元/月” 或 “100万/套”"></el-input>
+        <el-input v-model="form.price" placeholder="“1000元/月” 或 “100万/套”" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="备注">
         <el-input v-model="form.remark" placeholder="" type="textarea" class="w20"></el-input>
@@ -51,6 +51,22 @@
                <el-table-column label="选择">
                  <template slot-scope="scope">
                    <el-button type="primary" size="mini" @click="chooseHouse(scope.$index,3)">选择</el-button>
+                 </template>
+               </el-table-column>
+             </el-table>
+           </el-tab-pane>           <el-tab-pane label="二手房">
+             <el-table :data="house2Lists" size="mini" >
+               <el-table-column label="编号" prop="code"></el-table-column>
+               <el-table-column label="名称" prop="name"></el-table-column>
+               <el-table-column label="参考价格" prop="rent"></el-table-column>
+               <el-table-column label="图片" prop="imgPath">
+                 <template slot-scope="scope">
+                 <img v-if="scope.row.imgPath" class="houseImg" :src="BASE_API+'uploads/'+scope.row.imgPath[0]" alt="">
+                 </template>
+               </el-table-column>
+               <el-table-column label="选择">
+                 <template slot-scope="scope">
+                   <el-button type="primary" size="mini" @click="chooseHouse(scope.$index,2)">选择</el-button>
                  </template>
                </el-table-column>
              </el-table>
@@ -107,9 +123,9 @@ export default {
       if (this.house1Lists.length == 0) {
         this.getHouse1Lists();
       }
-      // if(this.house2Lists.length == 0){
-      //   this.getHouse2Lists();
-      // }
+      if(this.house2Lists.length == 0){
+        this.getHouse2Lists();
+      }
       if (this.house3Lists.length == 0) {
         this.getHouse3Lists();
       }
@@ -123,7 +139,7 @@ export default {
     // 获取二手房列表
     getHouse2Lists() {
       url.get("/house2").then(res => {
-        this.house3Lists = res.data;
+        this.house2Lists = res.data;
       });
     },
     //获取租房列表

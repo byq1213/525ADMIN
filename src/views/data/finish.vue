@@ -2,33 +2,7 @@
   <div>
     <!-- 经纪人成交房源列表 -->
     <el-main>
-            <el-form :model="form" :inline="true" >
-        <el-form-item label="成交时段">
-          <el-date-picker
-            v-model="form.time"
-            type="datetimerange"
-            :picker-options="this.$store.state.app.pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="timestamp"
-            align="right"
-            >
-          </el-date-picker>
-          </el-form-item>
-        <el-form-item label="经纪人">
-          <el-select v-model="form.broker" placeholder="">
-            <el-option label="全部" value=""></el-option>
-            <!-- <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option> -->
-            <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
-          </el-select>
-        </el-form-item>
-          <el-form-item label="">
-            <el-button type="primary" @click="search">查询</el-button>
-          </el-form-item>
-          <el-form-item label="">
-          </el-form-item>
-      </el-form>
+            
       <el-table :data="lists">
         <el-table-column label="经纪人姓名" prop="brokerId.brokerInfo.brokerName"></el-table-column>
         <el-table-column label="成交时间" prop="">
@@ -76,9 +50,14 @@
 import url from "@/utils/url";
 
 export default {
+  props: {
+    time: Array,
+    brokerId: String,
+    houseType: String
+  },
   mounted() {
     this.getViewsLists();
-    this.getBrokerList();
+    // this.getBrokerList();
   },
   data() {
     return {
@@ -108,7 +87,7 @@ export default {
     //改变页码
     changePage(page) {
       this.getViewsLists(page - 1);
-      this.getBrokerList();
+      // this.getBrokerList();
     },
     getViewsLists(skip = this.skip, limit = this.limit) {
       // 获取发布列表
@@ -120,19 +99,17 @@ export default {
         $lt: lt
       }
        */
-      let { time, type, broker } = this.form;
+      let { time, houseType, brokerId } = this.$props;
       let condition = {
         time: {
           $gt: time[0],
           $lt: time[1]
         },
-
-        brokerId: broker
+        houseType,
+        // broker,
+        brokerId
       };
-      // 如果经纪人为空则删除经纪人条件
-      if (condition.brokerId == "") {
-        delete condition["brokerId"];
-      }
+
       console.log(condition);
 
       url
@@ -147,7 +124,18 @@ export default {
         this.brokerLists = res.data;
       });
     }
-  }
+  },
+    watch:{
+    '$props':{
+      handler(newValue,oldValue){
+      console.log('子组件改变');
+      this.getViewsLists()
+      },
+      deep:true
+
+    },
+
+  },
 };
 </script>
 

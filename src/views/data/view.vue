@@ -2,35 +2,6 @@
   <div>
     <!-- 访问量 -->
     <el-main>
-      <el-form :model="form" :inline="true" >
-        <el-form-item label="时间段查询">
-          <el-date-picker
-            v-model="form.time"
-            type="datetimerange"
-            :picker-options="this.$store.state.app.pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="timestamp"
-            align="right"
-            >
-          </el-date-picker>
-          </el-form-item>
-          <el-form-item label="房源类型">
-            <el-select v-model="form.type" placeholder="">
-              <el-option v-for="(item,index) in this.$store.state.app.houseType"
-               :key="index" 
-               :value="item.value"
-               :label="item.label"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="">
-            <el-button type="primary" @click="search">查询</el-button>
-          </el-form-item>
-          <el-form-item label="">
-            <el-button type="warning">删除浏览记录</el-button>
-          </el-form-item>
-      </el-form>
       <el-table :data="lists" border >
         <el-table-column label="头像" prop="uid.avatarUrl">
           <template slot-scope='scope'>
@@ -64,7 +35,7 @@
                   <p v-else-if="scope.row.houseType ==2">二手房</p>
                   <p v-else>新房</p>
                   <p style="text-align:center">
-                    <img :src="BASE_API + '/uploads/'+scope.row.houseImg[0]" alt="" class="houseImg" style="width:100%">
+                    <img :src="BASE_API + 'uploads/'+scope.row.houseImg[0]" alt="" class="houseImg" style="width:100%">
                   </p>
                   <p> 房源编号：<span v-text="popoverHouseInfo.code"></span></p>
                   <p>地址 ：<span v-text="popoverHouseInfo.address"></span></p>
@@ -74,7 +45,6 @@
                     <span v-if="scope.row.houseType == 2 && popoverHouseInfo.room"  v-text="popoverHouseInfo.room.s + '室' +popoverHouseInfo.room.t + '厅' +popoverHouseInfo.room.w + '卫'"></span>
                     <span v-if="scope.row.houseType == 3" v-text="popoverHouseInfo.room + '室'"></span>
                   </p>
-
                 </div>
               <a slot="reference" v-text="scope.row.houseName" ></a>
             </el-popover>
@@ -95,6 +65,7 @@
   :page-size="limit">
 </el-pagination>
       </div>
+      <!-- <span v-text="broker1"></span> -->
     </el-main>
   </div>
 </template>
@@ -103,6 +74,11 @@
 import url from "@/utils/url";
 
 export default {
+  props: {
+    time: Array,
+    brokerId: String,
+    houseType: String
+  },
   mounted() {
     this.getViewsLists();
   },
@@ -125,7 +101,7 @@ export default {
   methods: {
     // 条件查询
     search() {
-      this.getViewsLists()
+      this.getViewsLists();
     },
 
     //改变页码
@@ -142,16 +118,16 @@ export default {
         $lt: lt
       }
        */
-      let {time ,type} = this.form
+      let { time, houseType, brokerId } = this.$props;
       let condition = {
         time: {
           $gt: time[0],
           $lt: time[1]
         },
-        houseType: type
+        houseType,
+        // broker,
+        brokerId
       };
-      console.log(condition);
-
       url
         .post(`/views`, { condition, limit: limit, skip: skip * limit })
         .then(res => {
@@ -166,6 +142,21 @@ export default {
         this.popoverHouseInfo = res.data;
       });
     }
+  },
+  watch: {
+    $props: {
+      handler(newValue, oldValue) {
+        console.log("子组件改变");
+        this.getViewsLists();
+      },
+      deep: true
+    }
+  },
+  computed: {
+    // broker1(){
+    //   console.log('改变');
+    //   return this.broker
+    // }
   }
 };
 </script>

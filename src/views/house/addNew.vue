@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item label="开发商">
         <el-input v-model="form.developers" placeholder="请输入开发商名称" class="w20"></el-input>
-      </el-form-item· ·>
+      </el-form-item>
       <el-form-item label="楼盘参考价格">
         <el-input v-model="form.rent" placeholder="‘100万元’ 或 ‘200-220万元’" class="w20"></el-input>
       </el-form-item>
@@ -114,7 +114,7 @@
                 </el-form-item>
                 <el-form-item label="户型上传">
                   <el-upload
-                  action="http://127.0.0.1:7001/uploadFile"
+                  :action="BASE_API+'uploadFile'"
                   list-type="picture-card"
                   :on-remove="houseTypeRemove"
                   :on-success="houseTypeSuccess"
@@ -247,6 +247,8 @@ export default {
   data() {
     return {
       form: {
+        BASE_API: process.env.BASE_API,
+
         code: new Date().getTime(),
         imgPath: [],
         houseType: [{}],
@@ -423,5 +425,4 @@ export default {
 };
 </script>
 <style scoped>
-
 </style>

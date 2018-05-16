@@ -2,33 +2,6 @@
   <div>
     <!-- 发布量 -->
     <el-main>
-      <el-form :model="form" :inline="true" >
-        <el-form-item label="时间段查询">
-          <el-date-picker
-            v-model="form.time"
-            type="datetimerange"
-            :picker-options="this.$store.state.app.pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="timestamp"
-            align="right"
-            >
-          </el-date-picker>
-          </el-form-item>
-          <el-form-item label="房源类型">
-            <el-select v-model="form.type" placeholder="">
-              <el-option value="" label="全部"></el-option>
-              <el-option value="0" label="出售"></el-option>
-              <el-option value="1" label="出租"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="">
-            <el-button type="primary" @click="search">查询</el-button>
-          </el-form-item>
-          <el-form-item label="">
-          </el-form-item>
-      </el-form>
       <el-table :data="lists" border >
         <el-table-column label="头像" prop="uid.avatarUrl">
           <template slot-scope='scope'>
@@ -96,6 +69,12 @@
 import url from "@/utils/url";
 
 export default {
+  props: {
+    time: Array,
+    brokerId: String,
+    houseType: String
+  },
+
   mounted() {
     this.getViewsLists();
   },
@@ -133,23 +112,31 @@ export default {
         $lt: lt
       }
        */
-      let { time, type } = this.form;
+      let { time, houseType, brokerId } = this.$props;
       let condition = {
         time: {
           $gt: time[0],
           $lt: time[1]
         },
-        //全部还是  出租、出售 后台判断如果为‘’   则          $or: [{ mode: 1 }, { mode: 0 }]
-        mode: type
+        houseType,
+        // broker,
+        brokerId
       };
-      console.log(condition);
-
       url
         .post(`/issue`, { condition, limit: limit, skip: skip * limit })
         .then(res => {
           this.lists = res.data.lists;
           this.count = res.data.count;
         });
+    }
+  },
+  watch: {
+    $props: {
+      handler(newValue, oldValue) {
+        console.log("子组件改变");
+        this.getViewsLists();
+      },
+      deep: true
     }
   }
 };

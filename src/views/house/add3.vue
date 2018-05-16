@@ -85,7 +85,7 @@
         </div>
         <el-form-item label="">
           <el-upload
-          action="http://127.0.0.1:7001/uploadFile"
+          :action="BASE_API+'uploadFile'"
           list-type="picture-card"
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
@@ -193,6 +193,8 @@ export default {
   components: {},
   data() {
     return {
+      BASE_API: process.env.BASE_API,
+
       form: {
         code: new Date().getTime(),
         payType: {},
@@ -227,9 +229,9 @@ export default {
       const _this = this;
       let l = this.geocoder.getLocation(this.form.address);
       this.geocoder.setComplete(function(result) {
-        let loc =result.detail.location
-        _this.selectLatLng = loc
-        console.log('result',result);
+        let loc = result.detail.location;
+        _this.selectLatLng = loc;
+        console.log("result", result);
         _this.setAddress(result);
         _this.addressMap.setCenter(loc);
         var marker = new qmap.Marker({
@@ -378,5 +380,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

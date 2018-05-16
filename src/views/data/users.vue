@@ -2,37 +2,9 @@
   <div>
     <!-- 用户分析 -->
     <el-main>
-      <el-form :model="form" :inline="true" >
-        <el-form-item label="注册时段">
-          <el-date-picker
-            v-model="form.time"
-            type="datetimerange"
-            :picker-options="this.$store.state.app.pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="timestamp"
-            align="right"
-            >
-          </el-date-picker>
-          </el-form-item>
-        <el-form-item label="经纪人">
-          <el-select v-model="form.broker" placeholder="">
-            <el-option label="全部" value=""></el-option>
-            <!-- <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option> -->
-            <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
-          </el-select>
-        </el-form-item>
-          <el-form-item label="">
-            <el-button type="primary" @click="search">查询</el-button>
-          </el-form-item>
-          <el-form-item label="">
-          </el-form-item>
-      </el-form>
+      
       <el-table
-      :data="lists"
->
-
+      :data="lists">
         <el-table-column label="头像" prop="avatarUrl">
           <template slot-scope='scope'>
             <img :src="scope.row.avatarUrl" alt="" class="avatarUrl">
@@ -156,9 +128,14 @@ import url from "@/utils/url";
 import { getBrokerLists } from "@/utils/data";
 
 export default {
+  props: {
+    time: Array,
+    brokerId: String,
+    houseType: String
+  },
   mounted() {
     this.getViewsLists();
-    this.getBrokerList();
+    // this.getBrokerList();
   },
   data() {
     return {
@@ -197,21 +174,17 @@ export default {
         $lt: lt
       }
        */
-      let { time, type, broker } = this.form;
+      let { time,brokerId } = this.$props;
       let condition = {
         regTime: {
           $gt: time[0],
           $lt: time[1]
         },
-        nickName: {
-          $exists: true
-        },
-        brokerId: broker
+        // broker,
+        brokerId
       };
       // 如果经纪人为空则删除经纪人条件
-      if (condition.brokerId == "") {
-        delete condition["brokerId"];
-      }
+
       console.log(condition);
 
       url
@@ -237,6 +210,15 @@ export default {
       url.post("/brokerLists").then(res => {
         this.brokerLists = res.data;
       });
+    }
+  },
+  watch: {
+    $props: {
+      handler(newValue, oldValue) {
+        console.log("子组件改变");
+        this.getViewsLists();
+      },
+      deep: true
     }
   }
 };

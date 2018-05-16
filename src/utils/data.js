@@ -28,8 +28,7 @@ export function dataChart(arr) {
   return outDate
 }
 
-export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date().getTime() - 24 * 3600 * 7 * 1000,brokerId='') {
-  console.log(lt, gt,brokerId);
+export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date().getTime() - 24 * 3600 * 7 * 1000,brokerId='',houseType='') {
   let yData = [];
   let xData = []; //x轴
   let callback = {
@@ -47,7 +46,8 @@ export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date(
   let data = await url.post(urls, {
     gt,
     lt,
-    brokerId
+    brokerId,
+    houseType
   })
   data = dataChart(data.data.data);
   callback.count = data.length;
@@ -66,6 +66,5 @@ export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date(
 
 export async function getBrokerLists() {
   let lists = await url.post('/brokerLists')
-
   return lists
 }
