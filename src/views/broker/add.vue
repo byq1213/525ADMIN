@@ -3,26 +3,24 @@
     <!-- 添加经纪人 -->
     <el-main>
       <!-- 亦或 扫码登陆小程序指定页面进行获取用户信息 -->
-      <el-form :model="form" label-width="100px" ref="form1" >
+      <el-form :model="form" label-width="100px" ref="form1" :rules="rules">
         <el-form-item v-if="!isEdit" label="选择用户">
           <el-button type="success" @click="showUserLists"> 选择用户</el-button>
         </el-form-item>
-        <!-- <el-form-item label="经纪人注册ID">
-          <el-input v-model="changeUser._id" placeholder="" disabled="" class="w20"></el-input>
-        </el-form-item> -->
+
         <el-form-item label="微信昵称" prop="user">
           <el-input v-model="changeUser.nickName" placeholder="" disabled="" class="w20"></el-input>
         </el-form-item>
-        <el-form-item label="经纪人姓名" prop="name">
+        <el-form-item label="经纪人姓名" prop="brokerName">
           <el-input v-model="form.brokerName" placeholder="请输入经纪人姓名" class="w20"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式" prop="phone">
+        <el-form-item label="联系方式" prop="brokerPhone">
           <el-input v-model="form.brokerPhone" placeholder="请输入联系方式" class="w20"></el-input>
         </el-form-item>
         <el-form-item label="登录账号" prop="loginId">
           <el-input v-model="form.loginId" type="" placeholder="" class="w20"></el-input>
         </el-form-item>
-        <el-form-item label="登录密码"  prop="pwd">
+        <el-form-item label="登录密码"  prop="brokerPwd">
           <el-input v-model="form.brokerPwd" type="password" placeholder="" class="w20"></el-input>
         </el-form-item>
         <el-form-item label="工作照">
@@ -81,12 +79,12 @@
 <script>
 import url from "@/utils/url";
 let rules = {
-  user: [{ required: false, message: "请选择用户成为经纪人", trigger: "blur" }],
-  name: [
+  nickName: [{ required: true, message: "请选择用户成为经纪人", trigger: "blur" }],
+  brokerName: [
+    { required: true, message: "经纪人姓名不能为空", trigger: "blur" },
     { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
-    { required: false, message: "经纪人姓名不能为空", trigger: "blur" }
   ],
-  phone: [
+  brokerPhone: [
     { required: true, message: "联系方式不能为空", trigger: "blur" },
     { min: 7, max: 11, message: "长度在7 到 11个字符", trigger: "blur" }
   ],
@@ -94,7 +92,7 @@ let rules = {
     { required: true, message: "登录账号不能为空", trigger: "blur" },
     { min: 6, max: 12, message: "长度在6 到 12个字符", trigger: "blur" }
   ],
-  pwd: [
+  brokerPwd: [
     { required: true, message: "登录密码不能为空", trigger: "blur" },
     { min: 6, max: 12, message: "长度在6 到 12个字符", trigger: "blur" }
   ]
