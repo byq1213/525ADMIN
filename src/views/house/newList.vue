@@ -7,8 +7,8 @@
           </el-form-item>
           <el-form-item label="">
             <el-button type="primary">搜索</el-button> -->
-          </el-form-item>
-                    <el-form-item label="">
+          <!-- </el-form-item> -->
+          <el-form-item label=""  v-if="!this.isBroker()">
             <el-button type="" @click="downHouseLists = true">下架列表</el-button>
           </el-form-item>
         </el-form>
@@ -20,13 +20,18 @@
                <span v-text="scope.row.rent +'万元'"></span>
             </template>
           </el-table-column>
-          <el-table-column label="类型" >
-            <template slot-scope="scope">
-              <span v-if="scope.row.type">合租</span>
-              <span v-else>整租</span>
+                    <el-table-column label="添加时间">
+            <template slot-scope='scope'>
+               <span v-text="`${new Date(scope.row.time).toLocaleString()}`"></span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="200px">
+          <el-table-column label="户型">
+            <template slot-scope='scope'>
+               <span v-for="(item,index) in  scope.row.houseType" :key="index"> {{item.name}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="操作" min-width="200px"  v-if="!this.isBroker()">
             <template slot-scope="scope">
               <el-button type="primary" size="mini"  @click="editHouse(scope.row._id)">修改</el-button>
               <el-button type="" size="mini" @click="viewHouseInfo(scope.row._id)">详情</el-button>

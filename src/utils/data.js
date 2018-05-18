@@ -43,6 +43,8 @@ export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date(
     v2 = v2 - v1;
   }
   xData = xData.reverse();
+
+  
   let data = await url.post(urls, {
     gt,
     lt,

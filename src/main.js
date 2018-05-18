@@ -15,17 +15,13 @@ import store from './store'
 import { timetrans,beforeUpload} from '@/utils/index'
 import '@/icons' // icon
 import '@/permission' // permission control
-// import ECharts from 'vue-echarts'  //Baidu Echarts
-// import 'echarts/lib/chart/bar'
-// import 'echarts/lib/component/tooltip'
-// Vue.component('chart', ECharts)
+import {isBroker,getBroker} from '@/utils/auth'; //判断是否为经纪人
 Vue.prototype.timetrans = timetrans
 Vue.prototype.beforeUpload = beforeUpload
+Vue.prototype.isBroker = isBroker
+Vue.prototype.getBroker = getBroker
 Vue.use(ElementUI, { locale })
-// Vue.use(BaiduMap, {
-//   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
-//   ak: '93xi2EVIQxNlCz8z4v7WpGqGuusDWApE'
-// })
+
 Vue.config.productionTip = false
 new Vue({
   el: '#app',

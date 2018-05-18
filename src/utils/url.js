@@ -9,10 +9,10 @@ const service = axios.create({
 service.interceptors.response.use(function (response) {
   // Do something with response data
   if(response.data.code == 200){
-    Message({
-      message: '请求成功',
-      type:'success'
-    });
+    // Message({
+    //   message: '请求成功',
+    //   type:'success'
+    // });
   } else if (response.data.code == 300){
     Message({
       message: '请求失败',

@@ -27,7 +27,7 @@
         <el-table-column label="备注" prop="remark"></el-table-column>
         <el-table-column label="操作" prop="">
           <template slot-scope='scope'>
-          <el-button type="" size="small">删除</el-button>
+          <el-button type="" size="small" @click="delFinish(scope.row._id)">删除</el-button>
           </template>
         </el-table-column>
 
@@ -123,17 +123,29 @@ export default {
       url.post("/brokerLists").then(res => {
         this.brokerLists = res.data;
       });
+    },
+    delFinish(id) {
+      // console.log("id :", id);
+      url.delete(`/finish/${id}`).then(res => {
+        console.log("res.data :", res.data);
+        if (res.data.n) {
+          this.$message({
+            message: "删除成功"
+          });
+          this.getViewsLists();
+        }
+      });
     }
   },
-    watch:{
-    '$props':{
-      handler(newValue,oldValue){
-      console.log('子组件改变');
-      this.getViewsLists()
+  watch: {
+    $props: {
+      handler(newValue, oldValue) {
+        console.log("子组件改变");
+        this.getViewsLists();
       },
-      deep:true
-    },
-  },
+      deep: true
+    }
+  }
 };
 </script>
 

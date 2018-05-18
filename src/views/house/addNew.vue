@@ -147,15 +147,13 @@
         </div>
         <el-form-item label="">
           <el-upload
-          action="http://127.0.0.1:7001/uploadFile"
+          :action="BASE_API+'uploadFile'"
           list-type="picture-card"
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
-          multiple=""
           :file-list="uploadImg">
           <i class="el-icon-plus"></i>
-          
           </el-upload>
         <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。</span>
         </el-form-item>
@@ -261,8 +259,8 @@ export default {
   data() {
     return {
       BASE_API: process.env.BASE_API,
-      uploadImg:[],
-      
+      uploadImg: [],
+
       form: {
         code: `X${houseCodeFormat(new Date().getTime())}`,
         imgPath: [],
@@ -305,13 +303,13 @@ export default {
       }
     },
 
-    // 户型上传 大小判断
-    beforeUpload() {
-      if (file.size > 1024000) {
-        this.$message("您上传的图片太大了");
-        return false;
-      }
-    },
+    // // 户型上传 大小判断
+    // beforeUpload() {
+    //   if (file.size > 1024000) {
+    //     this.$message("您上传的图片太大了");
+    //     return false;
+    //   }
+    // },
 
     searchaddress() {
       const _this = this;
@@ -446,9 +444,10 @@ export default {
         //     console.log("户型填写验证");
         //   }
         // });
+        console.log("this.form :", this.form);
         if (valid) {
           url.post("/houseNew", this.form).then(res => {
-            this.$router.push('/House/list')
+            this.$router.push("/House/list");
           });
         } else {
           console.log("error submit!!");
@@ -459,7 +458,9 @@ export default {
     },
     // 上传图片
     uploadSuccess(response, file, fileList) {
-      // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
+      // console.log("response :", response);
+      // console.log("file :", file);
+      // console.log("fileList :", fileList);
       this.uploadFile(fileList);
     },
     uploadRemove(file, fileList) {
@@ -473,6 +474,8 @@ export default {
           data.push(list.response.files[0]);
         }
       });
+      console.log(data);
+      
       this.form.imgPath = data;
     },
 

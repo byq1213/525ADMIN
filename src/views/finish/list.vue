@@ -53,7 +53,7 @@
         <el-table-column label="备注" prop="remark"></el-table-column>
         <el-table-column label="操作" prop="">
           <template slot-scope='scope'>
-          <el-button type="" size="small">删除</el-button>
+          <el-button type="" size="small" @click="delFinish(scope.row._id)">删除</el-button>
           </template>
         </el-table-column>
 
@@ -86,7 +86,10 @@ export default {
       lists: [],
       form: {
         type: "",
-        time: [new Date().getTime() - 3600 * 24 * 1000, new Date().getTime()],
+        time: [
+          new Date().getTime() - 3600 * 24 * 7 * 1000,
+          new Date().getTime()
+        ],
         broker: ""
       },
       limit: this.$store.state.app.limit,
@@ -129,10 +132,10 @@ export default {
 
         brokerId: broker
       };
-      // 如果经纪人为空则删除经纪人条件
-      if (condition.brokerId == "") {
-        delete condition["brokerId"];
-      }
+      // // 如果经纪人为空则删除经纪人条件
+      // if (condition.brokerId == "") {
+      //   delete condition["brokerId"];
+      // }
       console.log(condition);
 
       url
@@ -145,6 +148,19 @@ export default {
     getBrokerList() {
       url.post("/brokerLists").then(res => {
         this.brokerLists = res.data;
+      });
+    },
+    // 删除成交
+    delFinish(id) {
+      // console.log("id :", id);
+      url.delete(`/finish/${id}`).then(res => {
+        console.log("res.data :", res.data);
+        if(res.data.n){
+          this.$message({
+            message:'删除成功',
+          })
+          this.getViewsLists()
+        }
       });
     }
   }

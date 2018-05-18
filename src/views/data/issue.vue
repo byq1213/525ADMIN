@@ -46,11 +46,7 @@
              <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope='scope'>
-            <el-button type="" size="small">删除</el-button>
-          </template>
-        </el-table-column>
+
       </el-table>
       <div class="page">
         <el-pagination
@@ -77,6 +73,7 @@ export default {
 
   mounted() {
     this.getViewsLists();
+    console.log('this.$props.brokerId :', this.$props.brokerId);
   },
   data() {
     return {
@@ -122,9 +119,11 @@ export default {
         // broker,
         brokerId
       };
+      console.log('condition :', condition);
       url
         .post(`/issue`, { condition, limit: limit, skip: skip * limit })
         .then(res => {
+          console.log('res :', res);
           this.lists = res.data.lists;
           this.count = res.data.count;
         });

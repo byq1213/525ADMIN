@@ -16,7 +16,15 @@
             >
           </el-date-picker>
           </el-form-item>
-        <el-form-item label="经纪人">
+        <el-form-item label="经纪人" v-if="this.isBroker()" >
+          <el-select v-model="this.getBroker()" placeholder="">
+            <el-option label="全部" value=""></el-option>
+            <!-- <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option> -->
+            <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="经纪人" v-else>
           <el-select v-model="form.broker" placeholder="">
             <el-option label="全部" value=""></el-option>
             <!-- <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option> -->
@@ -50,6 +58,13 @@
             <span v-if="scope.row.brokerId" v-text="scope.row.brokerId.brokerInfo.brokerName"></span>
           </template>
         </el-table-column>
+                <el-table-column label="联系电话" prop="brokerId">
+          <template slot-scope='scope'>
+            <span v-if="scope.row.phone" v-text="scope.row.phone"></span>
+            <span v-else>尚未获取</span>
+          </template>
+        </el-table-column>
+
         <el-table-column label="注册时间">
           <template slot-scope='scope'>
              <span v-text="new Date(Math.floor(scope.row.regTime)  ).toLocaleString()"></span>
@@ -148,12 +163,21 @@ export default {
     this.getViewsLists();
     this.getBrokerList();
   },
+    created() {
+    if (this.isBroker()) {
+      this.form.broker = this.getBroker();
+    }
+  },
   data() {
     return {
       BASE_API: process.env.BASE_API,
-      helpSelect: [{label:'全部',value:''},{ label: "已发布需求", value: 1 },{ label: "已发布房源", value: 2 }],
+      helpSelect: [
+        { label: "全部", value: "" },
+        { label: "已发布需求", value: 1 },
+        { label: "已发布房源", value: 2 }
+      ],
       form: {
-        isHelp:'',
+        isHelp: "",
         type: "",
         time: [
           new Date().getTime() - 3600 * 7 * 24 * 1000,
@@ -196,9 +220,7 @@ export default {
           $gt: time[0],
           $lt: time[1]
         },
-        nickName: {
-          $exists: true
-        },
+
         brokerId: broker
       };
       // 如果经纪人为空则删除经纪人条件
@@ -209,13 +231,11 @@ export default {
         .then(res => {
           this.lists = res.data.userList;
           this.count = res.data.count;
-        this.getIsHelp(this.form.isHelp)
+          this.getIsHelp(this.form.isHelp);
         });
     },
     getUserLists() {
       url.post("/users").then(res => {
-        console.log(res.data);
-
         this.lists = res.data.data;
       });
     },
@@ -231,30 +251,29 @@ export default {
         this.brokerLists = res.data;
       });
     },
-    getIsHelp(value){
+    getIsHelp(value) {
       // 获取有需求的用户
-  
-       url.get('/isHelp/'+value)
-        .then(res=>{
-          let data = res.data;
-          let lists = this.lists;
-          let tempList=[]
-          lists.forEach((item,index)  => {
-            data.forEach((_item,_index) => {
-              if(item._id != _item._id){
-                return
-              }
-              tempList.push(item)
-            });
+
+      url.get("/isHelp/" + value).then(res => {
+        let data = res.data;
+        let lists = this.lists;
+        let tempList = [];
+        lists.forEach((item, index) => {
+          data.forEach((_item, _index) => {
+            if (item._id != _item._id) {
+              return;
+            }
+            tempList.push(item);
           });
-          this.lists = tempList
-        })
+        });
+        this.lists = tempList;
+      });
     }
   },
-  watch:{
-    'form.isHelp'(res){
-        // 查看已发布需求的用户
-        this.getIsHelp(res)
+  watch: {
+    "form.isHelp"(res) {
+      // 查看已发布需求的用户
+      this.getIsHelp(res);
     }
   }
 };

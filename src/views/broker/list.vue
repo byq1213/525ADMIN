@@ -37,17 +37,42 @@ export default {
   },
   methods: {
     // 移除经纪人
-    delBroker(id){
-      url.delete(`/broker/${id}`)
-        .then(res=>{
-          if(res.data){
-            this.getLists()
-          }
+    delBroker(id) {
+      this.$confirm("确认删除经纪人？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          url.delete(`/broker/${id}`).then(res => {
+            if (res.data) {
+              this.getLists();
+            }
+            let code = res.data.code;
+            if (code == 1) {
+              this.$message({
+                type: "success",
+                message: "操作成功!"
+              });
+              this.getHouseLists2();
+            } else {
+              this.$message({
+                type: "success",
+                message: "网络错误!"
+              });
+            }
+          });
         })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
     },
     //修改
-    editBroker(id){
-      this.$router.push(`edit/${id}`)
+    editBroker(id) {
+      this.$router.push(`edit/${id}`);
     },
     getLists() {
       url.get("/broker").then(res => {
@@ -59,5 +84,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

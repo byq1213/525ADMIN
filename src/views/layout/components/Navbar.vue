@@ -51,6 +51,7 @@ export default {
       //   location.reload() // 为了重新实例化vue-router对象 避免bug
       // })
       document.cookie = "Admin-Token=''"
+      document.cookie = "brokerId="
       location.reload() 
     }
   },

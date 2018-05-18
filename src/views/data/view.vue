@@ -52,7 +52,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope='scope'>
-            <el-button type="" size="small">删除</el-button>
+            <el-button v-if="scope._self.isBroker()" disabled="" type="" size="small" @click="delHistory(scope.row._id)">删除</el-button>
+            <el-button v-else type="" size="small" @click="delHistory(scope.row._id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -99,6 +100,7 @@ export default {
     };
   },
   methods: {
+
     // 条件查询
     search() {
       this.getViewsLists();
@@ -141,6 +143,18 @@ export default {
       url.post("/views/popoverHouseInfo", { houseType, houseId }).then(res => {
         this.popoverHouseInfo = res.data;
       });
+    },
+    delHistory(id){
+      console.log('id :', id);
+      url.delete(`/views/${id}`)
+        .then(res =>{
+          if(res.data.n){
+            this.$message({
+              message:'删除成功'
+            })
+            this.getViewsLists()
+          }
+        })
     }
   },
   watch: {

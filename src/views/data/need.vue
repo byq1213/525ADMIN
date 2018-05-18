@@ -47,11 +47,11 @@
              <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <!-- <el-table-column label="操作">
           <template slot-scope='scope'>
             <el-button type="" size="small">删除</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="page">
         <el-pagination

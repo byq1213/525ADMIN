@@ -3,10 +3,10 @@
     <!-- 添加经纪人 -->
     <el-main>
       <!-- 亦或 扫码登陆小程序指定页面进行获取用户信息 -->
-      <el-form :model="form" label-width="100px" ref="form1" :rules="rules">
-        <!-- <el-form-item v-if="!isEdit" label="选择用户">
+      <el-form :model="form" label-width="100px" ref="form1" >
+        <el-form-item v-if="!isEdit" label="选择用户">
           <el-button type="success" @click="showUserLists"> 选择用户</el-button>
-        </el-form-item> -->
+        </el-form-item>
         <!-- <el-form-item label="经纪人注册ID">
           <el-input v-model="changeUser._id" placeholder="" disabled="" class="w20"></el-input>
         </el-form-item> -->
@@ -35,6 +35,8 @@
             <img v-if="form.brokerAvatarUrl" :src="`${BASE_API}/uploads/${form.brokerAvatarUrl}`" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
+        <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 1:1的图片。</span>
+          
         </el-form-item>
         <el-form-item label="">
           <el-button type="" @click="saveData">保存</el-button>
@@ -79,25 +81,23 @@
 <script>
 import url from "@/utils/url";
 let rules = {
-  user:[
-    {required:false,message:'请选择用户成为经纪人',trigger: 'blur' },
-  ],
+  user: [{ required: false, message: "请选择用户成为经纪人", trigger: "blur" }],
   name: [
-    { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: 'blur' },
-    { required: false, message: "经纪人姓名不能为空" ,trigger: 'blur' },
+    { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
+    { required: false, message: "经纪人姓名不能为空", trigger: "blur" }
   ],
   phone: [
-    { required: true, message: "联系方式不能为空" ,trigger: 'blur' },
-    { min: 7, max: 11, message: "长度在7 到 11个字符", trigger: 'blur' }
+    { required: true, message: "联系方式不能为空", trigger: "blur" },
+    { min: 7, max: 11, message: "长度在7 到 11个字符", trigger: "blur" }
   ],
-  loginId:[
-      { required: true, message: '登录账号不能为空',trigger: 'blur' },
-      {min:6,max:12,message: '长度在6 到 12个字符', trigger: 'blur' }
-    ],
-    pwd:[
-      { required: true, message: '登录密码不能为空',trigger: 'blur' },
-      {min:6,max:12,message: '长度在6 到 12个字符', trigger: 'blur' }
-    ]
+  loginId: [
+    { required: true, message: "登录账号不能为空", trigger: "blur" },
+    { min: 6, max: 12, message: "长度在6 到 12个字符", trigger: "blur" }
+  ],
+  pwd: [
+    { required: true, message: "登录密码不能为空", trigger: "blur" },
+    { min: 6, max: 12, message: "长度在6 到 12个字符", trigger: "blur" }
+  ]
 };
 export default {
   mounted() {
@@ -107,8 +107,7 @@ export default {
     return {
       BASE_API: process.env.BASE_API,
       form: {
-        brokerAvatarUrl: "",
-        
+        brokerAvatarUrl: ""
       },
       rules,
       userListDialog: false, //用户信息弹窗
@@ -136,22 +135,54 @@ export default {
       }
     },
     saveData() {
-      this.$refs["form1"].validate(valid => {
-        if (valid) {
-          alert("submit!");
-          return;
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+      // this.$refs["form1"].validate(valid => {
+      //   if (valid) {
+      //     alert("submit!");
+      //     return;
+      //   } else {
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
+      let {
+        brokerAvatarUrl,
+        brokerName,
+        brokerPhone,
+        loginId,
+        brokerPwd
+      } = this.form;
+
+      if (
+        brokerAvatarUrl == "" ||
+        brokerName == "" ||
+        brokerPhone == "" ||
+        loginId == "" ||
+        brokerPwd == ""
+      ) {
+        const h = this.$createElement;
+
+        this.$notify({
+          title: "添加经纪人",
+          message: h(
+            "i",
+            { style: "color: teal" },
+            "请认真填写信息"
+          )
+        });
+        return 
+      }
       let data = {
         _id: this.changeUser._id,
         brokerInfo: this.form
       };
+      // 新增经纪人
       url.post(`/broker/`, data).then(res => {
-        console.log(res.data);
+        if (res.data.code == 200) {
+          this.$router.push("/broker/list");
+        }
       });
+      //经纪人二维码生成
+      url.post('/qrcode',{id:this.changeUser._id})
     },
     showUserLists() {
       // 选择用户弹出 已注册用户信息

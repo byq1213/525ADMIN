@@ -6,6 +6,7 @@
       <el-table-column label="房源操作">
         <template slot-scope='scope'>
            <el-button type="primary" size="mini" @click="reshelf(scope.row._id)">重新上架</el-button>
+           <el-button type="" size="mini" @click="delHouse(scope.row._id)">彻底删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -19,14 +20,13 @@ export default {
     status: {
       type: Boolean
     },
-    houseType:{
-      type:Number,
-      default:2,
+    houseType: {
+      type: Number,
+      default: 2
     }
   },
   mounted() {
-    console.log(this.$props.houseType);
-    this.getHouse2DownLists()
+    this.getHouse2DownLists();
   },
   data() {
     return {
@@ -35,14 +35,12 @@ export default {
   },
   methods: {
     getHouse2DownLists() {
-      url.get("/downHouse"+this.$props.houseType).then(res => {
+      url.get("/downHouse" + this.$props.houseType).then(res => {
         this.lists = res.data;
-        console.log(res);
       });
     },
     reshelf(id) {
-      console.log(id);
-      url.get("/reHouse"+this.$props.houseType+"/" + id).then(res => {
+      url.get("/reHouse" + this.$props.houseType + "/" + id).then(res => {
         let code = res.data.code;
 
         if (code) {
@@ -58,6 +56,37 @@ export default {
           });
         }
       });
+    },
+    delHouse(id) {
+      this.$confirm("此操作将彻底删除房源信息, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          url.get("/rmHouse" + this.$props.houseType + "/" + id).then(res => {
+            let code = res.data.n;
+            if (code == 1) {
+              this.$message({
+                type: "success",
+                message: "房源已彻底删除!"
+              });
+              // this.getHouseLists2();
+              this.getHouse2DownLists()
+            } else {
+              this.$message({
+                type: "success",
+                message: "网络错误!"
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "操作已取消"
+          });
+        });
     }
   },
   watch: {

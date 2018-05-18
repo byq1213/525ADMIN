@@ -17,6 +17,7 @@
             <span v-if="scope.row.brokerId" v-text="scope.row.brokerId.brokerInfo.brokerName"></span>
           </template>
         </el-table-column>
+        <el-table-column label="联系方式" prop="phone"></el-table-column>
         <el-table-column label="注册时间">
           <template slot-scope='scope'>
              <span v-text="new Date(Math.floor(scope.row.regTime)  ).toLocaleString()"></span>
@@ -91,7 +92,7 @@
             </el-table-column>
           </el-table>
         </el-card>
-        <el-card class="app-item">
+        <!-- <el-card class="app-item">
           <div slot="header">
             访问记录
           </div>
@@ -108,7 +109,7 @@
               </template>
             </el-table-column>
           </el-table>
-        </el-card>
+        </el-card> -->
        </el-dialog>
        <div class="page">
         <el-pagination

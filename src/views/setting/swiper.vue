@@ -18,7 +18,11 @@
              <span v-text="scope.row.houseName"></span>
           </template>
         </el-table-column>
-        <el-table-column label="添加时间" prop="time"></el-table-column>
+        <el-table-column label="添加时间" prop="time">
+          <template slot-scope='scope'>
+             <span v-text="new Date().toLocaleString()"></span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" prop="">
           <template slot-scope='scope'>
              <el-button type="warning" size="small" @click="delSwiper(scope.row._id)"> 删除</el-button>
@@ -43,7 +47,7 @@
 
         </el-form-item>
         <el-form-item label="关联房源">
-          <el-input v-model="form.houseName" placeholder="" class="w20"></el-input>
+          <el-input v-model="form.houseName" disabled="" placeholder="" class="w20"></el-input>
           <el-button type="success" @click="addHouse"> 关联房源</el-button>
         </el-form-item>
         <el-form-item label="">
@@ -57,6 +61,24 @@
        :visible.sync="addHouseDialog"
        >
          <el-tabs >
+          <el-tab-pane label="二手房">
+             <el-table :data="house2Lists" size="mini" >
+               <el-table-column label="编号" prop="code"></el-table-column>
+               <el-table-column label="名称" prop="name"></el-table-column>
+               <el-table-column label="参考价格" prop="rent"></el-table-column>
+               <el-table-column label="图片" prop="imgPath">
+                 <template slot-scope="scope">
+                 <img v-if="scope.row.imgPath" class="houseImg" :src="BASE_API+'uploads/'+scope.row.imgPath[0]" alt="">
+                 </template>
+               </el-table-column>
+               <el-table-column label="选择">
+                 <template slot-scope="scope">
+                   <el-button type="primary" size="mini" @click="chooseHouse(scope.$index,2)">选择</el-button>
+                 </template>
+                 
+               </el-table-column>
+             </el-table>
+           </el-tab-pane>
            <el-tab-pane label="租房">
              <el-table :data="house3Lists" size="mini" >
                <el-table-column label="编号" prop="code"></el-table-column>
@@ -133,9 +155,9 @@ export default {
       if (this.house1Lists.length == 0) {
         this.getHouse1Lists();
       }
-      // if(this.house2Lists.length == 0){
-      //   this.getHouse2Lists();
-      // }
+      if (this.house2Lists.length == 0) {
+        this.getHouse2Lists();
+      }
       if (this.house3Lists.length == 0) {
         this.getHouse3Lists();
       }
@@ -149,7 +171,7 @@ export default {
     // 获取二手房列表
     getHouse2Lists() {
       url.get("/house2").then(res => {
-        this.house3Lists = res.data;
+        this.house2Lists = res.data;
       });
     },
     //获取租房列表
@@ -163,16 +185,16 @@ export default {
       this.form.houseType = houseType;
       this.form.houseName = houseInfo.name;
       this.form.houseId = houseInfo._id;
+      this.form.houseImg = houseInfo.imgPath;
       this.addHouseDialog = false;
     },
     saveData() {
-      console.log(this.form);
       url.post("/swiper", this.form).then(res => {
-        console.log(res);
         if (res.data.code == 200) {
           this.form = {
             imgPath: ""
           };
+          this.getSwiperLists();
           this.dialogVisible = false;
         }
       });
@@ -183,13 +205,34 @@ export default {
       });
     },
     delSwiper(id) {
-      console.log(id);
-
-      url.delete(`/swiper/${id}`).then(res => {
-        if(res.data.code == 200){
-          this.getSwiperLists()
-        }
-    });
+      this.$confirm("确认删除？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          url.delete(`/swiper/${id}`).then(res => {
+            let code = res.data.code;
+            if (code == 200) {
+              this.$message({
+                type: "success",
+                message: "操作成功!"
+              });
+              this.getSwiperLists();
+            } else {
+              this.$message({
+                type: "warning",
+                message: "网络错误!"
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
     }
   }
 };

@@ -17,22 +17,35 @@
           <el-form-item label="">
             <el-button type="primary">搜索</el-button>
           </el-form-item> -->
-          <el-form-item label="">
+          <el-form-item label=""  v-if="!this.isBroker()">
             <el-button type="" @click="downHouseLists = true">下架列表</el-button>
           </el-form-item>
         </el-form>
         <el-table :data="lists2">
           <el-table-column label="编号" prop="code"></el-table-column>
           <el-table-column label="名称" prop="name"></el-table-column>
-          <el-table-column label="租金" prop="rent"></el-table-column>
-          <el-table-column label="面积" prop="proportion"></el-table-column>
+          <el-table-column label="价格" prop="rent">
+            <template slot-scope='scope'>
+               <span v-text="`${scope.row.rent}万元`"></span>
+            </template>
+          </el-table-column>
+          <el-table-column label="面积" prop="proportion">
+            <template slot-scope='scope'>
+               <span v-text="`${scope.row.proportion}㎡`"></span>
+            </template>
+          </el-table-column>
+          <el-table-column label="添加时间">
+            <template slot-scope='scope'>
+               <span v-text="`${new Date(scope.row.time).toLocaleString()}`"></span>
+            </template>
+          </el-table-column>
           <!-- <el-table-column label="类型" >
             <template slot-scope="scope">
               <span v-if="scope.row.type">合租</span>
               <span v-else>整租</span>
             </template>
           </el-table-column> -->
-          <el-table-column label="操作" min-width="200px">
+          <el-table-column label="操作" min-width="200px" v-if="!this.isBroker()">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="editHouse2(scope.row._id)">修改</el-button>
               <el-button type="" size="mini" @click="viewHouse2Info(scope.row._id)">详情</el-button>
@@ -114,7 +127,7 @@ export default {
     },
     //下架二手房
     downHouse2(id) {
-      this.$confirm("此操作将下架该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将下架该房源, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -125,7 +138,7 @@ export default {
             if (code == 1) {
               this.$message({
                 type: "success",
-                message: "删除成功!"
+                message: "下架成功!"
               });
               this.getHouseLists2();
             } else {

@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken , setBroker ,removeBroker } from '@/utils/auth'
 
 const user = {
   state: {
@@ -31,6 +31,10 @@ const user = {
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
           const data = response.data
+          console.log('data.token :', data.token);
+          if(data.token !='admin'){
+            setBroker(data.token)
+          }
           setToken(data.token)
           commit('SET_TOKEN', data.token)
           resolve()
@@ -62,6 +66,7 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          removeBroker()
           resolve()
         }).catch(error => {
           reject(error)
@@ -74,6 +79,7 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
+        removeBroker()
         resolve()
       })
     }

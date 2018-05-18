@@ -16,10 +16,18 @@
             >
           </el-date-picker>
       </el-form-item>
-      <el-form-item label="经纪人">
-        <el-select v-model="form.broker" placeholder="">
+
+      <el-form-item label="经纪人" v-if="this.isBroker()">
+        <el-select v-model="this.getBroker()" placeholder="">
           <el-option label="全部" value=""></el-option>
           <!-- <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option> -->
+          <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="经纪人" v-else>
+        <el-select v-model="form.broker" placeholder="">
+          <el-option label="全部" value=""></el-option>
           <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
@@ -30,6 +38,9 @@
       </el-form-item>
       <el-form-item label="">
         <el-button type="primary" @click="search">查询</el-button>
+      </el-form-item>
+      <el-form-item v-if="this.isBroker()" label="">
+        <el-button type="success" @click="getMyqrCode">我的二维码</el-button>
       </el-form-item>
     </el-form>
     <!-- 总体数据 点击进入详情  访问量 。。。 -->
@@ -59,6 +70,15 @@
         <chart :options="view" :theme='theme'></chart>
       </div>
     </el-card>
+    <el-dialog  title="我的二维码"
+  :visible.sync="qrcodeDialog"
+  width="400px">
+  <div class="dataQRcode">
+    <a :href="`${BASE_API}qrcode/${this.getBroker()}.png`" download="我的二维码">
+    <img  @click="downloadImg" :src="`${BASE_API}qrcode/${this.getBroker()}.png`" :download="`${BASE_API}qrcode/${this.getBroker()}.png`" class="" />
+    </a>
+  </div>
+  </el-dialog>
     </el-main>
   </div>
 </template>
@@ -87,6 +107,9 @@ export default {
   },
   data() {
     return {
+      BASE_API: process.env.BASE_API,
+
+      qrcodeDialog: false, //获取二维码
       form: {
         time: [
           new Date().getTime() - 3600 * 24 * 7 * 1000,
@@ -103,11 +126,11 @@ export default {
       ],
       brokerLists: [],
       count: [
-        { label: "访问量", value: "123", url: "/" },
-        { label: "成交量", value: "123", url: "/" },
-        { label: "发布量", value: "123", url: "/" },
-        { label: "需求量", value: "123", url: "/" },
-        { label: "注册量", value: "123", url: "/" }
+        { label: "访问量", value: "0", url: "/" },
+        { label: "成交量", value: "0", url: "/" },
+        { label: "发布量", value: "0", url: "/" },
+        { label: "需求量", value: "0", url: "/" },
+        { label: "注册量", value: "0", url: "/" }
       ],
       theme: "light", //更换主题
       view: {
@@ -172,8 +195,15 @@ export default {
     };
   },
   methods: {
+    // 获取二维码
+    getMyqrCode() {
+      this.qrcodeDialog = true;
+    },
+    downloadImg(){
+      console.log('下载图片');
+      
+    },
     showTable(i) {
-      console.log("点击", i);
       this.showTableIndex = i;
     },
     search() {
@@ -210,6 +240,8 @@ export default {
     },
     // 获取发布量
     async getIssueChart(lt, gt, broker, houseType) {
+      console.log(lt, gt, broker, houseType);
+
       let issuedData = await chartIndex(
         "/data/issue/1",
         lt,
@@ -241,15 +273,20 @@ export default {
     async BrokerLists() {
       let a = await getBrokerLists();
       this.brokerLists = a.data;
+    },
+  },
+  created() {
+    if (this.isBroker()) {
+      this.form.broker = this.getBroker();
     }
   },
-  created() {},
   async mounted() {
-    this.getViewChart();
-    this.getFinishChart();
-    this.getIssueChart();
-    this.getNeedChart();
-    this.getUsersChart();
+    let { time, broker, houseType } = this.form;
+    this.getViewChart(time[1], time[0], broker, houseType);
+    this.getFinishChart(time[1], time[0], broker, houseType);
+    this.getIssueChart(time[1], time[0], broker, houseType);
+    this.getNeedChart(time[1], time[0], broker, houseType);
+    this.getUsersChart(time[1], time[0], broker, houseType);
     this.BrokerLists();
   }
 };
@@ -264,5 +301,8 @@ export default {
   .num {
     font-size: 1.5em;
   }
+}
+.dataQRcode{
+  text-align: center;
 }
 </style>

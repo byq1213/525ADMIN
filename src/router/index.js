@@ -232,6 +232,7 @@ export const asyncRouterMap = [{
       }, {
         path: 'list',
         name: 'finishList',
+        hidden: true,
         component: () =>
           import ('@/views/finish/list'),
         meta: {
@@ -380,7 +381,32 @@ export const asyncRouterMap = [{
 
     ]
   },
+  {
+    path: '/expand',
+    component: Layout,
+    hidden: true,
+    
+    meta: {
+      title: '推广店铺',
+      icon: 'form',
+      roles: ['view']
+    },
+    children: [{
+        path: 'index',
+        hidden: true,
 
+        name: 'expand_index',
+        component: () =>
+          import ('@/views/broker/expand'),
+        meta: {
+          title: '推广店铺',
+          icon: 'form',
+          roles: ['view']
+        }
+      },
+
+    ]
+  },
 
 
 
