@@ -14,9 +14,8 @@
          <el-table-column label="客户总量" prop="count"></el-table-column>
          <el-table-column label="操作" prop="">
            <template slot-scope="scope">
-             <router-link :to="`edit/${scope.row._id}`">
-              <el-button type="primary" size="mini" @click="editBroker">修改</el-button>
-            </router-link>
+              <el-button  type="primary" size="mini" @click="editBroker(scope.row._id)">修改</el-button>
+              <el-button  type="" size="mini" @click="delBroker(scope.row._id)">移除经纪人</el-button>
            </template>
          </el-table-column>
        </el-table>
@@ -37,9 +36,18 @@ export default {
     this.getLists();
   },
   methods: {
+    // 移除经纪人
+    delBroker(id){
+      url.delete(`/broker/${id}`)
+        .then(res=>{
+          if(res.data){
+            this.getLists()
+          }
+        })
+    },
     //修改
-    editBroker(){
-
+    editBroker(id){
+      this.$router.push(`edit/${id}`)
     },
     getLists() {
       url.get("/broker").then(res => {

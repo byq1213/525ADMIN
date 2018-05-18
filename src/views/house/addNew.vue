@@ -1,25 +1,29 @@
 <template>
   <el-main>
     <!-- 添加楼盘 -->
-    <el-form :model="form" label-width="100px">
+    <el-form :model="form" label-width="120px" :rules="formRules" ref="formNewHouse">
       <el-card class="app-item">
         <div slot="header">
           基本信息（新房）
         </div>  
-      <el-form-item label="楼盘编号">
+      <el-form-item label="楼盘编号" prop="code">
         <el-input v-model="form.code" placeholder="请输入楼盘编号" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="楼盘名称">
+      <el-form-item label="楼盘名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入楼盘名称" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="别名">
-        <el-input v-model="form.alias" placeholder="请输入楼盘别名" class="w20"></el-input>
+      <el-form-item label="别名/小区名称" prop="alias">
+        <el-input v-model="form.alias" placeholder="请输入别名/小区名称" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="开发商">
-        <el-input v-model="form.developers" placeholder="请输入开发商名称" class="w20"></el-input>
+      <el-form-item label="开发商" prop="developers">
+        <el-input v-model="form.developers" placeholder="请输入开发商名称" class="w20">
+        </el-input>
       </el-form-item>
-      <el-form-item label="楼盘参考价格">
-        <el-input v-model="form.rent" placeholder="‘100万元’ 或 ‘200-220万元’" class="w20"></el-input>
+      <el-form-item label="楼盘参考价格" prop="rent">
+        <el-input v-model.number="form.rent" placeholder="" class="w20">
+          <template slot="append">万元</template>
+          
+        </el-input>
       </el-form-item>
       <el-form-item label="开盘时间">
         <el-date-picker v-model="form.openDate"
@@ -28,19 +32,19 @@
          
          value-format="yyyy-MM"></el-date-picker>
       </el-form-item>
-      <el-form-item label="楼盘类型">
+      <!-- <el-form-item label="楼盘类型">
         <el-select v-model="form.scale" placeholder="">
           <el-option label="高楼层" value="0"></el-option>
           <el-option label="低楼层" value="1"></el-option>
         </el-select>
-      </el-form-item>      
+      </el-form-item>       -->
       <el-form-item label="建筑类型">
         <el-select v-model="form.height" placeholder="">
-          <el-option label="高楼层" value="0"></el-option>
-          <el-option label="低楼层" value="1"></el-option>
+          <el-option label="高楼层" :value="0"></el-option>
+          <el-option label="低楼层" :value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="预售许可证">
+      <el-form-item label="预售许可证" prop="license">
         <el-input v-model="form.license" placeholder="" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="发证日期">
@@ -57,7 +61,7 @@
       <!-- <el-form-item label="楼盘朝向">
         <el-input v-model="form.code" placeholder="请输入楼盘朝向" class="w20"></el-input>
       </el-form-item> -->
-      <el-form-item label="楼盘标签">
+      <el-form-item label="楼盘标签" prop="tags">
        <el-tag
             :key="tag"
             v-for="tag in form.tags"
@@ -89,20 +93,20 @@
         </div>
            <div v-for="(item,index) in (form.houseType)" :key="index">
             <el-card class="app-item" style="display:flex">
-              
-              <el-form  size="small" label-width="100px">
-                
-                <el-form-item label="户型名称">
-                  <el-input v-model="item.name" placeholder="" class="w20" placeholder="一室两厅"></el-input>
+              <el-form  size="small" label-width="100px"   ref="newHouseRulesItem">
+                <el-form-item
+                label="户型名称"
+>
+                  <el-input v-model="item.name" placeholder="" class="w20"  ></el-input>
                 </el-form-item>
-                <el-form-item label="户型面积">
-                  <el-input v-model="item.proportion" placeholder="" class="w20">
+                <el-form-item label="户型面积" prop="proportion">
+                  <el-input v-model.number="item.proportion" placeholder="" class="w20">
                     <template slot="append">
                       ㎡
                     </template>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="户型约价">
+                <el-form-item label="户型约价" prop="rent">
                   <el-input v-model="item.rent" placeholder="" class="w20">
                     <template slot="append">
                       万元
@@ -112,12 +116,13 @@
                 <el-form-item label="户型朝向">
                   <el-input v-model="item.orientation" placeholder="" class="w20" placeholder="南北朝向"></el-input>
                 </el-form-item>
-                <el-form-item label="户型上传">
+                <el-form-item label="户型上传" prop="imgPath">
                   <el-upload
                   :action="BASE_API+'uploadFile'"
                   list-type="picture-card"
                   :on-remove="houseTypeRemove"
                   :on-success="houseTypeSuccess"
+                  :before-upload="beforeUpload"
                   :headers="{index}"
                   multiple=""
                     >
@@ -146,40 +151,44 @@
           list-type="picture-card"
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
-          multiple="">
+          :before-upload="this.beforeUpload"
+          multiple=""
+          :file-list="uploadImg">
           <i class="el-icon-plus"></i>
+          
           </el-upload>
+        <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。</span>
         </el-form-item>
       </el-card>
       <el-card class="app-item">
         <div slot="header">
           楼盘特色
         </div>
-      <el-form-item label="产权年限">
-        <el-input v-model="form.ageLimit" placeholder="请输入楼盘产权年限" class="w20">          
+      <el-form-item label="产权年限" prop="ageLimit">
+        <el-input v-model.number="form.ageLimit" placeholder="请输入楼盘产权年限" class="w20">          
           <template slot="append">年</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="占地面积">
-        <el-input v-model="form.coveringArea" placeholder="请输入楼盘占地面积" class="w20">
+      <el-form-item label="占地面积" prop="coveringArea">
+        <el-input v-model.number="form.coveringArea" placeholder="请输入楼盘占地面积" class="w20">
           <template slot="append">㎡</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="建筑面积">
-        <el-input v-model="form.proportion" placeholder="请输入建筑面积" class="w20">
+      <el-form-item label="建筑面积" prop="proportion">
+        <el-input v-model.number="form.proportion" placeholder="请输入建筑面积" class="w20">
           <template slot="append">㎡</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="容积率">
-        <el-input-number v-model="form.plotRatio" placeholder="5" class="w20"></el-input-number>
+      <el-form-item label="容积率" prop="plotRatio">
+        <el-input-number v-model.number="form.plotRatio" placeholder="5" class="w20"></el-input-number>
       </el-form-item>
-      <el-form-item label="绿化率">
-        <el-input-number v-model="form.greeningRate" placeholder="50" class="w20"></el-input-number> <span>%</span>
+      <el-form-item label="绿化率" prop="greeningRate">
+        <el-input-number v-model.number="form.greeningRate" placeholder="50" class="w20"></el-input-number> <span>%</span>
       </el-form-item>
-      <el-form-item label="规划停车位">
-        <el-input v-model="form.park" placeholder="请输入楼盘规划停车位" class="w20"></el-input>
+      <el-form-item label="规划停车位"  prop="park">
+        <el-input v-model.number="form.park" placeholder="请输入楼盘规划停车位" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="物业公司">
+      <el-form-item label="物业公司" prop="property">
         <el-input v-model="form.property" placeholder="请输入楼盘物业公司" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="物业费">
@@ -228,7 +237,7 @@
         <el-form-item label="坐标选择">
         </el-form-item> -->
         <el-form-item label="">
-          <el-button type="" @click="saveData">保存</el-button>
+          <el-button type="" @click="saveData">立即上传</el-button>
         </el-form-item>
       </el-card>
     </el-form>  
@@ -239,24 +248,32 @@
 <script>
 import qmap from "qmap";
 import url from "@/utils/url";
+import { houseCodeFormat } from "@/utils/index";
+import { newHouseRules, newHouseRulesItem } from "@/api/houseRules";
 export default {
   mounted() {
     this.createMap();
+    this.editHouse();
+
+    console.log(newHouseRules);
   },
   components: {},
   data() {
     return {
+      BASE_API: process.env.BASE_API,
+      uploadImg:[],
+      
       form: {
-        BASE_API: process.env.BASE_API,
-
-        code: new Date().getTime(),
+        code: `X${houseCodeFormat(new Date().getTime())}`,
         imgPath: [],
         houseType: [{}],
-        tags: ["南北通透", "领包入住", "精装修", "免中介费"],
+        tags: [],
         address: "太原市",
         addressComponents: {},
         addressLatLng: {}
       },
+      formRules: newHouseRules,
+      itemRules: newHouseRulesItem,
       inputValue: "",
       inputVisible: false,
 
@@ -269,6 +286,33 @@ export default {
     };
   },
   methods: {
+    //修改新房信息
+    editHouse() {
+      if (this.$route.params.id) {
+        let id = (this.editId = this.$route.params.id);
+        url.get(`/houseNew/${id}`).then(res => {
+          this.form = res.data;
+          let imgPath = this.form.imgPath;
+          imgPath.forEach(item => {
+            this.uploadImg.push({
+              name: "房源图片",
+              url: `${this.BASE_API}uploads/${item}`,
+              response: { files: [`${item}`] }
+            });
+          });
+        });
+        // 设置房源图片
+      }
+    },
+
+    // 户型上传 大小判断
+    beforeUpload() {
+      if (file.size > 1024000) {
+        this.$message("您上传的图片太大了");
+        return false;
+      }
+    },
+
     searchaddress() {
       const _this = this;
       let l = this.geocoder.getLocation(this.form.address);
@@ -353,7 +397,20 @@ export default {
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
     },
+    // 标签提示
+    tagNotify(text) {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: "标题名称",
+        message: h("i", { style: "color: teal" }, text)
+      });
+    },
     showInput() {
+      if (this.form.tags.length >= 4) {
+        this.tagNotify("标签不能超过四个");
+        return;
+      }
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
@@ -362,7 +419,12 @@ export default {
     handleInputConfirm() {
       let inputValue = this.inputValue;
       if (inputValue) {
-        this.form.tags.push(inputValue);
+        if (inputValue.length > 4) {
+          this.tagNotify("标签字数不能多于四个");
+          return;
+        } else {
+          this.form.tags.push(inputValue);
+        }
       }
       this.inputVisible = false;
       this.inputValue = "";
@@ -376,9 +438,24 @@ export default {
     },
     // 提交表单上传数据
     saveData() {
-      url.post("/houseNew", this.form).then(res => {
-        console.log(res);
+      console.log(this.$refs["formNewHouse"]);
+      this.$refs["formNewHouse"].validate(valid => {
+        // this.$refs["newHouseRulesItem"].validate(validItem => {
+        //   if (validItem) {
+        //   } else {
+        //     console.log("户型填写验证");
+        //   }
+        // });
+        if (valid) {
+          url.post("/houseNew", this.form).then(res => {
+            this.$router.push('/House/list')
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
+      return;
     },
     // 上传图片
     uploadSuccess(response, file, fileList) {

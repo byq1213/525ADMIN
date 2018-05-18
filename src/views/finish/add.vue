@@ -30,7 +30,7 @@
       </el-form-item>
       <el-form-item label="">
         <el-button type="success" @click="saveData">确认成交</el-button>
-        <el-button type="success" @click="saveDataAndSend">成交并发送</el-button>
+        <!-- <el-button type="success" @click="saveDataAndSend">成交并发送</el-button> -->
       </el-form-item>
     </el-form>
     <el-dialog 

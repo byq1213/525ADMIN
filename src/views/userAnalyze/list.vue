@@ -23,6 +23,11 @@
             <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="需求/发布">
+          <el-select v-model="form.isHelp" placeholder="">
+            <el-option v-for="(item,index) in helpSelect" :key="index" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
           <el-form-item label="">
             <el-button type="primary" @click="search">查询</el-button>
           </el-form-item>
@@ -55,7 +60,7 @@
              <span v-text="new Date(Math.floor(scope.row.logTime)  ).toLocaleString()"></span>
           </template>
         </el-table-column>
-        <el-table-column label="需求\发布\访问" prop="demand" min-width="200px">
+        <el-table-column label="需求\发布" prop="demand" min-width="200px">
           <template slot-scope='scope'>
              <el-button type="primary" size="small" @click="viewUserInfo(scope.row._id)"> 查看</el-button>
           </template>
@@ -119,24 +124,7 @@
             </el-table-column>
           </el-table>
         </el-card>
-        <el-card class="app-item">
-          <div slot="header">
-            访问记录
-          </div>
-          <el-table :data="userInfo.historyLists" size='mini'>
-            <el-table-column label="访问时间" prop="">
-              <template slot-scope='scope'>
-                <span v-text="new Date(Math.floor(scope.row.time)).toLocaleString()"></span>
-              </template>
-            </el-table-column>
-            <el-table-column label="访问房源" prop="houseName"></el-table-column>
-            <el-table-column label="房源图片">
-              <template slot-scope='scope'>
-                 <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" class="avatarUrl"/>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
+        
        </el-dialog>
        <div class="page">
         <el-pagination
@@ -163,9 +151,14 @@ export default {
   data() {
     return {
       BASE_API: process.env.BASE_API,
+      helpSelect: [{label:'全部',value:''},{ label: "已发布需求", value: 1 },{ label: "已发布房源", value: 2 }],
       form: {
+        isHelp:'',
         type: "",
-        time: [new Date().getTime() - 3600 * 24 * 1000, new Date().getTime()],
+        time: [
+          new Date().getTime() - 3600 * 7 * 24 * 1000,
+          new Date().getTime()
+        ],
         broker: ""
       },
       lists: [],
@@ -209,9 +202,6 @@ export default {
         brokerId: broker
       };
       // 如果经纪人为空则删除经纪人条件
-      if (condition.brokerId == "") {
-        delete condition["brokerId"];
-      }
       console.log(condition);
 
       url
@@ -219,10 +209,13 @@ export default {
         .then(res => {
           this.lists = res.data.userList;
           this.count = res.data.count;
+        this.getIsHelp(this.form.isHelp)
         });
     },
     getUserLists() {
       url.post("/users").then(res => {
+        console.log(res.data);
+
         this.lists = res.data.data;
       });
     },
@@ -237,6 +230,31 @@ export default {
       url.post("/brokerLists").then(res => {
         this.brokerLists = res.data;
       });
+    },
+    getIsHelp(value){
+      // 获取有需求的用户
+  
+       url.get('/isHelp/'+value)
+        .then(res=>{
+          let data = res.data;
+          let lists = this.lists;
+          let tempList=[]
+          lists.forEach((item,index)  => {
+            data.forEach((_item,_index) => {
+              if(item._id != _item._id){
+                return
+              }
+              tempList.push(item)
+            });
+          });
+          this.lists = tempList
+        })
+    }
+  },
+  watch:{
+    'form.isHelp'(res){
+        // 查看已发布需求的用户
+        this.getIsHelp(res)
     }
   }
 };

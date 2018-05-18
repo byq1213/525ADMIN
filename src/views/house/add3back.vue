@@ -92,7 +92,6 @@
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
-          :file-list="uploadImg"
           multiple="">
           <i class="el-icon-plus"></i>
           </el-upload>
@@ -203,7 +202,6 @@ export default {
   data() {
     return {
       house3Rules,
-      uploadImg:[],
       BASE_API: process.env.BASE_API,
 
       form: {
@@ -241,7 +239,6 @@ export default {
       if (this.$route.params.id) {
         let id = (this.editId = this.$route.params.id);
         url.get(`/house/${id}`).then(res => {
-        this.checkedCities = res.data.facility
           this.form = res.data;
           let imgPath = this.form.imgPath;
           imgPath.forEach(item => {
@@ -250,6 +247,7 @@ export default {
               url: `${this.BASE_API}uploads/${item}`,
               response:{files:[`${item}`]}
             });
+            console.log(this.uploadImg);
           });
         });
         // 设置房源图片
@@ -292,6 +290,7 @@ export default {
       this.geocoder = new qmap.Geocoder();
 
       qmap.event.addListener(this.searchService, "click", res => {
+        console.log("res :", res);
       });
       // 添加点击事件
       qmap.event.addListener(this.addressMap, "click", event => {
@@ -387,7 +386,7 @@ export default {
       this.$refs["formHouse3"].validate(valid => {
         if (valid) {
           url.post("/house", this.form).then(res => {
-            this.$router.push('/House/list')
+            console.log(res);
           });
         } else {
           console.log("error submit!!");

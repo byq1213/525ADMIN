@@ -18,8 +18,16 @@ service.interceptors.response.use(function (response) {
       message: '请求失败',
       type: 'warning'
     });
-  }else{
-
+  }else if(response.data.status == 200){
+    Message({
+      message: '上传成功',
+      type:'success'
+    });
+  }else if(response.data.status == 201){
+    Message({
+      message: '更新成功',
+      type:'success'
+    });
   }
   return response;
 }, function (error) {

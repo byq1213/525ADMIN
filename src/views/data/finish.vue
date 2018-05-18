@@ -132,9 +132,7 @@ export default {
       this.getViewsLists()
       },
       deep:true
-
     },
-
   },
 };
 </script>

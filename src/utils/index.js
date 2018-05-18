@@ -72,6 +72,22 @@ export  function timetrans(date) {
   var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
   return Y + M + D + h + m + s;
 }
+export function houseCodeFormat(date){
+  var date = Math.floor(date)
+  if(date.toString().length<13){
+
+    date = new Date(date * 1000);//如果date为13位不需要乘1000
+  }else{
+    date = new Date(date)
+  }
+  var Y = date.getYear()- 100;
+  var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) ;
+  var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) ;
+  var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) ;
+  var m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+  var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+  return Y + M + D + h + m + s;
+}
 export function beforeUpload(file) {
   if(file.size>1024000){
     this.$message('您上传的图片太大了');

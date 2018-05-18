@@ -139,6 +139,18 @@ export const asyncRouterMap = [{
         }
       },
       {
+        path: 'addNew/:id',
+        name: 'EditAdd1',
+        hidden: true,
+        component: () =>
+          import ('@/views/house/addNew'),
+        meta: {
+          title: '修改新房信息',
+          icon: 'form',
+          roles: ['admin']
+        }
+      },
+      {
         path: 'add2',
         name: 'HouseAdd2',
         hidden: true,
@@ -146,6 +158,18 @@ export const asyncRouterMap = [{
           import ('@/views/house/add2'),
         meta: {
           title: '添加二手房',
+          icon: 'form',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'add2/:id',
+        name: 'EditAdd2',
+        hidden: true,
+        component: () =>
+          import ('@/views/house/add2'),
+        meta: {
+          title: '修改二手房',
           icon: 'form',
           roles: ['admin']
         }
@@ -163,6 +187,18 @@ export const asyncRouterMap = [{
         }
       },
       {
+        path: 'add3/:id',
+        name: 'EditAdd3',
+        hidden: true,
+        component: () =>
+          import ('@/views/house/add3'),
+        meta: {
+          title: '修改租房信息',
+          icon: 'form',
+          roles: ['admin']
+        }
+      },
+      {
         path: 'list',
         name: 'HouseList',
         component: () =>
@@ -172,7 +208,7 @@ export const asyncRouterMap = [{
           icon: 'form',
           roles: ['admin', 'view']
         }
-      }
+      },
     ]
   },
   {

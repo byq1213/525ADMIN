@@ -40,36 +40,36 @@ const app = {
       },
       {
         label: '新房',
-        value: '1'
+        value: 1
       },
       {
         label: '二手房',
-        value: '2'
+        value: 2
       },
       {
         label: '租房',
-        value: '3'
+        value: 3
       }
     ],
     room: [{
         label: '一居室',
-        value: '1'
+        value: 1
       },
       {
         label: '两居室',
-        value: '2'
+        value: 2
       },
       {
         label: '三居室',
-        value: '3'
+        value: 3
       },
       {
         label: '四居室',
-        value: '4'
+        value: 4
       },
       {
         label: '四居室以上',
-        value: '5'
+        value: 5
       },
     ],
     brokers: [{

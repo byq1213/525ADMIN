@@ -3,21 +3,27 @@
     <!-- 添加经纪人 -->
     <el-main>
       <!-- 亦或 扫码登陆小程序指定页面进行获取用户信息 -->
-      <el-form :model="form" label-width="100px">
-        <el-form-item v-if="!isEdit" label="选择用户">
+      <el-form :model="form" label-width="100px" ref="form1" :rules="rules">
+        <!-- <el-form-item v-if="!isEdit" label="选择用户">
           <el-button type="success" @click="showUserLists"> 选择用户</el-button>
-        </el-form-item>
-        <el-form-item label="经纪人注册ID">
+        </el-form-item> -->
+        <!-- <el-form-item label="经纪人注册ID">
           <el-input v-model="changeUser._id" placeholder="" disabled="" class="w20"></el-input>
-        </el-form-item>
-        <el-form-item label="经纪人微信昵称">
+        </el-form-item> -->
+        <el-form-item label="微信昵称" prop="user">
           <el-input v-model="changeUser.nickName" placeholder="" disabled="" class="w20"></el-input>
         </el-form-item>
-        <el-form-item label="经纪人姓名">
+        <el-form-item label="经纪人姓名" prop="name">
           <el-input v-model="form.brokerName" placeholder="请输入经纪人姓名" class="w20"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式">
+        <el-form-item label="联系方式" prop="phone">
           <el-input v-model="form.brokerPhone" placeholder="请输入联系方式" class="w20"></el-input>
+        </el-form-item>
+        <el-form-item label="登录账号" prop="loginId">
+          <el-input v-model="form.loginId" type="" placeholder="" class="w20"></el-input>
+        </el-form-item>
+        <el-form-item label="登录密码"  prop="pwd">
+          <el-input v-model="form.brokerPwd" type="password" placeholder="" class="w20"></el-input>
         </el-form-item>
         <el-form-item label="工作照">
           <el-upload
@@ -30,10 +36,6 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="登录密码">
-          <el-input v-model="form.brokerPwd" type="password" placeholder="" class="w20"></el-input>
-        </el-form-item>
-
         <el-form-item label="">
           <el-button type="" @click="saveData">保存</el-button>
         </el-form-item>
@@ -43,7 +45,7 @@
       :visible.sync="userListDialog"
       >
         <el-table :data="userLists" size="small">
-          <el-table-column label="专属用户ID" prop="_id"></el-table-column>
+          <!-- <el-table-column label="专属用户ID" prop="_id"></el-table-column> -->
           <el-table-column label="头像" prop="avatarUrl">
             <template slot-scope='scope'>
                <img :src="scope.row.avatarUrl" alt="" class="avatarUrl">
@@ -76,45 +78,77 @@
 
 <script>
 import url from "@/utils/url";
+let rules = {
+  user:[
+    {required:false,message:'请选择用户成为经纪人',trigger: 'blur' },
+  ],
+  name: [
+    { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: 'blur' },
+    { required: false, message: "经纪人姓名不能为空" ,trigger: 'blur' },
+  ],
+  phone: [
+    { required: true, message: "联系方式不能为空" ,trigger: 'blur' },
+    { min: 7, max: 11, message: "长度在7 到 11个字符", trigger: 'blur' }
+  ],
+  loginId:[
+      { required: true, message: '登录账号不能为空',trigger: 'blur' },
+      {min:6,max:12,message: '长度在6 到 12个字符', trigger: 'blur' }
+    ],
+    pwd:[
+      { required: true, message: '登录密码不能为空',trigger: 'blur' },
+      {min:6,max:12,message: '长度在6 到 12个字符', trigger: 'blur' }
+    ]
+};
 export default {
   mounted() {
-    this.editInfo()
+    this.editInfo();
   },
   data() {
     return {
       BASE_API: process.env.BASE_API,
       form: {
-        brokerAvatarUrl: ""
+        brokerAvatarUrl: "",
+        
       },
+      rules,
       userListDialog: false, //用户信息弹窗
       userLists: [],
       changeUser: {}, //选中用户信息
-      brokerId:'',
-      isEdit:0,
+      brokerId: "",
+      isEdit: 0
     };
   },
   methods: {
     //修改经纪人信息
-    editInfo(){
+    editInfo() {
       let fullPath = this.$route.fullPath;
-      let fullPathArr = fullPath.split('/')
-      if(fullPathArr[2] == 'edit'){
+      let fullPathArr = fullPath.split("/");
+      if (fullPathArr[2] == "edit") {
         this.isEdit = 1;
         // 获取经纪人信息
-        let brokerId = this.brokerId = this.$route.params.id
-        url.get(`/broker/${brokerId}`).then(res=>{
+        let brokerId = (this.brokerId = this.$route.params.id);
+        url.get(`/broker/${brokerId}`).then(res => {
           console.log(res);
-          let data = res.data.data
+          let data = res.data.data;
           this.form = data.brokerInfo;
-          this.changeUser = data
-        })
+          this.changeUser = data;
+        });
       }
     },
     saveData() {
+      this.$refs["form1"].validate(valid => {
+        if (valid) {
+          alert("submit!");
+          return;
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
       let data = {
-        _id:this.changeUser._id,
+        _id: this.changeUser._id,
         brokerInfo: this.form
-      }
+      };
       url.post(`/broker/`, data).then(res => {
         console.log(res.data);
       });
@@ -124,8 +158,8 @@ export default {
       this.userListDialog = true;
     },
     getUserLists() {
-      url.get("/users").then(res => {
-        this.userLists = res.data.userList;
+      url.get("/userListsForbroker").then(res => {
+        this.userLists = res.data;
       });
     },
     // 选择某个用户
@@ -162,5 +196,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
