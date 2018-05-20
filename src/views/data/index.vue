@@ -53,7 +53,8 @@
         </el-card>      
       </el-col>
     </el-row>
-    <views v-if="showTableIndex == 0" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></views>
+    <!-- <views v-if="showTableIndex == 0" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></views> -->
+    <login v-if="showTableIndex == 0" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></login>
     <finish v-if="showTableIndex == 1" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></finish>
     <issue v-if="showTableIndex == 2" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></issue>
     <need v-if="showTableIndex == 3" :time="form.time" :brokerId="form.broker" :houseType="form.houseType"></need>
@@ -92,6 +93,7 @@ import finish from "./finish";
 import issue from "./issue";
 import need from "./need";
 import users from "./users";
+import login from "./login";
 import url from "@/utils/url";
 import { dataChart, chartIndex, getBrokerLists } from "@/utils/data";
 
@@ -103,7 +105,8 @@ export default {
     finish,
     issue,
     need,
-    users
+    users,
+    login
   },
   data() {
     return {
@@ -130,12 +133,12 @@ export default {
         { label: "成交量", value: "0", url: "/" },
         { label: "发布量", value: "0", url: "/" },
         { label: "需求量", value: "0", url: "/" },
-        { label: "注册量", value: "0", url: "/" }
+        { label: "会员量", value: "0", url: "/" }
       ],
       theme: "light", //更换主题
       view: {
         legend: {
-          data: ["访问量", "成交量", "发布量", "需求量", "注册量"]
+          data: ["访问量", "成交量", "发布量", "需求量", "会员量"]
         },
         xAxis: {
           type: "category",
@@ -184,7 +187,7 @@ export default {
             areaStyle: {}
           },
           {
-            name: "注册量",
+            name: "会员量",
             data: [100, 100],
             type: "line",
             areaStyle: {}
@@ -213,15 +216,24 @@ export default {
        * 经纪人ID
        */
       let { time, broker, houseType } = this.form;
-      this.getViewChart(time[1], time[0], broker, houseType);
+      // this.getViewChart(time[1], time[0], broker, houseType);
       this.getFinishChart(time[1], time[0], broker, houseType);
       this.getIssueChart(time[1], time[0], broker, houseType);
       this.getNeedChart(time[1], time[0], broker, houseType);
       this.getUsersChart(time[1], time[0], broker, houseType);
+      this.getLoginChart(time[1], time[0], broker, houseType);
     },
     // 获取访问量
-    async getViewChart(lt, gt, broker, houseType) {
-      let viewData = await chartIndex("/data/views", lt, gt, broker, houseType);
+    // async getViewChart(lt, gt, broker, houseType) {
+    //   let viewData = await chartIndex("/data/views", lt, gt, broker, houseType);
+    //   this.view.xAxis.data = viewData.xData;
+    //   this.view.series[0].data = viewData.yData;
+    //   this.count[0].value = viewData.count;
+    // },
+    // 登录量
+       async getLoginChart(lt, gt, broker, houseType) {
+      let viewData = await chartIndex("/data/login", lt, gt, broker, houseType);
+      console.log('viewData :', viewData);
       this.view.xAxis.data = viewData.xData;
       this.view.series[0].data = viewData.yData;
       this.count[0].value = viewData.count;
@@ -282,11 +294,12 @@ export default {
   },
   async mounted() {
     let { time, broker, houseType } = this.form;
-    this.getViewChart(time[1], time[0], broker, houseType);
+    // this.getViewChart(time[1], time[0], broker, houseType);
     this.getFinishChart(time[1], time[0], broker, houseType);
     this.getIssueChart(time[1], time[0], broker, houseType);
     this.getNeedChart(time[1], time[0], broker, houseType);
     this.getUsersChart(time[1], time[0], broker, houseType);
+    this.getLoginChart(time[1], time[0], broker, houseType);
     this.BrokerLists();
   }
 };
@@ -304,5 +317,8 @@ export default {
 }
 .dataQRcode{
   text-align: center;
+  img{
+    width:100%;
+  }
 }
 </style>

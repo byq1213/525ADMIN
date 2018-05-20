@@ -24,7 +24,7 @@
         <el-col :span="24" class="app-item">
           <el-card>
             <div slot="header">
-              综合排名
+              综合量排名
             </div>
             <div>
               <el-table :data="countData">
@@ -60,7 +60,7 @@
                      <span v-else v-text="'0'"></span>
                   </template>
                 </el-table-column>
-                <el-table-column label="注册量" prop="usersCount">
+                <el-table-column label="会员量" prop="usersCount">
                   <template slot-scope='scope'>
                     <span v-if="scope.row.usersCount" v-text="scope.row.usersCount"></span>
                      <span v-else v-text="'0'"></span>
@@ -80,10 +80,10 @@
         <el-col :span="12" class="app-item">
           <el-card >
             <div slot="header">
-              <span>访问排名</span>
+              <span>访问量排名</span>
             </div>
             <div>
-              <el-table :data="viewLists" size="small">
+              <el-table :data="loginLists" size="small">
                 <el-table-column label="" type="index"></el-table-column>
                 <el-table-column label="">
                   <template slot-scope='scope'>
@@ -104,7 +104,7 @@
         <el-col :span="12" class="app-item">
           <el-card >
             <div slot="header">
-              <span>成交排名</span>
+              <span>成交量排名</span>
             </div>
             <div>
               <el-table :data="finishLists" size="small">
@@ -128,7 +128,7 @@
         <el-col :span="12" class="app-item">
           <el-card >
             <div slot="header">
-              <span>发布排名</span>
+              <span>发布量排名</span>
             </div>
             <div>
               <el-table :data="issueLists" size="small">
@@ -152,7 +152,7 @@
          <el-col :span="12" class="app-item">
           <el-card >
             <div slot="header">
-              <span>需求排名</span>
+              <span>需求量排名</span>
             </div>
             <div>
               <el-table :data="needLists" size="small">
@@ -176,7 +176,7 @@
          <el-col :span="12" class="app-item">
           <el-card >
             <div slot="header">
-              <span>注册排名</span>
+              <span>会员量排名</span>
             </div>
             <div>
               <el-table :data="usersLists" size="small">
@@ -187,7 +187,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="经纪人" prop="brokerInfo.brokerName"></el-table-column>
-                <el-table-column label="注册量" prop="count">
+                <el-table-column label="会员量" prop="count">
                   <template slot-scope='scope'>
                      <span v-if="scope.row.count" v-text="scope.row.count"></span>
                      <span v-else v-text="'0'"></span>
@@ -206,7 +206,7 @@
 import url from "@/utils/url";
 export default {
   mounted() {
-    this.getViewRank();
+    // this.getViewRank();
     this.getFinishRank();
     this.getIssueRank();
     this.getNeedRank();
@@ -221,7 +221,7 @@ export default {
           new Date().getTime()
         ]
       },
-      //访问排名
+      //访问量排名
       viewLists: [
         {
           brokerName: "王五",
@@ -268,13 +268,22 @@ export default {
             brokerAvatarUrl: ""
           }
         }
+      ],
+      loginLists: [
+        {
+          brokerName: "王五",
+          num: 123,
+          brokerInfo: {
+            brokerAvatarUrl: ""
+          }
+        }
       ]
     };
   },
   methods: {
     // 时间段查询
     search() {
-      this.getViewRank();
+      // this.getViewRank();
       this.getFinishRank();
       this.getIssueRank();
       this.getNeedRank();
@@ -285,7 +294,7 @@ export default {
         this.countRank = res.data.data;
         let data = new Array();
         this.countRank.forEach(item => {
-          this.viewLists.forEach(item1 => {
+          this.loginLists.forEach(item1 => {
             if (item._id == item1._id) {
               item.viewCount = item1.count ? item1.count : 0;
             }
@@ -335,32 +344,37 @@ export default {
     // 获取经纪人访问量排行
     getViewRank() {
       url.post("/rank/view", { time: this.form.time }).then(res => {
-        this.viewLists = res.data.sort(this.ArrSort('count'));
+        this.viewLists = res.data.sort(this.ArrSort("count"));
       });
     },
     getFinishRank() {
       url.post("/rank/finish", { time: this.form.time }).then(res => {
-        this.finishLists = res.data.sort(this.ArrSort('count'));
+        this.finishLists = res.data.sort(this.ArrSort("count"));
       });
     },
     // 发布需求
     getIssueRank() {
       url.post("/rank/issue", { time: this.form.time }).then(res => {
-        this.issueLists = res.data.sort(this.ArrSort('count'));
+        this.issueLists = res.data.sort(this.ArrSort("count"));
       });
     },
     //需求
     getNeedRank() {
       url.post("/rank/need", { time: this.form.time }).then(res => {
-        this.needLists = res.data.sort(this.ArrSort('count'));
+        this.needLists = res.data.sort(this.ArrSort("count"));
       });
     },
     getUsersRank() {
       url.post("/rank/users", { time: this.form.time }).then(res => {
-        this.usersLists = res.data.sort(this.ArrSort('count'));
+        this.usersLists = res.data.sort(this.ArrSort("count"));
         this.getBrokerList();
       });
-
+    },
+    getLoginRank() {
+      url.post("/rank/login", { time: this.form.time }).then(res => {
+        this.loginLists = res.data.sort(this.ArrSort("count"));
+        this.getBrokerList();
+      });
     },
     ArrSort(property) {
       return function(a, b) {
@@ -373,7 +387,7 @@ export default {
 
         var value1 = a[property];
         var value2 = b[property];
-        return  value2 -value1;
+        return value2 - value1;
       };
     }
   }

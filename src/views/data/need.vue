@@ -60,7 +60,7 @@
           :total="count"
           @current-change="changePage"
           :page-size="limit">
-        </el-pagination>
+        </el-pagination> 
       </div>
     </el-main>
   </div>

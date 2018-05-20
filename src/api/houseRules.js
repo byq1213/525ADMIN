@@ -402,7 +402,7 @@ export const house3Rules = {
     message: '年龄必须为数字值'
   }],
   proportion: [{
-    required: false,
+    required: true,
     message: "请输入建筑面积",
     trigger: "blur"
   }, {

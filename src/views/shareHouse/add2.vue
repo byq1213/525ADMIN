@@ -1,37 +1,48 @@
 <template>
   <el-main>
     <!-- 添加房源 -->
-    <el-form :model="form" label-width="100px" 
-    :rules="house3Rules"
-    ref="formHouse3">
+    <el-form :model="form" label-width="100px" :rules="house2Rules" ref="formHouse2">
       <el-card class="app-item">
         <div slot="header">
-          基本信息（租房）
+          共享房源（二手房）
         </div>
       <el-form-item label="房源编号" prop="code">
         <el-input v-model="form.code" placeholder="请输入房源编号" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源名称"  prop="name">
+      <el-form-item label="房源名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入房源名称" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源租金"  prop="rent">
-        <el-input v-model.number="form.rent" placeholder="请输入房源租金" class="w20" :disabled="mian">
-          <template slot="append">元/月</template>
+      <el-form-item label="参考价格" prop="rent">
+        <el-input v-model.number="form.rent" placeholder="请输入房源租金" class="w20">
+          <template slot="append">
+            万
+          </template>
         </el-input>
-        <el-checkbox label="面议" v-model="mian"></el-checkbox>
       </el-form-item>
-      <el-form-item label="房源面积"  prop="proportion">
+      <el-form-item label="房源面积" prop="proportion">
         <el-input v-model.number="form.proportion" placeholder="请输入房源面积" class="w20">
           <template slot="append">㎡</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="房源朝向">
-        <el-input v-model="form.orientation" placeholder="" class="w20"></el-input>
-      </el-form-item>
-      <el-form-item label="房源户型">
-        <el-select v-model="form.room" placeholder="请选择居室数量">
+      <el-form-item label="房源户型" >
+        <el-input v-model="form.room.s" placeholder="" size="small" class="w10">
+          <template slot="append">
+            室
+          </template>
+        </el-input>
+        <el-input v-model="form.room.t" placeholder="" size="small" class="w10">
+          <template slot="append">
+            厅
+          </template>
+        </el-input>
+        <el-input v-model="form.room.w" placeholder="" size="small" class="w10">
+          <template slot="append">
+            卫
+          </template>
+        </el-input>
+        <!-- <el-select v-model="form.room" placeholder="请选择居室数量">
           <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>
+        </el-select> -->
       </el-form-item>
       <el-form-item label="房源年代">
         <el-date-picker v-model="form.age"
@@ -41,20 +52,20 @@
       <!-- <el-form-item label="房源朝向">
         <el-input v-model="form.code" placeholder="请输入房源朝向" class="w20"></el-input>
       </el-form-item> -->
-      <el-form-item label="出租方式">
+      <!-- <el-form-item label="出租方式">
         <el-select v-model="form.type" placeholder="出租方式">
-          <el-option :value='0' label="整租" ></el-option>
-          <el-option :value='1' label="合租" ></el-option>
+          <el-option value='整租' label="整租" ></el-option>
+          <el-option value='合租' label="合租" ></el-option>
         </el-select>
-      </el-form-item> 
-      <el-form-item label="支付方式">
+      </el-form-item>  -->
+      <!-- <el-form-item label="支付方式">
           <el-input v-model="form.payType.charge" placeholder="" class="w10">
             <template slot="prepend">押</template>
           </el-input>
           <el-input v-model="form.payType.pair" placeholder="" class="w10">
             <template slot="prepend">付</template>
           </el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="楼层">
         <el-select v-model="form.level" placeholder="" >
           <el-option :value="1" label="低楼层"></el-option>
@@ -65,19 +76,22 @@
       <el-form-item label="商圈">
         <el-input v-model="form.tradingArea" placeholder="请输入商圈" class="w20"></el-input>
       </el-form-item>
+      <el-form-item label="装修">
+        <el-input v-model="form.decoration" placeholder="精装修" class="w20"></el-input>
+      </el-form-item>
       <el-form-item label="所属小区" prop="cell">
         <el-input v-model="form.cell" placeholder="" class="w20"></el-input>
       </el-form-item>
       </el-card>
-      <el-card class="app-item">
+      <el-card class="app-item" v-if="false">
         <div slot="header">
           房屋设施
         </div>
         <el-form-item label="">
-          <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+           <el-checkbox size="big" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             <div style="margin: 15px 0;"></div>
-            <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-              <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+            <el-checkbox-group v-model="form.checkAll" @change="handlecheckedFacilityChange">
+              <el-checkbox v-for="item in facility" :label="item" :key="item">{{item}}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
       </el-card>
@@ -86,17 +100,18 @@
           房源图片
         </div>
         <el-form-item label="">
+
           <el-upload
           :action="BASE_API+'uploadFile'"
           list-type="picture-card"
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
-          :file-list="uploadImg"
-          multiple="">
+          :file-list="uploadImg">
           <i class="el-icon-plus"></i>
           </el-upload>
-        <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。</span>
+        <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。（首张图片为主图）</span>
+          
         </el-form-item>
       </el-card>
       <el-card class="app-item">
@@ -118,7 +133,7 @@
         <el-form-item label="小区介绍">
           <el-input v-model="form.estate" type="textarea" placeholder=""></el-input>
         </el-form-item>
-        <el-form-item label="标签添加"  prop="tags">
+        <el-form-item label="标签添加" prop="tags">
           <el-tag
             :key="tag"
             v-for="tag in form.tags"
@@ -141,7 +156,6 @@
         </el-form-item>
         <el-form-item label="坐标选择">
           <div id="mapNode" ref="mapNode" style="height:300px;width:100%;margin-bottom:20px"></div>
-
             <!-- <el-form-item label="地区">
               <el-input v-model="addressChoose.area" placeholder=""></el-input>
             </el-form-item>
@@ -153,10 +167,10 @@
               <el-input size="mini" v-model="form.address" placeholder="请选择详细地址" class="w20"></el-input>
               <el-button type="" size="mini" @click="searchaddress">查询</el-button>
             </el-form-item>
-            <el-form-item label="坐标">
+            <el-form-item label="坐标" >
               <el-input v-model="form.addressLatLng.lat" disabled="" placeholder="" size="mini" class="w20"></el-input>
               <div></div>
-              <el-input v-model="form.addressLatLng.lng" disabled="" placeholder="" size="mini" class="w20"></el-input>
+              <el-input v-model="form.addressLatLng.lng"  disabled="" placeholder="" size="mini" class="w20"></el-input>
             </el-form-item>
             <!-- <el-form-item label="区域">
               <el-input size="mini" v-model="form.addressComponents.district" placeholder="请选择区域" class="w20"></el-input>
@@ -165,99 +179,91 @@
               <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
             </el-form-item> -->
         </el-form-item>
-        <el-form-item label="">
+        <el-form-item label="" >
           <el-button type="" @click="saveData">立即上传</el-button>
-          <!-- <el-button type="success" @click="saveData">保存并通知经纪人</el-button> -->
         </el-form-item>
       </el-card>
     </el-form>  
+
   </el-main>
 
 </template>
 
 <script>
-const cityOptions = [
-  "热水器",
-  "卫生间",
-  "洗衣机",
-  "冰箱",
-  "电视",
-  "床",
-  "衣柜"
-];
-
+const facilityOptions = ["洗衣机", "彩电", "冰箱"];
 // import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
 // import LocalSearch from 'vue-baidu-map/components/Search/LocalSearch.vue'
 import url from "@/utils/url";
 import qmap from "qmap";
 import { houseCodeFormat } from "@/utils/index";
-import { house3Rules } from "@/api/houseRules";
-
+import { house2Rules } from "@/api/houseRules";
 export default {
   mounted() {
     this.createMap();
-    this.editHouse3();
-    
+    this.editHouse2();
   },
   components: {},
   data() {
     return {
-      house3Rules,
-      uploadImg:[],
+      uploadImg: [],
       BASE_API: process.env.BASE_API,
-
+      house2Rules,
       form: {
-        code: `Z${houseCodeFormat(new Date().getTime())}`,
-        payType: {
-          charge:1,
-          pair:1,
-        },
+        code: `E${houseCodeFormat(new Date().getTime())}`,
+        payType: {},
         imgPath: [],
         tags: [],
         address: "太原市",
         addressComponents: {},
         addressLatLng: {},
+        room: {
+          s: 1,
+          t: 1,
+          w: 1
+        }
       },
+      editId: "", //修改二手房
+      // addressChoose: {
+      //   area: ""
+      // },
       // 选择房屋设施
-      checkAll: false,
-      checkedCities: [],
-      cities: cityOptions,
       isIndeterminate: true,
+      checkedFacility: ["洗衣机", "彩电", "冰箱"],
+      facility: facilityOptions,
+      checkAll: false,
       inputValue: "",
       inputVisible: false,
 
-      //地图
       markers: [],
       addressMap: {}, //地图
       searchService: {},
       selectLatLng: {},
       cityLocation: {},
-      geocoder: {},
-
-      //租金面议
-      mian: false
+      geocoder: {}
     };
   },
   methods: {
-    // 修改租房信息
-        editHouse3() {
+    // 修改二手房信息
+    editHouse2() {
       if (this.$route.params.id) {
         let id = (this.editId = this.$route.params.id);
-        url.get(`/house/${id}`).then(res => {
-        this.checkedCities = res.data.facility
+        url.get(`/house2/${id}`).then(res => {
           this.form = res.data;
           let imgPath = this.form.imgPath;
           imgPath.forEach(item => {
             this.uploadImg.push({
               name: "房源图片",
               url: `${this.BASE_API}uploads/${item}`,
-              response:{files:[`${item}`]}
+              response: { files: [`${item}`] }
             });
+            console.log(this.uploadImg);
           });
         });
         // 设置房源图片
       }
     },
+    // 获取修改信息
+    getEditInfo() {},
     searchaddress() {
       const _this = this;
       let l = this.geocoder.getLocation(this.form.address);
@@ -295,6 +301,7 @@ export default {
       this.geocoder = new qmap.Geocoder();
 
       qmap.event.addListener(this.searchService, "click", res => {
+        console.log("res :", res);
       });
       // 添加点击事件
       qmap.event.addListener(this.addressMap, "click", event => {
@@ -337,23 +344,11 @@ export default {
       this.form.address = a.city + a.district + b;
       this.form.addressComponents = a;
     },
-
-    // 房屋设施
-    handleCheckAllChange(val) {
-      this.checkedCities = val ? cityOptions : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedCitiesChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length;
-    },
     // 删除标签
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
     },
-     showInput() {
+    showInput() {
       if (this.form.tags.length >= 4) {
         this.tagNotify("标签不能超过四个");
         return;
@@ -386,11 +381,15 @@ export default {
       this.inputValue = "";
     },
     // 提交表单上传数据
+    // 提交表单上传数据
     saveData() {
-      this.$refs["formHouse3"].validate(valid => {
+      this.$refs["formHouse2"].validate(valid => {
         if (valid) {
-          url.post("/house", this.form).then(res => {
-            this.$router.push('/House/list')
+          this.form.share = true;
+          this.form.addBroker = this.getBroker();
+          console.log("this.form :", this.form);
+          url.post("/house2", this.form).then(res => {
+            console.log(res);
           });
         } else {
           console.log("error submit!!");
@@ -400,6 +399,7 @@ export default {
     },
     // 上传图片
     uploadSuccess(response, file, fileList) {
+
       // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
       this.uploadFile(fileList);
     },
@@ -410,28 +410,34 @@ export default {
     uploadFile(fileList) {
       let data = [];
       fileList.forEach(list => {
-        if (list.response) {
-          data.push(list.response.files[0]);
-        }
+        data.push(list.response.files[0]);
       });
       this.form.imgPath = data;
+    },
+    handleCheckAllChange(val) {
+      this.checkedFacility = val ? facilityOptions : [];
+      this.isIndeterminate = false;
+    },
+    handlecheckedFacilityChange(value) {
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.facility.length;
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.facility.length;
     }
   },
   watch: {
-    checkedCities(res) {
-      this.form.facility = res;
-    },
     selectLatLng(res) {
       this.form.addressLatLng = res;
-    },
-    mian(res) {
-      if (res) {
-        this.form.rent = 0;
-      }
     }
   }
 };
 </script>
 
 <style scoped>
+#infoDiv {
+  width: 100%;
+  height: 400px;
+  max-height: 400px;
+  overflow: auto;
+}
 </style>

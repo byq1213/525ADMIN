@@ -75,18 +75,28 @@ export const asyncRouterMap = [{
           roles: ['admin', 'view']
         }
       },
-      {
-        path: 'rank',
-        name: 'data_rank',
-        component: () =>
-          import ('@/views/data/rank'),
-        meta: {
-          title: '经纪人排名',
-          icon: 'form',
-          roles: ['admin', 'view']
-        }
-      },
+
     ]
+  },
+  {
+    path: '/index',
+    component: Layout,
+    meta: {
+      title: '经纪人排名',
+      icon: 'form',
+      roles: ['admin', 'view']
+    },
+    children: [{
+      path: 'rank',
+      name: 'data_rank',
+      component: () =>
+        import ('@/views/data/rank'),
+      meta: {
+        title: '经纪人排名',
+        icon: 'form',
+        roles: ['admin', 'view']
+      }
+    }, ]
   },
   {
     path: '/userAnalyze',
@@ -102,7 +112,7 @@ export const asyncRouterMap = [{
       component: () =>
         import ('@/views/userAnalyze/list'),
       meta: {
-        title: '用户信息',
+        title: '会员查询',
         icon: 'form',
         roles: ['admin', 'view']
       }
@@ -355,9 +365,6 @@ export const asyncRouterMap = [{
 
     ]
   },
-
-
-
   {
     path: '/setting',
     component: Layout,
@@ -368,48 +375,114 @@ export const asyncRouterMap = [{
       roles: ['admin']
     },
     children: [{
-        path: 'index',
-        name: 'setting_index',
-        component: () =>
-          import ('@/views/setting/pageSetting'),
-        meta: {
-          title: '首页设置',
-          icon: 'form',
-          roles: ['admin']
-        }
-      },
-
-    ]
+      path: 'index',
+      name: 'setting_index',
+      component: () =>
+        import ('@/views/setting/pageSetting'),
+      meta: {
+        title: '首页设置',
+        icon: 'form',
+        roles: ['admin']
+      }
+    }, ]
   },
   {
     path: '/expand',
     component: Layout,
     hidden: true,
-    
+
     meta: {
       title: '推广店铺',
       icon: 'form',
       roles: ['view']
     },
     children: [{
-        path: 'index',
-        hidden: true,
+      path: 'index',
+      hidden: true,
 
-        name: 'expand_index',
+      name: 'expand_index',
+      component: () =>
+        import ('@/views/broker/expand'),
+      meta: {
+        title: '推广店铺',
+        icon: 'form',
+        roles: ['view']
+      }
+    }, ]
+  },
+  {
+    path: '/sendHouse',
+    component: Layout,
+    meta: {
+      title: '推送房源',
+      icon: 'form',
+      roles: ['view']
+    },
+    children: [{
+      path: 'index',
+      name: 'sendHouse',
+      component: () =>
+        import ('@/views/send/index'),
+      meta: {
+        title: '需求列表',
+        icon: 'form',
+        roles: ['view']
+      }
+    }, {
+      path: 'addNeed',
+      name: 'addNeed',
+      component: () =>
+        import ('@/views/send/add'),
+      meta: {
+        title: '添加需求',
+        icon: 'form',
+        roles: ['view']
+      }
+    }, ]
+  },
+  {
+    path: '/meng/shareHouse',
+    component: Layout,
+    meta: {
+      title: '管理共享房源',
+      icon: 'form',
+      roles: ['view']
+    },
+    children: [{
+        path: 'index',
+        name: 'manageSharellist',
         component: () =>
-          import ('@/views/broker/expand'),
+          import ('@/views/shareHouse/list'),
         meta: {
-          title: '推广店铺',
+          title: '房源列表',
           icon: 'form',
           roles: ['view']
         }
       },
-
+      {
+        path: 'house3',
+        name: 'manageShareHouse3',
+        component: () =>
+          import ('@/views/shareHouse/add3'),
+        meta: {
+          title: '添加出租房',
+          icon: 'form',
+          roles: ['view']
+        }
+      },
+      {
+        path: 'house2',
+        name: 'manageShareHouse2',
+        component: () =>
+          import ('@/views/shareHouse/add2'),
+        meta: {
+          title: '添加二手房',
+          icon: 'form',
+          roles: ['view']
+        }
+      },
     ]
   },
-
-
-
   {
     path: '*',
     redirect: '/404',
