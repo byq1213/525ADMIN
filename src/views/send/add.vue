@@ -109,37 +109,39 @@ let miniHouseType = [
   { label: "五居室以上", value: 4 }
 ];
 export default {
+  created() {
+    if (this.isBroker()) {
+      this.form.brokerId = this.getBroker();
+    }
+  },
   mounted() {
     this.BrokerLists();
   },
   data() {
     return {
       miniHouseType,
-      form: {brokerId:''},
+      form: { brokerId: "" },
       brokerLists: [],
       lists: [],
-      addNeedDialog:true,
-      addNeedForm:{
-        mode:2,
-        houseType:0,
-        rentMode:0,
-      },
-      
+      addNeedDialog: true,
+      addNeedForm: {
+        mode: 2,
+        houseType: 0,
+        rentMode: 0
+      }
     };
   },
   methods: {
-    addNeedInfo(_id){
-      this.addNeedDialog =true;
-      this.addNeedForm.uid= _id
+    addNeedInfo(_id) {
+      this.addNeedDialog = true;
+      this.addNeedForm.uid = _id;
       console.log(this.addNeedForm);
-      
     },
-    saveData(){
+    saveData() {
       console.log(this.addNeedForm);
-      url.post('/addNeed',this.addNeedForm)
-        .then(res=>{
-          console.log('res :', res);
-        })
+      url.post("/addNeed", this.addNeedForm).then(res => {
+        console.log("res :", res);
+      });
     },
     //经纪人列表
     BrokerLists() {
@@ -148,12 +150,11 @@ export default {
         console.log(res.data);
       });
     },
-    search(){
-      url.post('/FindUser',this.form)
-        .then(res=>{
-          this.lists = res.data
-          console.log('res :', res);
-        })
+    search() {
+      url.post("/FindUser", this.form).then(res => {
+        this.lists = res.data;
+        console.log("res :", res);
+      });
     }
   }
 };

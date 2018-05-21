@@ -69,7 +69,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="房源面积" prop="area"></el-table-column>
+        <el-table-column label="房源面积" prop="area">
+          <template slot-scope='scope'>
+             <span v-text="`${scope.row.area}㎡`"></span>
+          </template>
+        </el-table-column>
         <el-table-column label="房源地址" prop="address" width="300"></el-table-column>
         <el-table-column label="出租方式" prop="rentMode">
           <template slot-scope='scope'>
@@ -80,6 +84,15 @@
           <!-- <span v-if="scope.row.rentMode = 1" v-text="合租"></span>
           <span v-else-if="scope.row.rentMode = 0" v-text="整租"></span>
           <span v-else v-text="'--'"></span> -->
+          </template>
+        </el-table-column>
+        <el-table-column label="户型">
+          <template slot-scope='scope'>
+             <span v-if="scope.row.houseType == 0" v-text="`一居室`"></span>
+             <span v-if="scope.row.houseType == 1" v-text="`两居室`"></span>
+             <span v-if="scope.row.houseType == 2" v-text="`三居室`"></span>
+             <span v-if="scope.row.houseType == 3" v-text="`四居室`"></span>
+             <span v-if="scope.row.houseType == 4" v-text="`五居室及以上`"></span>
           </template>
         </el-table-column>
         <el-table-column label="房源描述" prop="remarks" width="100"></el-table-column>
@@ -149,7 +162,11 @@
       <!-- 修改房源需求 -->
         <el-form :model="editNeedForm" label-width="100px" size="small">
           <el-form-item label="面积" >
-            <el-input v-model="editNeedForm.area" placeholder=""></el-input>
+            <el-input v-model="editNeedForm.area" placeholder="">
+              <template slot="append">
+                ㎡
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item label="租金\价格" >
             <el-input v-if="editNeedForm.mode == 2" v-model="editNeedForm.area" placeholder="">
@@ -175,12 +192,24 @@
               <el-option :value="1" label="合租"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="详细地址">
+            <el-input v-model="editNeedForm.address" placeholder=""></el-input>
+          </el-form-item>
           <el-form-item label="">
             <el-button type="success" @click="saveNeedInfo">保存</el-button>
             <el-button type="" @click="editInfoDialog = false">取消</el-button>
+            <el-button type="" @click="chooseAddress">选择地址</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
+      <el-dialog
+        title="选择地址"
+        :visible.sync="chooseAddressDialog"
+        width="30%"
+        >
+        <chooseMap :addmapform="addmapform" @isAddressEvent="chooseMapAddress"></chooseMap>
+      </el-dialog>
+      
     </el-main>
   </div>
 </template>
@@ -194,18 +223,27 @@ let miniHouseType = [
 ];
 import url from "@/utils/url";
 import { dataChart, chartIndex, getBrokerLists } from "@/utils/data";
-
+import chooseMap from "@/components/chooseMap";
 export default {
+  components: {
+    chooseMap
+  },
+  created() {
+    if (this.isBroker()) {
+      this.form.brokerId = this.getBroker();
+    }
+  },
   mounted() {
     this.getViewsLists();
-    this.BrokerLists()
+    this.BrokerLists();
   },
   data() {
     return {
       BASE_API: process.env.BASE_API,
-      brokerLists:[],
+      brokerLists: [],
       matchDialog: false,
       editInfoDialog: false,
+      chooseAddressDialog: false,
       editNeedForm: {},
       form: {
         mode: "",
@@ -213,7 +251,7 @@ export default {
           new Date().getTime() - 3600 * 24 * 7 * 1000,
           new Date().getTime()
         ],
-        brokerId:''
+        brokerId: ""
       },
       lists: [{ uid: {} }],
       limit: this.$store.state.app.limit,
@@ -225,35 +263,52 @@ export default {
       matchLists: [], //匹配到的房源
       selectedHouse: [], //选中房源
       mode: 3,
-
-      miniHouseType
+      miniHouseType,
+      addmapform: {}
     };
   },
   methods: {
+    //子组件给父组件传递数据
+    //触发事件
+    chooseMapAddress(res) {
+      console.log("res :", res);
+      this.editNeedForm.address = res.address;
+      this.editNeedForm.longitude = res.addressLatLng.lng;
+      this.editNeedForm.latitude = res.addressLatLng.lat;
+      this.chooseAddressDialog = false;
+    },
+    //选择地址
+    chooseAddress() {
+      let form = {
+        address: "太原市",
+        addressComponents: {},
+        addressLatLng: { lat: 0, lng: 0 }
+      };
+      this.addmapform = form;
+      this.chooseAddressDialog = true;
+    },
     //经纪人列表
     BrokerLists() {
-url.post('/brokerLists').then(res=>{
-  this.brokerLists =res.data
-  console.log(res.data);
-  
-})
+      url.post("/brokerLists").then(res => {
+        this.brokerLists = res.data;
+        console.log(res.data);
+      });
     },
     // 保存需求
-    saveNeedInfo(){
-      console.log('this.editInfo :', this.editNeedForm);
-      url.post('/saveNeedInfo',this.editNeedForm)
-        .then(res=>{
-          if(res.data == 1){
-            //保存成功
-            this.editInfoDialog=false;
-            this.getViewsLists();
-            this.$notify({
-              title: "保存成功",
-              // message: "成功为客户发送房源",
-              type: "success"
-            });
-          }
-        })
+    saveNeedInfo() {
+      console.log("this.editInfo :", this.editNeedForm);
+      url.post("/saveNeedInfo", this.editNeedForm).then(res => {
+        if (res.data == 1) {
+          //保存成功
+          this.editInfoDialog = false;
+          this.getViewsLists();
+          this.$notify({
+            title: "保存成功",
+            // message: "成功为客户发送房源",
+            type: "success"
+          });
+        }
+      });
     },
     //修改用户信息
     editInfo(index) {
@@ -281,6 +336,7 @@ url.post('/brokerLists').then(res=>{
       } else {
         //添加到用户的 推荐租房列表
         url.post(`/matchHouse/${uid}/${this.mode}`, selectedHouse).then(res => {
+          
           if (res.data) {
             this.$notify({
               title: "成功",
@@ -288,7 +344,12 @@ url.post('/brokerLists').then(res=>{
               type: "success"
             });
           }
-        });
+        }).then(res =>{
+          this.matchDialog = false
+          url.post('/sendUserNotice',{id:uid,houseData:selectedHouse[0].name}).then(res=>{
+
+          })
+        })
       }
     },
     macthSelectChange(val) {
@@ -298,13 +359,14 @@ url.post('/brokerLists').then(res=>{
     matchStart(index) {
       this.matchDialog = true;
       let info = (this.matchInfo = this.lists[index]);
-      let { rentMode, area, mode, houseType, price } = info;
+      let { rentMode, area, mode, houseType, price,latitude,longitude } = info;
       let data = {
         rentMode, //整租./合租
         area, //面积
         mode,
         houseType, //几居室
-        price //价格
+        price, //价格
+        latitude,longitude
       };
       //发送房源信息 匹配房源
       url.post(`/matchHouse`, data).then(res => {

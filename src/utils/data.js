@@ -52,6 +52,7 @@ export async function chartIndex(urls, lt = new Date().getTime(), gt = new Date(
     houseType
   })
   data = dataChart(data.data.data);
+
   callback.count = data.length;
 
   xData.forEach(xitem => {

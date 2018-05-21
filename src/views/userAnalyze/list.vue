@@ -236,14 +236,15 @@ export default {
         $lt: lt
       }
        */
-      let { time, type, broker } = this.form;
+      let { time, type, broker,keyword } = this.form;
       let condition = {
         regTime: {
           $gt: time[0],
           $lt: time[1]
         },
 
-        brokerId: broker
+        brokerId: broker,
+        keyword,
       };
       // 如果经纪人为空则删除经纪人条件
       console.log(condition);

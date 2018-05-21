@@ -6,10 +6,10 @@
         <div slot="header">
           基本信息（二手房）
         </div>
-      <el-form-item label="房源编号" prop="code">
+      <el-form-item label="房源编号" prop="code" >
         <el-input v-model="form.code" placeholder="请输入房源编号" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源名称" prop="name">
+      <el-form-item label="房源名称" prop="name" >
         <el-input v-model="form.name" placeholder="请输入房源名称" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="参考价格" prop="rent">
@@ -167,7 +167,7 @@
               <el-input size="mini" v-model="form.address" placeholder="请选择详细地址" class="w20"></el-input>
               <el-button type="" size="mini" @click="searchaddress">查询</el-button>
             </el-form-item>
-            <el-form-item label="坐标" >
+            <el-form-item label="坐标" v-if="form.addressLatLng">
               <el-input v-model="form.addressLatLng.lat" disabled="" placeholder="" size="mini" class="w20"></el-input>
               <div></div>
               <el-input v-model="form.addressLatLng.lng"  disabled="" placeholder="" size="mini" class="w20"></el-input>
@@ -202,8 +202,7 @@ export default {
     this.createMap();
     this.editHouse2();
   },
-  components: {
-  },
+  components: {},
   data() {
     return {
       uploadImg: [],
@@ -216,7 +215,7 @@ export default {
         tags: [],
         address: "太原市",
         addressComponents: {},
-        addressLatLng: {},
+        addressLatLng: {lat:0,lng:0},
         room: {
           s: 1,
           t: 1,
@@ -255,7 +254,7 @@ export default {
             this.uploadImg.push({
               name: "房源图片",
               url: `${this.BASE_API}uploads/${item}`,
-              response:{files:[`${item}`]}
+              response: { files: [`${item}`] }
             });
             console.log(this.uploadImg);
           });
@@ -384,22 +383,22 @@ export default {
     // 提交表单上传数据
     // 提交表单上传数据
     saveData() {
-      this.$refs["formHouse2"].validate(valid => {
+      this.$refs["formHouse2"].validate((valid, rules) => {
         if (valid) {
           url.post("/house2", this.form).then(res => {
-            console.log(res);
+            this.$router.push('/House/list')
           });
         } else {
-          console.log("error submit!!");
+          scrollTo(0, 0);
           return false;
         }
       });
     },
     // 上传图片
     uploadSuccess(response, file, fileList) {
-      console.log("response :", response);
-      console.log("file :", file);
-      console.log("fileList :", fileList);
+      // console.log("response :", response);
+      // console.log("file :", file);
+      // console.log("fileList :", fileList);
       // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
       this.uploadFile(fileList);
     },

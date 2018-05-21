@@ -211,6 +211,7 @@ export default {
     this.getIssueRank();
     this.getNeedRank();
     this.getUsersRank();
+    this.getLoginRank()
   },
   data() {
     return {

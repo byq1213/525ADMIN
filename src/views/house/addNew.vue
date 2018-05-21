@@ -124,6 +124,7 @@
                   :on-success="houseTypeSuccess"
                   :before-upload="beforeUpload"
                   :headers="{index}"
+                  :file-list="HouseTypeuploadImg[index].editImg"
                   multiple=""
                     >
                   <i class="el-icon-plus"></i>
@@ -194,13 +195,7 @@
       </el-form-item>
       <el-form-item label="坐标选择">
           <div id="mapNode" ref="mapNode" style="height:300px;width:100%;margin-bottom:20px"></div>
-            <!-- <el-form-item label="地区">
-              <el-input v-model="addressChoose.area" placeholder=""></el-input>
-            </el-form-item>
-            <el-form-item label="">
-              <el-button type="success" @click="searchAddress">查询</el-button> -->
-            <!-- </el-form-item>
-            <div  id="infoDiv" ref="infoDiv"></div> -->
+
             <el-form-item label="详细地址">
               <el-input size="mini" v-model="form.address" placeholder="请选择详细地址" class="w20"></el-input>
               <el-button type="" size="mini" @click="searchaddress">查询</el-button>
@@ -210,30 +205,9 @@
               <div></div>
               <el-input v-model="form.addressLatLng.lng"  disabled="" placeholder="" size="mini" class="w20"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="区域">
-              <el-input size="mini" v-model="form.addressComponents.district" placeholder="请选择区域" class="w20"></el-input>
-            </el-form-item>
-            <el-form-item label="街道">
-              <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
-            </el-form-item> -->
+
         </el-form-item>
-        <!-- <el-form-item label="楼盘亮点">
-          <el-input v-model="form.highlight" type="textarea" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="交通出行">
-          <el-input v-model="form.transport" type="textarea" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="周边配套">
-          <el-input v-model="form.rim" type="textarea" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="户型介绍">
-          <el-input v-model="form.housIntroduce" type="textarea" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="小区介绍">
-          <el-input v-model="form.estate" type="textarea" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="坐标选择">
-        </el-form-item> -->
+
         <el-form-item label="">
           <el-button type="" @click="saveData">立即上传</el-button>
         </el-form-item>
@@ -260,7 +234,7 @@ export default {
     return {
       BASE_API: process.env.BASE_API,
       uploadImg: [],
-
+      HouseTypeuploadImg: [ {eidtImg:[]}],
       form: {
         code: `X${houseCodeFormat(new Date().getTime())}`,
         imgPath: [],
@@ -291,6 +265,7 @@ export default {
         url.get(`/houseNew/${id}`).then(res => {
           this.form = res.data;
           let imgPath = this.form.imgPath;
+          let houseTypeArr = this.form.houseType;
           imgPath.forEach(item => {
             this.uploadImg.push({
               name: "房源图片",
@@ -298,18 +273,22 @@ export default {
               response: { files: [`${item}`] }
             });
           });
+          houseTypeArr.forEach((item, index) => {
+            item.editImg=[]
+            item.imgPath.forEach(imgItem => {
+              item.editImg.push({
+                name: "户型图片",
+                url: `${this.BASE_API}uploads/${imgItem}`,
+                response: { files: [`${imgItem}`],index:index }
+              });
+            });
+          });
+          this.HouseTypeuploadImg = houseTypeArr
+          console.log('houseTypeArr :', houseTypeArr);
         });
         // 设置房源图片
       }
     },
-
-    // // 户型上传 大小判断
-    // beforeUpload() {
-    //   if (file.size > 1024000) {
-    //     this.$message("您上传的图片太大了");
-    //     return false;
-    //   }
-    // },
 
     searchaddress() {
       const _this = this;
@@ -359,20 +338,6 @@ export default {
         this.geocoder.getAddress(event.latLng);
         this.geocoder.setComplete(res => {
           this.setAddress(res);
-          //获取到详细街道信息
-          // {
-          //   address: "中国山西省太原市万柏林区迎泽西大街102号";
-          //   addressComponents: {
-          //     city: "太原市";
-          //   country: "中国";
-          //   district: "万柏林区";
-          //   province: "山西省";
-          //   street: "迎泽西大街";
-          //   streetNumber: "迎泽西大街102号";
-          //   town: "千峰街道";
-          //   village: "";
-          //   }
-          // }
         });
         let marker = new qmap.Marker({
           position: event.latLng,
@@ -450,6 +415,7 @@ export default {
             this.$router.push("/House/list");
           });
         } else {
+          scrollTo(0, 0);
           console.log("error submit!!");
           return false;
         }
@@ -475,21 +441,26 @@ export default {
         }
       });
       console.log(data);
-      
+
       this.form.imgPath = data;
     },
 
     // 户型图上传
     // 上传图片
-    houseTypeSuccess(response, file, fileList, index) {
+    houseTypeSuccess(response, file, fileList,) {
       // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
+
       this.houseTypeFile(fileList, file.response.index);
     },
     houseTypeRemove(file, fileList) {
+      console.log('file :', file);
+      console.log('fileList :', fileList);
       this.houseTypeFile(fileList, file.response.index);
     },
     // 处理最后上传的数据
     houseTypeFile(fileList, index) {
+      console.log('fileList :', fileList);
+      console.log('index :', index);
       let data = [];
       fileList.forEach(list => {
         data.push(list.response.files[0]);

@@ -392,6 +392,7 @@ export default {
             console.log(res);
           });
         } else {
+          scrollTo(0, 0);
           console.log("error submit!!");
           return false;
         }

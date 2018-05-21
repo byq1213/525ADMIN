@@ -393,6 +393,7 @@ export default {
             this.$router.push('/House/list')
           });
         } else {
+          scrollTo(0, 0);
           console.log("error submit!!");
           return false;
         }

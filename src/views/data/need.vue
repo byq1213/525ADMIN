@@ -46,6 +46,26 @@
           <template slot-scope='scope'>
              <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
           </template>
+              <!-- 经纪人处理信息 -->
+        <el-table-column label="状态" v-if="this.isBroker()">
+          <template slot-scope='scope'>
+             <span v-if="scope.row.status == 0">未处理
+               <el-button type="primary" size="mini" @click="changeStatus(scope.row._id,1)">点击处理</el-button>
+             </span>
+             <span v-if="scope.row.status == 1">处理中
+               <el-button type="primary" size="mini" @click="changeStatus(scope.row._id,2)">处理完成</el-button>
+             </span>
+             <span v-if="scope.row.status == 2">已处理</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="状态" v-else>
+          <template slot-scope='scope'>
+             <span v-if="scope.row.status == 0">未处理</span>
+             <span v-if="scope.row.status == 1">处理中</span>
+             <span v-if="scope.row.status == 2">已处理</span>
+          </template>
+        </el-table-column>
         </el-table-column>
         <!-- <el-table-column label="操作">
           <template slot-scope='scope'>
@@ -92,6 +112,23 @@ export default {
     };
   },
   methods: {
+        //改变状态
+    changeStatus(_id, status) {
+      this.$alert("将改变状态？", "处理状态", {
+        confirmButtonText: "确定",
+        callback: action => {
+          url.post("/changeIssueStatus",{_id,status}).then(res => {
+            if (res.data) {
+              this.getViewsLists()
+              this.$message({
+                type: "success",
+                message: `处理状态已经改变`
+              });
+            }
+          });
+        }
+      });
+    },
     // 条件查询
     search() {
       this.getViewsLists();

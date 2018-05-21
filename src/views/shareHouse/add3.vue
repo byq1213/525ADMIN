@@ -390,9 +390,10 @@ export default {
           this.form.share = true;
           this.form.addBroker = this.getBroker();
           url.post("/house", this.form).then(res => {
-            this.$router.push("/House/list");
+            this.$router.push("/meng/shareHouse/index");
           });
         } else {
+          scrollTo(0, 0);
           console.log("error submit!!");
           return false;
         }

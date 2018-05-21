@@ -233,7 +233,7 @@ export default {
     // 登录量
        async getLoginChart(lt, gt, broker, houseType) {
       let viewData = await chartIndex("/data/login", lt, gt, broker, houseType);
-      console.log('viewData :', viewData);
+      console.log('getLoginChart :', viewData);
       this.view.xAxis.data = viewData.xData;
       this.view.series[0].data = viewData.yData;
       this.count[0].value = viewData.count;
