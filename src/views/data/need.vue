@@ -28,8 +28,21 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="房源面积" prop="area"></el-table-column>
-        <el-table-column label="房源地址" prop="address"></el-table-column>
+        <el-table-column label="房源面积" prop="area">
+          <template slot-scope='scope'>
+             ㎡
+          </template>
+        </el-table-column>
+        <el-table-column label="户型" prop="houseType">
+          <template slot-scope='scope'>
+                          <span v-if="scope.row.houseType == 0" v-text="`一居室`"></span>
+             <span v-if="scope.row.houseType == 1" v-text="`两居室`"></span>
+             <span v-if="scope.row.houseType == 2" v-text="`三居室`"></span>
+             <span v-if="scope.row.houseType == 3" v-text="`四居室`"></span>
+             <span v-if="scope.row.houseType == 4" v-text="`五居室及以上`"></span>
+          </template>
+        </el-table-column>
+        <el-table-column label="房源地址" prop="address" width="200px"></el-table-column>
         <el-table-column label="出租方式" prop="rentMode">
           <template slot-scope='scope'>
           <span v-if="scope.row.rentMode" v-text="'---'"></span>
@@ -42,11 +55,13 @@
         <el-table-column label="房源描述" prop="remarks"></el-table-column>
         <!-- <el-table-column label="操作" prop=""></el-table-column> -->
         <!-- <el-table-column label="电话" prop="uid.phone"></el-table-column> -->
-        <el-table-column label="添加时间" prop="">
+        <el-table-column label="添加时间" prop="" width="100px">
           <template slot-scope='scope'>
              <span v-text="scope.store.table.timetrans(scope.row.time)"></span>
           </template>
               <!-- 经纪人处理信息 -->
+        </el-table-column>
+              
         <el-table-column label="状态" v-if="this.isBroker()">
           <template slot-scope='scope'>
              <span v-if="scope.row.status == 0">未处理
@@ -65,7 +80,6 @@
              <span v-if="scope.row.status == 1">处理中</span>
              <span v-if="scope.row.status == 2">已处理</span>
           </template>
-        </el-table-column>
         </el-table-column>
         <!-- <el-table-column label="操作">
           <template slot-scope='scope'>

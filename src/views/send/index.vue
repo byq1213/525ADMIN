@@ -169,12 +169,12 @@
             </el-input>
           </el-form-item>
           <el-form-item label="租金\价格" >
-            <el-input v-if="editNeedForm.mode == 2" v-model="editNeedForm.area" placeholder="">
+            <el-input v-if="editNeedForm.mode == 2" v-model="editNeedForm.price" placeholder="">
               <template slot="append">
                 元/月
               </template>
             </el-input>
-            <el-input v-else v-model="editNeedForm.area" placeholder="">
+            <el-input v-else v-model="editNeedForm.price" placeholder="">
               <template slot="append">
                 万元
               </template>
@@ -324,6 +324,7 @@ export default {
       let { selectedHouse } = this;
       selectedHouse.forEach(item => {
         item.createTime = new Date().getTime();
+        item.view = false  //是否查看
       });
       let { uid, mode } = this.matchInfo;
       uid = uid._id;

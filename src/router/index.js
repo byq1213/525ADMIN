@@ -251,6 +251,17 @@ export const asyncRouterMap = [{
           roles: ['admin', 'view']
         }
       },
+      {
+        path: 'expire',
+        name: 'expirehList',
+        component: () =>
+          import ('@/views/finish/expire'),
+        meta: {
+          title: '到期提醒',
+          icon: 'form',
+          roles: ['admin', 'view']
+        }
+      },
 
     ]
   },

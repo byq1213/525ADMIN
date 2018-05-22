@@ -135,19 +135,19 @@ export const newHouseRules = {
 };
 // 户型填写验证
 export const newHouseRulesItem = {
-  nameitem: [{
+  'item.name': [{
       required: true,
       message: "请输入户型名称",
       trigger: "blur"
     },
     {
       min: 3,
-      max: 8,
-      message: "长度在 3 到 8 个字符",
+      max: 10,
+      message: "长度在 3 到 10 个字符",
       trigger: "blur"
     }
   ],
-  proportion: [{
+  'item.proportion': [{
       required: true,
       message: "请输入户型面积",
       trigger: "blur"

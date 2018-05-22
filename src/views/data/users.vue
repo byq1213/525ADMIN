@@ -52,7 +52,9 @@
             <el-table-column label="联系电话" prop="phone"></el-table-column>
             <el-table-column label="要求" prop="">
               <template slot-scope='scope'>
-                 <p v-text="`价格：${scope.row.price}元/月、面积：${scope.row.area}㎡`"></p>
+                 <p v-if="scope.row.mode ==3" v-text="`价格：${scope.row.price}万元、面积：${scope.row.area}㎡`"></p>
+                
+                 <p v-else v-text="`价格：${scope.row.price}元/月、面积：${scope.row.area}㎡`"></p>
                  <span v-if="scope.row.rentMode ==0">整租</span>
                  <span v-if="scope.row.rentMode ==1">合租</span>
               </template>
@@ -79,7 +81,9 @@
             <el-table-column label="联系电话" prop="phone"></el-table-column>
             <el-table-column label="要求" prop="">
               <template slot-scope='scope'>
-                 <p v-text="`价格：${scope.row.price}元/月、面积：${scope.row.area}㎡`"></p>
+                 <p v-if="scope.row.mode ==0" v-text="`价格：${scope.row.price}万元、面积：${scope.row.area}㎡`"></p>
+                
+                 <p v-else v-text="`价格：${scope.row.price}元/月、面积：${scope.row.area}㎡`"></p>
                  <span v-if="scope.row.rentMode ==0">整租</span>
                  <span v-if="scope.row.rentMode ==1">合租</span>
               </template>

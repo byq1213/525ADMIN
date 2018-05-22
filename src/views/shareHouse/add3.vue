@@ -387,6 +387,14 @@ export default {
     saveData() {
       this.$refs["formHouse3"].validate(valid => {
         if (valid) {
+          if (this.form.imgPath.length == 0) {
+            this.$notify.error({
+              title: "错误",
+              message: "请上传房源图片",
+              type: "success"
+            });
+            return 
+          }
           this.form.share = true;
           this.form.addBroker = this.getBroker();
           url.post("/house", this.form).then(res => {

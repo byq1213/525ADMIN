@@ -385,10 +385,19 @@ export default {
     saveData() {
       this.$refs["formHouse2"].validate(valid => {
         if (valid) {
+          if (this.form.imgPath.length == 0) {
+            this.$notify.error({
+              title: "错误",
+              message: "请上传房源图片",
+              type: "success"
+            });
+            return
+          }
           this.form.share = true;
           this.form.addBroker = this.getBroker();
           console.log("this.form :", this.form);
           url.post("/house2", this.form).then(res => {
+            this.$router.push("/meng/shareHouse/index");
             console.log(res);
           });
         } else {
@@ -400,7 +409,6 @@ export default {
     },
     // 上传图片
     uploadSuccess(response, file, fileList) {
-
       // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
       this.uploadFile(fileList);
     },

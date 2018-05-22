@@ -42,7 +42,8 @@
         </el-table-column>
         <el-table-column label="需求\发布\访问" prop="demand" min-width="200px">
           <template slot-scope='scope'>
-             <el-button type="primary" size="small" @click="viewUserInfo(scope.row._id)"> 查看</el-button>
+             <el-button v-if="scope.row.phone" type="primary" size="small" @click="viewUserInfo(scope.row._id)"> 查看</el-button>
+             <el-button v-else disabled="" type="primary" size="small" @click="viewUserInfo(scope.row._id)"> 查看</el-button>
           </template>
         </el-table-column>
       </el-table>

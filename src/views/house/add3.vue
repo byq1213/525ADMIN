@@ -11,7 +11,7 @@
       <el-form-item label="房源编号" prop="code">
         <el-input v-model="form.code" placeholder="请输入房源编号" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源名称"  prop="name">
+      <el-form-item label="标题"  prop="name">
         <el-input v-model="form.name" placeholder="请输入房源名称" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="房源租金"  prop="rent">
@@ -197,26 +197,25 @@ export default {
   mounted() {
     this.createMap();
     this.editHouse3();
-    
   },
   components: {},
   data() {
     return {
       house3Rules,
-      uploadImg:[],
+      uploadImg: [],
       BASE_API: process.env.BASE_API,
 
       form: {
         code: `Z${houseCodeFormat(new Date().getTime())}`,
         payType: {
-          charge:1,
-          pair:1,
+          charge: 1,
+          pair: 1
         },
         imgPath: [],
         tags: [],
         address: "太原市",
         addressComponents: {},
-        addressLatLng: {},
+        addressLatLng: {}
       },
       // 选择房屋设施
       checkAll: false,
@@ -240,18 +239,18 @@ export default {
   },
   methods: {
     // 修改租房信息
-        editHouse3() {
+    editHouse3() {
       if (this.$route.params.id) {
         let id = (this.editId = this.$route.params.id);
         url.get(`/house/${id}`).then(res => {
-        this.checkedCities = res.data.facility
+          this.checkedCities = res.data.facility;
           this.form = res.data;
           let imgPath = this.form.imgPath;
           imgPath.forEach(item => {
             this.uploadImg.push({
               name: "房源图片",
               url: `${this.BASE_API}uploads/${item}`,
-              response:{files:[`${item}`]}
+              response: { files: [`${item}`] }
             });
           });
         });
@@ -294,8 +293,7 @@ export default {
       // 获取详细信息
       this.geocoder = new qmap.Geocoder();
 
-      qmap.event.addListener(this.searchService, "click", res => {
-      });
+      qmap.event.addListener(this.searchService, "click", res => {});
       // 添加点击事件
       qmap.event.addListener(this.addressMap, "click", event => {
         // 获取到坐标
@@ -353,7 +351,7 @@ export default {
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
     },
-     showInput() {
+    showInput() {
       if (this.form.tags.length >= 4) {
         this.tagNotify("标签不能超过四个");
         return;
@@ -389,8 +387,15 @@ export default {
     saveData() {
       this.$refs["formHouse3"].validate(valid => {
         if (valid) {
+          if (this.form.imgPath.length == 0) {
+            this.$notify.error({
+              title: "错误",
+              message: "请上传房源图片",
+              type: "success"
+            });
+          }
           url.post("/house", this.form).then(res => {
-            this.$router.push('/House/list')
+            this.$router.push("/House/list");
           });
         } else {
           scrollTo(0, 0);

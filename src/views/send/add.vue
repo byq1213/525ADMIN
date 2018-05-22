@@ -49,21 +49,21 @@
         :visible.sync="addNeedDialog"
         width="30%"
         >
-        <el-form :model="addNeedForm" label-width="100px" size="small">
+        <el-form :model="addNeedForm" label-width="100px" size="small" ref="addNeedForm">
           <el-form-item label="类型">
             <el-select v-model="addNeedForm.mode" placeholder="">
               <el-option :value="2" label="租房"> </el-option>
               <el-option :value="3" label="买房"> </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="面积" >
+          <el-form-item label="面积" prop="area" :rules="{ required: true, message: '请输入面积', trigger: 'change' }">
             <el-input v-model="addNeedForm.area" placeholder="">
               <template slot="append">
                  ㎡
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item label="租金\价格" >
+          <el-form-item label="租金\价格" prop="price" :rules="{ required: true, message: '请输入租金', trigger: 'blur' }">
             <el-input v-if="addNeedForm.mode == 2" v-model="addNeedForm.price" placeholder="">
               <template slot="append">
                 元/月
@@ -87,12 +87,28 @@
               <el-option :value="1" label="合租"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="选择地址" prop="address" :rules="{ required: true, message: '请选择地址', trigger: 'blur' }">
+            <el-input v-model="addNeedForm.address" placeholder=""></el-input>
+          </el-form-item>
+          <el-form-item label="">
+            <el-button type="" @click="chooseAddress">选择地址</el-button>
+            
+          </el-form-item>
           <el-form-item label="">
             <el-button type="success" @click="saveData">添加</el-button>
             <el-button type="" @click="addNeedDialog = false">取消</el-button>
           </el-form-item>
         </el-form>
     
+      </el-dialog>
+      <el-dialog
+        title="选择地址"
+        :visible.sync="chooseAddressDialog"
+        width="30%"
+        >
+        
+        <chooseMap :addmapform="addmapform" @isAddressEvent="chooseMapAddress"></chooseMap>
+
       </el-dialog>
       
     </el-main>
@@ -101,6 +117,9 @@
 
 <script>
 import url from "@/utils/url";
+//选择地图
+import chooseMap from "@/components/chooseMap";
+
 let miniHouseType = [
   { label: "一居室", value: 0 },
   { label: "两居室", value: 1 },
@@ -109,6 +128,9 @@ let miniHouseType = [
   { label: "五居室以上", value: 4 }
 ];
 export default {
+  components: {
+    chooseMap
+  },
   created() {
     if (this.isBroker()) {
       this.form.brokerId = this.getBroker();
@@ -123,24 +145,49 @@ export default {
       form: { brokerId: "" },
       brokerLists: [],
       lists: [],
-      addNeedDialog: true,
+      addNeedDialog: false,
       addNeedForm: {
         mode: 2,
         houseType: 0,
         rentMode: 0
-      }
+      },
+      chooseAddressDialog: false,
+      addmapform: {}
     };
   },
   methods: {
+    chooseMapAddress(res) {
+      console.log("res :", res);
+      this.addNeedForm.address = res.address;
+      this.addNeedForm.longitude = res.addressLatLng.lng;
+      this.addNeedForm.latitude = res.addressLatLng.lat;
+      this.chooseAddressDialog = false;
+    },
+    //选择地址
+    chooseAddress() {
+      let form = {
+        address: "太原市",
+        addressComponents: {},
+        addressLatLng: { lat: 0, lng: 0 }
+      };
+      this.addmapform = form;
+      this.chooseAddressDialog = true;
+    },
     addNeedInfo(_id) {
       this.addNeedDialog = true;
       this.addNeedForm.uid = _id;
-      console.log(this.addNeedForm);
     },
     saveData() {
-      console.log(this.addNeedForm);
+      this.addNeedForm.brokerId = this.form.brokerId;
+      this.$refs['addNeedForm'].validate(valid => {
+        if (valid) {
+          return
+        } 
+      });
       url.post("/addNeed", this.addNeedForm).then(res => {
-        console.log("res :", res);
+        if (res.data) {
+          this.addNeedDialog = false;
+        }
       });
     },
     //经纪人列表

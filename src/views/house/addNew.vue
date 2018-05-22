@@ -32,12 +32,12 @@
          
          value-format="yyyy-MM"></el-date-picker>
       </el-form-item>
-      <!-- <el-form-item label="楼盘类型">
+      <el-form-item label="楼盘类型">
         <el-select v-model="form.scale" placeholder="">
-          <el-option label="高楼层" value="0"></el-option>
-          <el-option label="低楼层" value="1"></el-option>
+          <el-option label="普通住宅" value="0"></el-option>
+          <el-option label="别墅" value="1"></el-option>
         </el-select>
-      </el-form-item>       -->
+      </el-form-item>      
       <el-form-item label="建筑类型">
         <el-select v-model="form.height" placeholder="">
           <el-option label="高楼层" :value="0"></el-option>
@@ -91,13 +91,14 @@
           </span>
 
         </div>
+              <el-form  size="small" label-width="100px"   :ref="`newHouseRulesItem`">
            <div v-for="(item,index) in (form.houseType)" :key="index">
             <el-card class="app-item" style="display:flex">
-              <el-form  size="small" label-width="100px"   ref="newHouseRulesItem">
                 <el-form-item
                 label="户型名称"
->
-                  <el-input v-model="item.name" placeholder="" class="w20"  ></el-input>
+                :prop="`item.${index}.name`"
+                >
+                  <el-input v-model="item.name" :maxlength="10" placeholder="" class="w20"  ></el-input>
                 </el-form-item>
                 <el-form-item label="户型面积" prop="proportion">
                   <el-input v-model.number="item.proportion" placeholder="" class="w20">
@@ -118,6 +119,7 @@
                 </el-form-item>
                 <el-form-item label="户型上传" prop="imgPath">
                   <el-upload
+                  v-if="HouseTypeuploadImg[index]"
                   :action="BASE_API+'uploadFile'"
                   list-type="picture-card"
                   :on-remove="houseTypeRemove"
@@ -129,13 +131,25 @@
                     >
                   <i class="el-icon-plus"></i>
                   </el-upload>
+                                    <el-upload
+                  v-else
+                  :action="BASE_API+'uploadFile'"
+                  list-type="picture-card"
+                  :on-remove="houseTypeRemove"
+                  :on-success="houseTypeSuccess"
+                  :before-upload="beforeUpload"
+                  :headers="{index}"
+                  multiple=""
+                    >
+                  <i class="el-icon-plus"></i>
+                  </el-upload>
                 </el-form-item>
                 <el-form-item label="">
                   <el-button type="danger" size="small" style="display:flex;justify-content:flex-end" @click="  delHouseType(index)">删除</el-button>
                 </el-form-item>              
-                </el-form>
             </el-card>
            </div>
+                </el-form>
            <p>
           <span>
             <el-button type="success" @click="form.houseType.push({})">添加户型</el-button>
@@ -184,9 +198,13 @@
       <el-form-item label="绿化率" prop="greeningRate">
         <el-input-number v-model.number="form.greeningRate" placeholder="50" class="w20"></el-input-number> <span>%</span>
       </el-form-item>
-      <el-form-item label="规划停车位"  prop="park">
-        <el-input v-model.number="form.park" placeholder="请输入楼盘规划停车位" class="w20"></el-input>
-      </el-form-item>
+      <!-- <el-form-item label="规划停车位"  prop="park">
+        <el-input v-model.number="form.park" placeholder="请输入楼盘规划停车位" class="w20">
+          <template slot-scope='scope'>
+             
+          </template>
+        </el-input>
+      </el-form-item> -->
       <el-form-item label="物业公司" prop="property">
         <el-input v-model="form.property" placeholder="请输入楼盘物业公司" class="w20"></el-input>
       </el-form-item>
@@ -234,7 +252,7 @@ export default {
     return {
       BASE_API: process.env.BASE_API,
       uploadImg: [],
-      HouseTypeuploadImg: [ {eidtImg:[]}],
+      HouseTypeuploadImg: [{ eidtImg: [] }],
       form: {
         code: `X${houseCodeFormat(new Date().getTime())}`,
         imgPath: [],
@@ -242,7 +260,8 @@ export default {
         tags: [],
         address: "太原市",
         addressComponents: {},
-        addressLatLng: {}
+        addressLatLng: {},
+        scale: 0
       },
       formRules: newHouseRules,
       itemRules: newHouseRulesItem,
@@ -274,17 +293,17 @@ export default {
             });
           });
           houseTypeArr.forEach((item, index) => {
-            item.editImg=[]
+            item.editImg = [];
             item.imgPath.forEach(imgItem => {
               item.editImg.push({
                 name: "户型图片",
                 url: `${this.BASE_API}uploads/${imgItem}`,
-                response: { files: [`${imgItem}`],index:index }
+                response: { files: [`${imgItem}`], index: index }
               });
             });
           });
-          this.HouseTypeuploadImg = houseTypeArr
-          console.log('houseTypeArr :', houseTypeArr);
+          this.HouseTypeuploadImg = houseTypeArr;
+          console.log("houseTypeArr :", houseTypeArr);
         });
         // 设置房源图片
       }
@@ -411,6 +430,13 @@ export default {
         // });
         console.log("this.form :", this.form);
         if (valid) {
+          if (this.form.imgPath.length == 0) {
+            this.$notify.error({
+              title: "错误",
+              message: "请上传房源图片",
+              type: "success"
+            });
+          }
           url.post("/houseNew", this.form).then(res => {
             this.$router.push("/House/list");
           });
@@ -447,20 +473,20 @@ export default {
 
     // 户型图上传
     // 上传图片
-    houseTypeSuccess(response, file, fileList,) {
+    houseTypeSuccess(response, file, fileList) {
       // console.log(response); //["bdd5da6eec56cb9585537329fd55417b.png"]
 
       this.houseTypeFile(fileList, file.response.index);
     },
     houseTypeRemove(file, fileList) {
-      console.log('file :', file);
-      console.log('fileList :', fileList);
+      console.log("file :", file);
+      console.log("fileList :", fileList);
       this.houseTypeFile(fileList, file.response.index);
     },
     // 处理最后上传的数据
     houseTypeFile(fileList, index) {
-      console.log('fileList :', fileList);
-      console.log('index :', index);
+      console.log("fileList :", fileList);
+      console.log("index :", index);
       let data = [];
       fileList.forEach(list => {
         data.push(list.response.files[0]);

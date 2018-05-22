@@ -27,7 +27,7 @@ module.exports = {
     'qmap': 'window.qq.maps'
   },
   entry: {
-    app: './src/main.js'
+    app: ["babel-polyfill", "./src/main.js"]
   },
   output: {
     path: config.build.assetsRoot,

@@ -9,11 +9,11 @@
       <el-form-item label="房源编号" prop="code" >
         <el-input v-model="form.code" placeholder="请输入房源编号" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源名称" prop="name" >
+      <el-form-item label="标题" prop="name" >
         <el-input v-model="form.name" placeholder="请输入房源名称" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="参考价格" prop="rent">
-        <el-input v-model.number="form.rent" placeholder="请输入房源租金" class="w20">
+        <el-input v-model.number="form.rent" placeholder="请输入参考价格" class="w20">
           <template slot="append">
             万
           </template>
@@ -49,23 +49,6 @@
          placeholder=""
          type="year"></el-date-picker>
       </el-form-item>
-      <!-- <el-form-item label="房源朝向">
-        <el-input v-model="form.code" placeholder="请输入房源朝向" class="w20"></el-input>
-      </el-form-item> -->
-      <!-- <el-form-item label="出租方式">
-        <el-select v-model="form.type" placeholder="出租方式">
-          <el-option value='整租' label="整租" ></el-option>
-          <el-option value='合租' label="合租" ></el-option>
-        </el-select>
-      </el-form-item>  -->
-      <!-- <el-form-item label="支付方式">
-          <el-input v-model="form.payType.charge" placeholder="" class="w10">
-            <template slot="prepend">押</template>
-          </el-input>
-          <el-input v-model="form.payType.pair" placeholder="" class="w10">
-            <template slot="prepend">付</template>
-          </el-input>
-      </el-form-item> -->
       <el-form-item label="楼层">
         <el-select v-model="form.level" placeholder="" >
           <el-option :value="1" label="低楼层"></el-option>
@@ -215,7 +198,7 @@ export default {
         tags: [],
         address: "太原市",
         addressComponents: {},
-        addressLatLng: {lat:0,lng:0},
+        addressLatLng: { lat: 0, lng: 0 },
         room: {
           s: 1,
           t: 1,
@@ -385,8 +368,16 @@ export default {
     saveData() {
       this.$refs["formHouse2"].validate((valid, rules) => {
         if (valid) {
+          if (this.form.imgPath.length == 0) {
+            this.$notify.error({
+              title: "错误",
+              message: "请上传房源图片",
+              type: "success"
+            });
+            return
+          }
           url.post("/house2", this.form).then(res => {
-            this.$router.push('/House/list')
+            this.$router.push("/House/list");
           });
         } else {
           scrollTo(0, 0);

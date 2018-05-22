@@ -8,6 +8,12 @@
         </el-form-item>
       </el-form>
       <el-table :data="lists">
+        <el-table-column label="排序">
+          <template slot-scope='scope'>
+<el-button @click="upIndex(scope.$index)" type="primary" size="mini">向上</el-button>
+    <el-button  @click="downIndex(scope.$index)" type="success" size="mini">向下</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="图片" prop="">
           <template slot-scope='scope'>
              <img :src="BASE_API+'uploads/'+scope.row.imgPath" alt="" class="avatarUrl">
@@ -25,6 +31,7 @@
         </el-table-column>
         <el-table-column label="操作" prop="">
           <template slot-scope='scope'>
+             <el-button type="" size="small" @click="editSwiper(scope.$index)"> 修改</el-button>
              <el-button type="warning" size="small" @click="delSwiper(scope.row._id)"> 删除</el-button>
           </template>
         </el-table-column>
@@ -139,10 +146,39 @@ export default {
       addHouseDialog: false, //动态模糊狂
       house3Lists: [], //租房
       house2Lists: [], //二手房
-      house1Lists: [] //新房
+      house1Lists: [], //新房
+      uploadImg: []
     };
   },
   methods: {
+    upIndex(index) {
+      let lists = this.lists;
+      let data = [
+        { _id: lists[index]._id, index: lists[index].index },
+        { _id: lists[index - 1]._id, index: lists[index - 1].index }
+      ];
+      url.post("/SwiperchangeIndex", data).then(res => {
+        this.getSwiperLists();
+      });
+    },
+        downIndex(index) {
+      let lists = this.lists;
+      let data = [
+        { _id: lists[index]._id, index: lists[index].index },
+        { _id: lists[index + 1]._id, index: lists[index + 1].index }
+      ];
+      url.post("/SwiperchangeIndex", data).then(res => {
+        this.getSwiperLists();
+      });
+    },
+    //编辑轮播图
+    editSwiper(index) {
+      let info = this.lists[index];
+      console.log("info :", info);
+      this.dialogVisible = true;
+      this.uploadImg = info.imgPath;
+      this.form = info;
+    },
     uploadSuccess(response, file, fileList) {
       console.log(response);
 
@@ -189,6 +225,7 @@ export default {
       this.addHouseDialog = false;
     },
     saveData() {
+      console.log("this.form :", this.form);
       url.post("/swiper", this.form).then(res => {
         if (res.data.code == 200) {
           this.form = {
@@ -201,8 +238,15 @@ export default {
     },
     getSwiperLists() {
       url.get("/swiper").then(res => {
-        this.lists = res.data.data;
+        this.lists = res.data.data.sort(this.compare("index"));
       });
+    },
+    compare(property) {
+      return function(obj1, obj2) {
+        var value1 = obj1[property];
+        var value2 = obj2[property];
+        return value1 - value2; // 升序
+      };
     },
     delSwiper(id) {
       this.$confirm("确认删除？", "提示", {
