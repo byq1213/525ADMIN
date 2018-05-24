@@ -80,10 +80,12 @@
 <script>
 import url from "@/utils/url";
 let rules = {
-  nickName: [{ required: true, message: "请选择用户成为经纪人", trigger: "blur" }],
+  nickName: [
+    { required: true, message: "请选择用户成为经纪人", trigger: "blur" }
+  ],
   brokerName: [
     { required: true, message: "经纪人姓名不能为空", trigger: "blur" },
-    { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
+    { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" }
   ],
   brokerPhone: [
     { required: true, message: "联系方式不能为空", trigger: "blur" },
@@ -162,26 +164,38 @@ export default {
 
         this.$notify({
           title: "添加经纪人",
-          message: h(
-            "i",
-            { style: "color: teal" },
-            "请认真填写信息"
-          )
+          message: h("i", { style: "color: teal" }, "请认真填写信息")
         });
-        return 
+        return;
       }
       let data = {
         _id: this.changeUser._id,
         brokerInfo: this.form
       };
-      // 新增经纪人
-      url.post(`/broker/`, data).then(res => {
-        if (res.data.code == 200) {
-          this.$router.push("/broker/list");
-        }
-      });
-      //经纪人二维码生成
-      url.post('/qrcode',{id:this.changeUser._id})
+      url
+        .post("/checkBrokerId", {
+          _id: this.changeUser._id,
+          loginId: this.form.loginId
+        })
+        .then(res => {
+          if (res.data.code == 200) {
+            // 新增经纪人
+            url.post(`/broker/`, data).then(res => {
+              if (res.data.code == 200) {
+                this.$router.push("/broker/list");
+              }
+            });
+            //经纪人二维码生成
+            url.post("/qrcode", { id: this.changeUser._id });
+          } else if (res.data.code == 400) {
+            this.$notify({
+              title: "警告",
+              message: "重复登录账号，请尝试更换",
+              type: "warning"
+            });
+          }
+        });
+      return;
     },
     showUserLists() {
       // 选择用户弹出 已注册用户信息

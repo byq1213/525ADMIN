@@ -50,14 +50,28 @@
           </template>
         </el-table-column>
         <el-table-column label="房源价格" prop="price"></el-table-column>
+        <el-table-column label="客户姓名" prop="userName"></el-table-column>
+        <el-table-column label="联系方式" prop="phone"></el-table-column>
         <el-table-column label="备注" prop="remark"></el-table-column>
-        <el-table-column label="操作" prop="">
+        <el-table-column label="操作" prop="" width="200">
           <template slot-scope='scope'>
-          <el-button type="" size="small" @click="delFinish(scope.row._id)">删除</el-button>
+          <el-button type="" size="mini" @click="delFinish(scope.row._id)">删除</el-button>
+          <el-button type="primary" size="mini" @click="showHouseInfo(scope.row)">房源详情</el-button>
           </template>
         </el-table-column>
 
       </el-table>
+       <el-dialog   
+          title="房源信息"
+          :visible.sync="house3ViewVisible"
+          width="400px"
+          >
+          <houseView v-if="houseType == 1" :houseId = "houseId"></houseView>
+
+          <house2View v-if="houseType == 2" :house2Id="houseId"></house2View>
+
+          <house3View v-if="houseType == 3" :house3Id="houseId"></house3View>
+          </el-dialog>
              <div class="page">
         <el-pagination
           background
@@ -74,8 +88,16 @@
 
 <script>
 import url from "@/utils/url";
+import house3View from "../house/house3View";
+import house2View from "../house/house2View"; //二手房详情弹窗
+import houseView from "../house/houseView"; //二手房详情弹窗
 
 export default {
+  components: {
+    house3View,
+    house2View,
+    houseView,    
+  },
   mounted() {
     this.getViewsLists();
     this.getBrokerList();
@@ -95,10 +117,28 @@ export default {
       limit: this.$store.state.app.limit,
       count: 0,
       skip: 0,
-      brokerLists: [] //经纪人列表
+      brokerLists: [], //经纪人列表
+      house3ViewVisible: false, //房源信息
+      houseId: "",
+      houseType:0,
     };
   },
   methods: {
+    showHouseInfo(house){
+      this.houseType = house.houseType
+      this.houseId = house.houseId
+      if(!this.houseId){
+        this.$message({
+          type:'warning',
+          message:'暂无房源信息'
+        })
+        return
+      }
+      this.house3ViewVisible = true
+      // console.log('this.houseType :', this.houseType);
+      // console.log('this.houseId :', this.houseId);
+      // console.log('this.house3ViewVisible :', this.house3ViewVisible);
+    },
     getFinishLists() {
       url.get("/finish").then(res => {
         this.lists = res.data.data;
@@ -155,11 +195,11 @@ export default {
       // console.log("id :", id);
       url.delete(`/finish/${id}`).then(res => {
         console.log("res.data :", res.data);
-        if(res.data.n){
+        if (res.data.n) {
           this.$message({
-            message:'删除成功',
-          })
-          this.getViewsLists()
+            message: "删除成功"
+          });
+          this.getViewsLists();
         }
       });
     }

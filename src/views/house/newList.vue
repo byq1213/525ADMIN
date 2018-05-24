@@ -38,6 +38,11 @@
               <el-button type="danger" size="mini" @click="downHouse(scope.row._id)">下架</el-button>
             </template>
           </el-table-column>
+                    <el-table-column label="查看" v-else>
+            <template slot-scope='scope'>
+               <el-button type="" size="mini" @click="viewHouseInfo(scope.row._id)">详情</el-button>
+            </template>
+          </el-table-column>
         </el-table>
                 <el-dialog
         title="下架列表"

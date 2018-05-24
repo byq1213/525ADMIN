@@ -6,13 +6,13 @@
       <el-table :data="lists" border >
         <el-table-column label="头像" prop="uid.avatarUrl">
           <template slot-scope='scope'>
-             <img v-if="scope.row.uid.avatarUrl" :src="scope.row.uid.avatarUrl" class="avatarUrl" alt="">
+             <img v-if="scope.row.uid" :src="scope.row.uid.avatarUrl" class="avatarUrl" alt="">
              <span v-else v-text="'尚未提供信息'"></span>
           </template>
         </el-table-column>
         <el-table-column label="昵称" prop="uid.nickName">
           <template slot-scope='scope'>
-            <span v-if="scope.row.uid.nickName" v-text="scope.row.uid.nickName" ></span>
+            <span v-if="scope.row.uid" v-text="scope.row.uid.nickName" ></span>
              <span v-else v-text="'尚未提供信息'"></span>
           </template>
 

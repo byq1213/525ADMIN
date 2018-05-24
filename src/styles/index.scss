@@ -114,7 +114,7 @@ tbody tr td {
       margin: .5em 0;
       text-decoration: underline;
       color: #409EFF;
-      cursor:hand;
+      cursor: hand;
       cursor: pointer;
     }
   }
@@ -124,7 +124,7 @@ tbody tr td {
 } // 头像信息
 .avatarUrl {
   width: 50px;
-  max-height:50px;
+  max-height: 50px;
   border-radius: 50px;
 }
 
@@ -159,7 +159,17 @@ tbody tr td {
   text-align: center;
   margin: 20px auto;
 }
+
 // 图片上传提示
-.imgImpose{
-  color:#999;
+.imgImpose {
+  color: #999;
+}
+
+// 房源详情
+.houseViewImg {
+  max-height: 60px;
+  border: 1px solid rgb(189, 189, 189);
+  margin: 4px 6px;
+  padding: 2px
+
 }

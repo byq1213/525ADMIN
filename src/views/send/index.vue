@@ -24,7 +24,7 @@
             </el-select>
           </el-form-item>
                 <el-form-item label="经纪人" v-if="this.isBroker()">
-        <el-select v-model="this.getBroker()" placeholder="">
+        <el-select v-model="this.getBroker()" placeholder="" disabled="">
           <el-option label="全部" value=""></el-option>
           <!-- <el-option v-for="(item,index) in this.$store.state.app.brokers" :key="index" :label="item.label" :value="item.value"></el-option> -->
           <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>

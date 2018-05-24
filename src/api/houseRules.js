@@ -70,8 +70,8 @@ export const newHouseRules = {
 
   license: [{
     min: 3,
-    max: 15,
-    message: "长度在 3 到 15 个字符",
+    max: 20,
+    message: "长度在 3 到 20 个字符",
     trigger: "blur"
   }],
   ageLimit: [{

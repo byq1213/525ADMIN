@@ -62,9 +62,17 @@
       <el-form-item label="小区">
         <el-input disabled="" v-model="info.cell" placeholder=""></el-input>
       </el-form-item>
-      <el-form-item label="房源名称">
+      <el-form-item label="房源图片">
        <span v-for="(item,index) in info.imgPath" :key="index">
-         <img :src="`${BASE_API}uploads/${item}`" style="max-height:30px" />
+         <!-- <img :src="`${BASE_API}uploads/${item}`" style="max-height:30px" /> -->
+          <el-popover
+          placement="right"
+          width="600"
+          trigger="hover">
+          <img :src="`${BASE_API}uploads/${item}`" style="width:100%"/>
+          <img  slot="reference" :src="`${BASE_API}uploads/${item}`" class="houseViewImg">
+          <!-- <el-button slot="reference">click 激活</el-button> -->
+        </el-popover>
        </span>
       </el-form-item>
       <el-form-item label="房源亮点">
@@ -107,7 +115,8 @@ export default {
   data() {
     return {
       BASE_API: process.env.BASE_API,
-      info: {}
+      info: {},
+      showImgDialog: false
     };
   },
   methods: {

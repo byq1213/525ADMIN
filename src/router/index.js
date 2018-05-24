@@ -198,9 +198,21 @@ export const asyncRouterMap = [{
       },
       {
         path: 'testPag123123452345e',
-        name: 'EditA1dd3',
+        name: 'EditA1d123d3',
         hidden: true,
 
+        meta: {
+          title: '修改租123房信息',
+          icon: '',
+          roles: ['admin','view']
+        }
+      },
+      {
+        path: 'add3/:id',
+        name: 'EditAdd3',
+        hidden: true,
+        component: () =>
+          import ('@/views/house/add3'),
         meta: {
           title: '修改租房信息',
           icon: '',
@@ -241,9 +253,8 @@ export const asyncRouterMap = [{
       }, 
       {
         path: 'testPag12311231345234523452345e',
-        name: 'EditA1dd3',
+        name: 'EditA1d123d3',
         hidden: true,
-
         meta: {
           title: '修改租房信息',
           icon: '',
@@ -266,21 +277,31 @@ export const asyncRouterMap = [{
     ]
   },
   {
-    path: '/broker',
+    path: '/hit',
     component: Layout,
     meta: {
-      title: '经纪人管理',
-      icon: '分销管理'
+      title: '提醒设置',
+      icon: '图文管理'
     },
     children: [
+      {
+        path: 'testPag11232311231345234523452345e',
+        name: 'EditA1d112323d3',
+        hidden: true,
+        meta: {
+          title: '修改租房信息',
+          icon: '',
+          roles: ['admin','view']
+        }
+      },
       {
         path: 'expire',
         name: 'expirehList',
         component: () =>
           import ('@/views/finish/expire'),
         meta: {
-          title: '到期提醒',
-          icon: '订单管理',
+          title: '租房到期提醒',
+          icon: '',
           roles: ['admin', 'view']
         }
       },

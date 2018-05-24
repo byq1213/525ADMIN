@@ -184,7 +184,8 @@ const cityOptions = [
   "冰箱",
   "电视",
   "床",
-  "衣柜"
+  "衣柜",
+  "阳台"
 ];
 
 // import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
