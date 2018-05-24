@@ -27,7 +27,6 @@
         <el-table-column label="联系方式" prop="phone">
                         <template slot-scope='scope'>
                  <span v-if="scope.row.phone" v-text="scope.row.phone"></span>
-                 <span v-else v-text="`游客`"></span>
               </template>
         </el-table-column>
         <el-table-column label="注册时间">
@@ -43,7 +42,8 @@
         <el-table-column label="需求\发布\访问" prop="demand" min-width="200px">
           <template slot-scope='scope'>
              <el-button v-if="scope.row.phone" type="primary" size="small" @click="viewUserInfo(scope.row._id)"> 查看</el-button>
-             <el-button v-else disabled="" type="primary" size="small" @click="viewUserInfo(scope.row._id)"> 查看</el-button>
+             
+             <el-button v-else disabled="" type="" size="small" > 游客</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,7 +55,7 @@
           <div slot="header">
             用户需求
           </div>
-          <el-table :data="userInfo.needLists" size='mini'>
+          <el-table :stripe="1" :data="userInfo.needLists" size='mini'>
             <el-table-column label="发布时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)  ).toLocaleString()"></span>
@@ -84,7 +84,7 @@
           <div slot="header">
             用户发布
           </div>
-          <el-table :data="userInfo.issueLists" size='mini'>
+          <el-table :stripe="1" :data="userInfo.issueLists" size='mini'>
             <el-table-column label="发布时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)  ).toLocaleString()"></span>
@@ -107,11 +107,11 @@
             </el-table-column>
           </el-table>
         </el-card>
-        <!-- <el-card class="app-item">
+        <el-card class="app-item">
           <div slot="header">
             访问记录
           </div>
-          <el-table :data="userInfo.historyLists" size='mini'>
+          <el-table :stripe="1" :data="userInfo.historyLists" size='mini'>
             <el-table-column label="访问时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)).toLocaleString()"></span>
@@ -124,7 +124,7 @@
               </template>
             </el-table-column>
           </el-table>
-        </el-card> -->
+        </el-card>
        </el-dialog>
        <div class="page">
         <el-pagination

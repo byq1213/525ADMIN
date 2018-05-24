@@ -93,7 +93,8 @@
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
           :file-list="uploadImg"
-          multiple="">
+          multiple=""
+          :headers="this.getcsrf()">
           <i class="el-icon-plus"></i>
           </el-upload>
         <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。</span>

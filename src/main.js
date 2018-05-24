@@ -15,11 +15,12 @@ import store from './store'
 import { timetrans,beforeUpload} from '@/utils/index'
 import '@/icons' // icon
 import '@/permission' // permission control
-import {isBroker,getBroker} from '@/utils/auth'; //判断是否为经纪人
+import {isBroker,getBroker,getcsrf} from '@/utils/auth'; //判断是否为经纪人
 Vue.prototype.timetrans = timetrans
 Vue.prototype.beforeUpload = beforeUpload
 Vue.prototype.isBroker = isBroker
 Vue.prototype.getBroker = getBroker
+Vue.prototype.getcsrf = getcsrf
 Date.prototype.format = function(fmt) { 
   var o = { 
      "M+" : this.getMonth()+1,                 //月份 

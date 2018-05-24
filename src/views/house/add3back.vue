@@ -92,6 +92,7 @@
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
+          :headers="this.getcsrf()"
           multiple="">
           <i class="el-icon-plus"></i>
           </el-upload>

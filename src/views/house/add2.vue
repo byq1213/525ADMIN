@@ -40,10 +40,14 @@
             卫
           </template>
         </el-input>
+
         <!-- <el-select v-model="form.room" placeholder="请选择居室数量">
           <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select> -->
       </el-form-item>
+              <el-form-item label="房源朝向">
+          <el-input v-model="form.orientation" placeholder="" class="w20"></el-input>
+        </el-form-item>
       <el-form-item label="房源年代">
         <el-date-picker v-model="form.age"
          placeholder=""
@@ -90,7 +94,8 @@
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
-          :file-list="uploadImg">
+          :file-list="uploadImg"
+          :headers="this.getcsrf()">
           <i class="el-icon-plus"></i>
           </el-upload>
         <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。（首张图片为主图）</span>

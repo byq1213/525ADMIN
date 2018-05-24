@@ -47,6 +47,7 @@
             :action="BASE_API + 'uploadFile'"
             :on-success="uploadSuccess"
             :show-file-list="false"
+            :headers="this.getcsrf()"
             >
             <img v-if="form.imgPath" :src="BASE_API + 'uploads/'+ form.imgPath" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>

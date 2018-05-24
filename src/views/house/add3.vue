@@ -93,6 +93,7 @@
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
           :file-list="uploadImg"
+          :headers="this.getcsrf()"
           multiple="">
           <i class="el-icon-plus"></i>
           </el-upload>

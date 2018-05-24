@@ -29,7 +29,8 @@
             :action="`${BASE_API}uploadFile`"
             :show-file-list="false"
             :on-success="uploadSuccess"
-            :before-upload="beforeAvatarUpload">
+            :before-upload="beforeAvatarUpload"
+            :headers="this.getcsrf()">
             <img v-if="form.brokerAvatarUrl" :src="`${BASE_API}/uploads/${form.brokerAvatarUrl}`" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>

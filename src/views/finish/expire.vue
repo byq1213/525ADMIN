@@ -50,11 +50,12 @@
         </el-form-item>
       </el-form>
     <!-- 到期提醒 -->
-    <el-table :data="lists">
+    <el-table :data="lists" :stripe="true">
       
       <el-table-column label="剩余时间" :fixed="true">
         <template slot-scope='scope'>
            <span v-if="scope.row.expireTime > nowTime" v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span>
+           <span v-else style="color:red">已到期</span>
         </template>
       </el-table-column>
             <el-table-column label="到期时间" width="140">
@@ -69,7 +70,7 @@
       </el-table-column>
       <el-table-column label="成交经纪人" prop="brokerName" width="140"></el-table-column>
      
-      <el-table-column label="成交租金">
+      <el-table-column label="成交租金" width="120px">
         <template slot-scope='scope'>
            <span v-text="`${scope.row.rent}元/月`"></span>
         </template>
@@ -90,10 +91,16 @@
        <el-table-column label="出租房源" prop="houseCode" width="140">
         <template slot-scope='scope'>
           <span>{{scope.row.houseCode}}</span>
-          <el-button type="" size="mini" @click="house3Id = scope.row.houseId; house3ViewVisible = true">详情</el-button>
         </template>
       </el-table-column>
       <el-table-column label="备注" prop="rentRemark"></el-table-column>
+      <el-table-column label="操作" prop="" fixed="right" width="200px">
+        <template slot-scope='scope'>
+        <el-button type="primary" size="mini" @click="expireForm = scope.row; expireDialog =true">修改</el-button>
+          <el-button type="" size="mini" @click="house3Id = scope.row.houseId; house3ViewVisible = true">房源详情</el-button>
+        
+        </template>
+      </el-table-column>
     </el-table>
             <el-dialog   
           title="房源信息"
@@ -102,47 +109,106 @@
           >
           <house3View :house3Id = "house3Id"></house3View>
           </el-dialog>
+           <el-dialog
+         title="到期提醒"
+         :visible.sync="expireDialog"
+         width="30%"
+         @close="closeEv"
+         >
+         <el-form :model="expireForm" size="small" label-width="100px">
+           <el-form-item label="到期时间">
+             <el-date-picker v-model="expireForm.expireTime" placeholder="" value-format="timestamp"></el-date-picker>
+           </el-form-item>
+           <el-form-item label="成交租金">
+             <el-input v-model="expireForm.rent" placeholder="请输入租金" class="w20">
+               <template slot="append">
+                 元
+               </template>
+             </el-input>
+           </el-form-item>
+           <el-form-item label="出租方式">
+             <el-select v-model="expireForm.rentMode" placeholder="">
+               <el-option label="合租" :value="0"></el-option>
+               <el-option label="整租" :value="1"></el-option>
+             </el-select>
+           </el-form-item>
+           <el-form-item label="付款方式">
+             <el-input v-model="expireForm.payType" placeholder="" class="w20"></el-input>
+           </el-form-item>
+           <el-form-item label="客户姓名">
+             <el-input v-model="expireForm.userName" placeholder="请输入客户姓名" class="w20"></el-input>
+           </el-form-item>
+           <el-form-item label="客户联系方式">
+             <el-input v-model="expireForm.phone" placeholder="请输入客户联系方式" class="w20"></el-input>
+           </el-form-item>
+           <el-form-item label="所属小区地址">
+             <el-input v-model="expireForm.address" placeholder="请输入所属小区地址"></el-input>
+           </el-form-item>
+           <el-form-item label="备注信息">
+             <el-input v-model="expireForm.rentRemark" type="textarea" placeholder="请输入备注信息，如110栋1单元1101A室"></el-input>
+           </el-form-item>
+           <el-form-item label="">
+             <el-button type="success" @click="saveExp">保存</el-button>
+             <el-button type="" @click="expireDialog = false">取消</el-button>
+           </el-form-item>
+         </el-form>
+
+       </el-dialog>
     </el-main>
   </div>
 </template>
 
 <script>
 import url from "@/utils/url";
-import house3View from '../house/house3View';
+import house3View from "../house/house3View";
 
 export default {
-  components:{
-    house3View,
+  components: {
+    house3View
   },
-  mounted(){
-    this.getBrokerList()
-    this.getExpireList()
+  mounted() {
+    this.getBrokerList();
+    this.getExpireList();
   },
   data() {
     return {
+      expireDialog: false,
+      expireForm: {},
       form: {
-        brokerId:''
+        brokerId: ""
       },
       lists: [],
-      brokerLists:[],
-      nowTime :new Date().getTime(),
-      house3ViewVisible:false,//房源信息
-      house3Id:'',
+      brokerLists: [],
+      nowTime: new Date().getTime(),
+      house3ViewVisible: false, //房源信息
+      house3Id: ""
     };
   },
   methods: {
-    search(){
-      this.getExpireList()
+    saveExp() {
+      url.post("/createExp", this.expireForm).then(res => {
+        if (res.data.code == 200) {
+          this.$message({
+            type: "success",
+            message: "修改成功!"
+          });
+          this.expireDialog = false;
+          // this.$router.push("./list");
+        }
+      });
+    },
+    search() {
+      this.getExpireList();
     },
     getBrokerList() {
       url.post("/brokerLists").then(res => {
         this.brokerLists = res.data;
       });
     },
-    getExpireList(){
-      url.post('/getExpireList',this.form).then(res=>{
-        this.lists = res.data
-      })
+    getExpireList() {
+      url.post("/getExpireList", this.form).then(res => {
+        this.lists = res.data;
+      });
     }
   }
 };

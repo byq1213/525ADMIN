@@ -36,3 +36,7 @@ export function removeBroker(){
   return Cookies.remove(brokerKey)
 
 }
+export function getcsrf(index =0) {
+  
+  return { 'x-csrf-token':Cookies.get('csrfToken'),index,}
+}

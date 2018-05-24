@@ -34,8 +34,8 @@
       </el-form-item>
       <el-form-item label="楼盘类型">
         <el-select v-model="form.scale" placeholder="">
-          <el-option label="普通住宅" value="0"></el-option>
-          <el-option label="别墅" value="1"></el-option>
+          <el-option label="普通住宅" :value="0"></el-option>
+          <el-option label="别墅" :value="1"></el-option>
         </el-select>
       </el-form-item>      
       <el-form-item label="建筑类型">
@@ -115,7 +115,7 @@
                   </el-input>
                 </el-form-item>
                 <el-form-item label="户型朝向">
-                  <el-input v-model="item.orientation" placeholder="" class="w20" placeholder="南北朝向"></el-input>
+                  <el-input v-model="item.orientation" class="w20" placeholder="南北朝向"></el-input>
                 </el-form-item>
                 <el-form-item label="户型上传" prop="imgPath">
                   <el-upload
@@ -125,8 +125,8 @@
                   :on-remove="houseTypeRemove"
                   :on-success="houseTypeSuccess"
                   :before-upload="beforeUpload"
-                  :headers="{index}"
                   :file-list="HouseTypeuploadImg[index].editImg"
+                  :headers="newTest(index)"
                   multiple=""
                     >
                   <i class="el-icon-plus"></i>
@@ -138,7 +138,7 @@
                   :on-remove="houseTypeRemove"
                   :on-success="houseTypeSuccess"
                   :before-upload="beforeUpload"
-                  :headers="{index}"
+                  :headers="newTest(index)"
                   multiple=""
                     >
                   <i class="el-icon-plus"></i>
@@ -167,7 +167,8 @@
           :on-remove="uploadRemove"
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
-          :file-list="uploadImg">
+          :file-list="uploadImg"
+          :headers="this.getcsrf()">
           <i class="el-icon-plus"></i>
           </el-upload>
         <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。</span>
@@ -277,6 +278,10 @@ export default {
     };
   },
   methods: {
+    // 新房csrf设置
+    newTest(index){
+      return this.getcsrf(index)
+    },
     //修改新房信息
     editHouse() {
       if (this.$route.params.id) {

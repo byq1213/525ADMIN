@@ -87,6 +87,9 @@
               <el-option :value="1" label="合租"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="房源备注">
+            <el-input v-model="addNeedForm.remarks" placeholder="" type="textarea"></el-input>
+          </el-form-item>
           <el-form-item label="选择地址" prop="address" :rules="{ required: true, message: '请选择地址', trigger: 'blur' }">
             <el-input v-model="addNeedForm.address" placeholder=""></el-input>
           </el-form-item>

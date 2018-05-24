@@ -3,15 +3,33 @@
     <!-- 添加成交房源 -->
     <el-main>
 
-    <el-form :model="form" label-width="100px">
-      <el-form-item label="添加经纪人">
+    <el-form :model="form" label-width="100px" ref="finishForm">
+      <el-form-item label="添加经纪人" prop="brokerId" :rules="[{
+        required :true,message:'请添加经纪人',trigger:'blur'
+      }]">
         <el-select v-model="form.brokerId" placeholder="">
           <el-option v-for="(item,index) in brokerList" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="房源信息">
-        <el-input v-model="form.houseName" placeholder="" class="w20"></el-input>
-        <el-button type="primary" @click="showHouse">选择房源信息</el-button>
+      <el-form-item label="线上房源" v-if="false">
+          <el-switch
+            v-model="online"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+          </el-switch>
+        <span v-if="online" style="color:#999">   选择线上房源</span>
+        <span v-else style="color:#999">   手动添加线下房源</span>
+      </el-form-item>
+      <el-form-item label="房源信息" prop="houseName" :rules="{
+        required :true,message:'请添加房源信息',trigger:'blur'
+      }">
+        <el-input v-model="form.houseName" :placeholder="houseTypeHit[(form.houseType-1)]" class="w20"></el-input>
+        <el-button v-if="online" type="primary" @click="showHouse">选择房源信息</el-button>
+          <el-button-group v-else>
+            <el-button type="primary" @click="form.houseType = 2">二手房</el-button>
+            <el-button type="primary" @click="form.houseType =3" >租房</el-button>
+            <el-button type="primary" @click="form.houseType =1">新房</el-button>
+          </el-button-group>
       </el-form-item>
       <el-form-item label="成交时间">
         <el-date-picker
@@ -24,6 +42,12 @@
       </el-form-item>
       <el-form-item label="售出价格">
         <el-input v-model="form.price" placeholder="“1000元/月” 或 “100万/套”" class="w20"></el-input>
+      </el-form-item>
+      <el-form-item label="客户姓名">
+        <el-input v-model="form.userName" placeholder="请输入客户姓名" class="w20"></el-input>
+      </el-form-item>
+       <el-form-item label="联系方式">
+        <el-input v-model="form.phone" placeholder="请输入联系方式" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="备注">
         <el-input v-model="form.remark" placeholder="" type="textarea" class="w20"></el-input>
@@ -149,9 +173,12 @@ export default {
   },
   data() {
     return {
+      houseTypeHit: ["请输入新房信息", "请输入二手房信息", "请输入租房信息"],
+      online: true, //线上房源
       form: {
         brokerId: "",
-        time: new Date().getTime()
+        time: new Date().getTime(),
+        houseType: 3
       },
       BASE_API: process.env.BASE_API,
       expireDialog: false, //到期提醒
@@ -163,18 +190,18 @@ export default {
       expireForm: {}
     };
   },
-    watch:{
-    'form.brokerId' (res) {
+  watch: {
+    "form.brokerId"(res) {
       this.brokerList.forEach(item => {
-        if(item._id == res){
-          this.form.brokerName = item.brokerInfo.brokerName
+        if (item._id == res) {
+          this.form.brokerName = item.brokerInfo.brokerName;
         }
       });
     }
   },
   methods: {
-    closeEv(){
-      this.$router.push('./list')
+    closeEv() {
+      this.$router.push("./list");
     },
     saveExp() {
       url.post("/createExp", this.expireForm).then(res => {
@@ -225,15 +252,21 @@ export default {
       this.form.houseId = houseInfo._id;
       this.form.houseType = houseType;
       this.form.houseImg = houseInfo.imgPath;
-      this.form.houseCode = houseInfo.code
+      this.form.houseCode = houseInfo.code;
       this.addHouseDialog = false;
     },
     saveData() {
       //保存数据
-
+      this.$refs["finishForm"].validate(valid => {
+        if (valid) {
+        } else {
+          return false;
+        }
+      });
       url
         .post("/finish", this.form)
         .then(res => {
+          console.log('res :', res);
           return res.data._id;
         })
         .then(_id => {
@@ -246,6 +279,8 @@ export default {
               .then(() => {
                 this.expireForm._id = _id;
                 this.expireDialog = true;
+                this.expireForm.userName = this.form.userName;
+                this.expireForm.phone = this.form.phone
                 // this.$message({
                 //   type: 'success',
                 //   message: '删除成功!'
@@ -277,7 +312,13 @@ export default {
       });
     }
   },
-
+  watch: {
+    online(res) {
+      if (res == false) {
+        this.form.houseName = "";
+      }
+    }
+  }
 };
 </script>
 

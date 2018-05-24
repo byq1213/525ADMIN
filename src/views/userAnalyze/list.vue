@@ -93,7 +93,7 @@
           <div slot="header">
             用户需求
           </div>
-          <el-table :data="userInfo.needLists" size='mini'>
+          <el-table :stripe='1' :data="userInfo.needLists" size='mini'>
             <el-table-column label="发布时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)  ).toLocaleString()"></span>
@@ -120,7 +120,7 @@
           <div slot="header">
             用户发布
           </div>
-          <el-table :data="userInfo.issueLists" size='mini'>
+          <el-table :stripe='1' :data="userInfo.issueLists" size='mini'>
             <el-table-column label="发布时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)  ).toLocaleString()"></span>
@@ -147,7 +147,7 @@
          <div slot="header">
            访问记录
          </div>
-         <el-table :data="userInfo.historyLists" size='mini'>
+         <el-table :stripe='1' :data="userInfo.historyLists" size='mini'>
            <el-table-column label="访问时间" prop="">
              <template slot-scope='scope'>
                <span v-text="new Date(Math.floor(scope.row.time)).toLocaleString()"></span>

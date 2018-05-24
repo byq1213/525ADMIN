@@ -61,7 +61,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '数据分析',
-      icon: 'form',
+      icon: '表单管理',
       roles: ['admin', 'view']
     },
     children: [{
@@ -71,7 +71,7 @@ export const asyncRouterMap = [{
           import ('@/views/data/index'),
         meta: {
           title: '数据分析',
-          icon: 'form',
+          icon: '表单管理',
           roles: ['admin', 'view']
         }
       },
@@ -83,7 +83,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '经纪人排名',
-      icon: 'form',
+      icon: '用户管理',
       roles: ['admin', 'view']
     },
     children: [{
@@ -93,7 +93,7 @@ export const asyncRouterMap = [{
         import ('@/views/data/rank'),
       meta: {
         title: '经纪人排名',
-        icon: 'form',
+        icon: '用户管理',
         roles: ['admin', 'view']
       }
     }, ]
@@ -103,7 +103,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '用户分析',
-      icon: 'form',
+      icon: '员工管理',
       roles: ['admin', 'view']
     },
     children: [{
@@ -113,7 +113,7 @@ export const asyncRouterMap = [{
         import ('@/views/userAnalyze/list'),
       meta: {
         title: '会员查询',
-        icon: 'form',
+        icon: '员工管理',
         roles: ['admin', 'view']
       }
     }]
@@ -123,7 +123,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '房源数据',
-      icon: 'form'
+      icon: '商家助手',
     },
     children: [{
         path: 'index',
@@ -132,7 +132,7 @@ export const asyncRouterMap = [{
           import ('@/views/house/addIndex'),
         meta: {
           title: '添加房源',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -144,7 +144,7 @@ export const asyncRouterMap = [{
           import ('@/views/house/addNew'),
         meta: {
           title: '添加新房',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -156,7 +156,7 @@ export const asyncRouterMap = [{
           import ('@/views/house/addNew'),
         meta: {
           title: '修改新房信息',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -168,7 +168,7 @@ export const asyncRouterMap = [{
           import ('@/views/house/add2'),
         meta: {
           title: '添加二手房',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -180,7 +180,7 @@ export const asyncRouterMap = [{
           import ('@/views/house/add2'),
         meta: {
           title: '修改二手房',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -192,20 +192,19 @@ export const asyncRouterMap = [{
           import ('@/views/house/add3'),
         meta: {
           title: '添加租房',
-          icon: 'form',
+          icon: '商家助手',
           roles: ['admin']
         }
       },
       {
-        path: 'add3/:id',
-        name: 'EditAdd3',
+        path: 'testPag123123452345e',
+        name: 'EditA1dd3',
         hidden: true,
-        component: () =>
-          import ('@/views/house/add3'),
+
         meta: {
           title: '修改租房信息',
-          icon: 'form',
-          roles: ['admin']
+          icon: '',
+          roles: ['admin','view']
         }
       },
       {
@@ -215,8 +214,8 @@ export const asyncRouterMap = [{
           import ('@/views/house/list'),
         meta: {
           title: '房源列表',
-          icon: 'form',
-          roles: ['admin', 'view']
+          icon: '',
+          roles: [ 'view']
         }
       },
     ]
@@ -226,7 +225,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '成交房源',
-      icon: 'form',
+      icon: '服务管理',
       roles: ['admin', 'view']
     },
     children: [{
@@ -236,32 +235,33 @@ export const asyncRouterMap = [{
           import ('@/views/finish/add'),
         meta: {
           title: '添加成交',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
-      }, {
+      }, 
+      {
+        path: 'testPag12311231345234523452345e',
+        name: 'EditA1dd3',
+        hidden: true,
+
+        meta: {
+          title: '修改租房信息',
+          icon: '',
+          roles: ['admin','view']
+        }
+      },{
         path: 'list',
         name: 'finishList',
-        hidden: true,
+        // hidden: true,
         component: () =>
           import ('@/views/finish/list'),
         meta: {
           title: '成交列表',
-          icon: 'form',
+          icon: '',
           roles: ['admin', 'view']
         }
       },
-      {
-        path: 'expire',
-        name: 'expirehList',
-        component: () =>
-          import ('@/views/finish/expire'),
-        meta: {
-          title: '到期提醒',
-          icon: 'form',
-          roles: ['admin', 'view']
-        }
-      },
+
 
     ]
   },
@@ -270,7 +270,28 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '经纪人管理',
-      icon: 'form'
+      icon: '分销管理'
+    },
+    children: [
+      {
+        path: 'expire',
+        name: 'expirehList',
+        component: () =>
+          import ('@/views/finish/expire'),
+        meta: {
+          title: '到期提醒',
+          icon: '订单管理',
+          roles: ['admin', 'view']
+        }
+      },
+    ]
+  },
+  {
+    path: '/broker',
+    component: Layout,
+    meta: {
+      title: '经纪人管理',
+      icon: '分销管理'
     },
     children: [{
         path: 'list',
@@ -279,7 +300,7 @@ export const asyncRouterMap = [{
           import ('@/views/broker/list'),
         meta: {
           title: '经纪人列表',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -290,7 +311,7 @@ export const asyncRouterMap = [{
           import ('@/views/broker/add'),
         meta: {
           title: '添加经纪人',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -302,7 +323,7 @@ export const asyncRouterMap = [{
           import ('@/views/broker/add'),
         meta: {
           title: '修改经纪人',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -313,7 +334,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '店铺设置',
-      icon: 'form',
+      icon: '门店信息',
       roles: ['admin']
     },
     children: [{
@@ -323,7 +344,7 @@ export const asyncRouterMap = [{
           import ('@/views/setting/index'),
         meta: {
           title: '店铺设置',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -334,7 +355,7 @@ export const asyncRouterMap = [{
           import ('@/views/setting/swiper'),
         meta: {
           title: '轮播设置',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       }
@@ -349,7 +370,7 @@ export const asyncRouterMap = [{
     alwaysShow: false,
     meta: {
       title: '权限管理',
-      icon: 'form'
+      icon: '商家助手'
     },
     children: [{
         path: 'index',
@@ -358,7 +379,7 @@ export const asyncRouterMap = [{
           import ('@/views/broker/list'),
         meta: {
           title: '权限管理',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -369,7 +390,7 @@ export const asyncRouterMap = [{
           import ('@/views/broker/list'),
         meta: {
           title: '权限管理1',
-          icon: 'form',
+          icon: '',
           roles: ['admin']
         }
       },
@@ -382,7 +403,7 @@ export const asyncRouterMap = [{
     hidden: true,
     meta: {
       title: '页面管理',
-      icon: 'form',
+      icon: '商家助手',
       roles: ['admin']
     },
     children: [{
@@ -392,7 +413,7 @@ export const asyncRouterMap = [{
         import ('@/views/setting/pageSetting'),
       meta: {
         title: '首页设置',
-        icon: 'form',
+        icon: '',
         roles: ['admin']
       }
     }, ]
@@ -404,7 +425,7 @@ export const asyncRouterMap = [{
 
     meta: {
       title: '推广店铺',
-      icon: 'form',
+      icon: '',
       roles: ['view']
     },
     children: [{
@@ -416,7 +437,7 @@ export const asyncRouterMap = [{
         import ('@/views/broker/expand'),
       meta: {
         title: '推广店铺',
-        icon: 'form',
+        icon: '',
         roles: ['view']
       }
     }, ]
@@ -426,7 +447,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '推送房源',
-      icon: 'form',
+      icon: '消息管理',
       roles: ['view']
     },
     children: [{
@@ -436,7 +457,7 @@ export const asyncRouterMap = [{
         import ('@/views/send/index'),
       meta: {
         title: '需求列表',
-        icon: 'form',
+        icon: '',
         roles: ['view']
       }
     }, {
@@ -446,7 +467,7 @@ export const asyncRouterMap = [{
         import ('@/views/send/add'),
       meta: {
         title: '添加需求',
-        icon: 'form',
+        icon: '',
         roles: ['view']
       }
     }, ]
@@ -456,7 +477,7 @@ export const asyncRouterMap = [{
     component: Layout,
     meta: {
       title: '管理共享房源',
-      icon: 'form',
+      icon: '基础管理',
       roles: ['view']
     },
     children: [{
@@ -466,7 +487,7 @@ export const asyncRouterMap = [{
           import ('@/views/shareHouse/list'),
         meta: {
           title: '房源列表',
-          icon: 'form',
+          icon: '',
           roles: ['view']
         }
       },
@@ -477,7 +498,7 @@ export const asyncRouterMap = [{
           import ('@/views/shareHouse/add3'),
         meta: {
           title: '添加出租房',
-          icon: 'form',
+          icon: '',
           roles: ['view']
         }
       },
@@ -488,7 +509,7 @@ export const asyncRouterMap = [{
           import ('@/views/shareHouse/add2'),
         meta: {
           title: '添加二手房',
-          icon: 'form',
+          icon: '',
           roles: ['view']
         }
       },

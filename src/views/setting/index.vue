@@ -15,7 +15,8 @@
             :action="`${BASE_API}uploadFile`"
             :show-file-list="false"
             :on-success="uploadSuccess"
-            :before-upload="beforeAvatarUpload">
+            :before-upload="beforeAvatarUpload"
+            :headers="this.getcsrf()">
             <img v-if="form.logo" :src="`${BASE_API}/uploads/${form.logo}`" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -69,7 +70,12 @@ export default {
     },
     updateStoreInfo() {
       url.post("/store", this.form).then(res => {
-        console.log(res);
+        if(res.data.code){
+          this.$message({
+            type:'success',
+            message:'保存成功'
+          })
+        }
       });
     }
   }
