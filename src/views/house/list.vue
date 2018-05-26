@@ -45,11 +45,13 @@
               <span v-else>整租</span>
             </template>
           </el-table-column> -->
-          <el-table-column label="操作" min-width="200px" v-if="!this.isBroker()">
+          <el-table-column label="操作" min-width="200px" v-if="!this.isBroker()" type="">
             <template slot-scope="scope">
+              
               <el-button type="primary" size="mini" @click="editHouse2(scope.row._id)">修改</el-button>
               <el-button type="" size="mini" @click="viewHouse2Info(scope.row._id)">详情</el-button>
               <el-button type="danger" size="mini" @click="downHouse2(scope.row._id)">下架</el-button>
+              <el-button type="success" size="mini" @click="showQrcode(scope.row._id)">小程序码</el-button>
             </template>
           </el-table-column>
           <el-table-column label="查看" v-else>
@@ -66,7 +68,7 @@
           </el-badge>
           </span>
 
-        <house3></house3>
+        <house3 @qrCodeEvent="qrCodeEvent"></house3>
       </el-tab-pane>
       <el-tab-pane >
                 <span slot="label">
@@ -75,7 +77,7 @@
           </el-badge>
           </span>
 
-        <newList></newList>
+        <newList  @qrCodeEvent="qrCodeEvent"></newList>
       </el-tab-pane>
     </el-tabs>
         <el-dialog   
@@ -90,6 +92,15 @@
     :visible.sync="downHouseLists">
       <down2 :status="downHouseLists"></down2>
     </el-dialog>
+    <el-dialog
+      title="房源二维码"
+      :visible.sync="qrcodeDialog"
+      width="30%"
+      >
+      <img v-if="qrPath" :src="`${BASE_API}qrcode/${qrPath}.png`" style="width:100%"/>
+
+    </el-dialog>
+    
   </el-main>
 </template>
 
@@ -109,6 +120,7 @@ export default {
   },
   data() {
     return {
+      BASE_API: process.env.BASE_API,
       downHouseLists: false, //下架列表
       dialogVisible: false,
       form1: {},
@@ -116,7 +128,9 @@ export default {
       lists2: [],
       listsNew: [],
       count: {}, //房源总数
-      house2Id: "5af182760f790e18540e5b12" //详情ID
+      qrcodeDialog: false,
+      house2Id: "5af182760f790e18540e5b12", //详情ID
+      qrPath: ""
     };
   },
   mounted() {
@@ -124,6 +138,43 @@ export default {
     this.getHouseLists2();
   },
   methods: {
+    // 获取二维码
+    qrCodeEvent(data) {
+      this.showQrcode(data)
+    },
+    showQrcode(_id, houseType = 2) {
+      let page = "";
+      switch (houseType) {
+        case 1:
+          page = "pages/newDetail";
+          break;
+        case 3:
+          page = "pages/rentDetail";
+        default:
+          page = "pages/oldDetail";
+          break;
+      }
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+
+      let data = {};
+      data.uid = this.getBroker();
+      data.houseId = _id;
+      data.page = page;
+      url.post("/mini/getshareMoments", data).then(res => {
+        console.log(res);
+        if (res.data.length > 0) {
+          this.qrPath = res.data;
+          loading.close();
+          this.qrcodeDialog = true;
+        }
+      });
+    },
+
     // 获取房源数量
     getHouseNum() {
       url.get("/houseCount").then(res => {

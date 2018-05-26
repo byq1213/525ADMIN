@@ -36,6 +36,8 @@
               <el-button type="primary" size="mini"  @click="editHouse(scope.row._id)">修改</el-button>
               <el-button type="" size="mini" @click="viewHouseInfo(scope.row._id)">详情</el-button>
               <el-button type="danger" size="mini" @click="downHouse(scope.row._id)">下架</el-button>
+              <el-button type="success" size="mini" @click="showQrcode(scope.row._id)">小程序码</el-button>
+              
             </template>
           </el-table-column>
                     <el-table-column label="查看" v-else>
@@ -65,9 +67,9 @@ import downHouse2 from "./downHouse2";
 
 import url from "@/utils/url";
 export default {
-  components:{
+  components: {
     downHouse2,
-    houseView,
+    houseView
   },
   data() {
     return {
@@ -75,19 +77,22 @@ export default {
       downHouseLists: false,
       formNew: {},
       listNew: [],
-      houseId: "",
+      houseId: ""
     };
   },
   mounted() {
     this.getHouseNewList();
   },
   methods: {
+    showQrcode(_id) {
+      this.$emit("qrCodeEvent", { _id, houseType: 1 });
+    },
     // 查看新房楼盘详细信息
     viewHouseInfo(id) {
       this.houseId = id;
       this.dialogVisible = true;
     },
-      //下架出租房
+    //下架出租房
     downHouse(id) {
       this.$confirm("此操作将下架该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -119,7 +124,7 @@ export default {
         });
       return;
     },
-        //修改信息
+    //修改信息
     editHouse(id) {
       this.$router.push(`/House/addNew/${id}`);
     },

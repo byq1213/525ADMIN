@@ -44,6 +44,7 @@
               <el-button type="primary" size="mini"  @click="editHouse3(scope.row._id)">修改</el-button>
               <el-button type="" size="mini" @click="viewHouse3Info(scope.row._id)">详情</el-button>
               <el-button type="danger" size="mini" @click="downHouse(scope.row._id)">下架</el-button>
+              <el-button type="success" size="mini" @click="showQrcode(scope.row._id)">小程序码</el-button>
             </template> 
           </el-table-column>
              <el-table-column label="查看" v-else>
@@ -70,27 +71,30 @@
 <script>
 import url from "@/utils/url";
 import downHouse2 from "./downHouse2";
-import house3View from './house3View';
+import house3View from "./house3View";
 export default {
   components: {
     downHouse2,
-    house3View//获取详细信息
+    house3View //获取详细信息
   },
   mounted() {
     this.getHouseLists1();
   },
   data() {
     return {
-      dialogVisible:false,
+      dialogVisible: false,
       downHouseLists: false,
       form: {},
       lists: [],
-      house3Id:''
+      house3Id: ""
     };
   },
   methods: {
+    showQrcode(_id) {
+      this.$emit("qrCodeEvent", { _id, houseType: 3 });
+    },
     // 查看出租房详细信息
-        viewHouse3Info(id) {
+    viewHouse3Info(id) {
       this.house3Id = id;
       this.dialogVisible = true;
     },
