@@ -55,7 +55,7 @@
           <div slot="header">
             用户需求
           </div>
-          <el-table :stripe="1" :data="userInfo.needLists" size='mini'>
+          <el-table :stripe="true" :data="userInfo.needLists" size='mini'>
             <el-table-column label="发布时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)  ).toLocaleString()"></span>
@@ -84,7 +84,7 @@
           <div slot="header">
             用户发布
           </div>
-          <el-table :stripe="1" :data="userInfo.issueLists" size='mini'>
+          <el-table :stripe="true" :data="userInfo.issueLists" size='mini'>
             <el-table-column label="发布时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)  ).toLocaleString()"></span>
@@ -111,7 +111,7 @@
           <div slot="header">
             访问记录
           </div>
-          <el-table :stripe="1" :data="userInfo.historyLists" size='mini'>
+          <el-table :stripe="true" :data="userInfo.historyLists" size='mini'>
             <el-table-column label="访问时间" prop="">
               <template slot-scope='scope'>
                 <span v-text="new Date(Math.floor(scope.row.time)).toLocaleString()"></span>
@@ -120,7 +120,7 @@
             <el-table-column label="访问房源" prop="houseName"></el-table-column>
             <el-table-column label="房源图片">
               <template slot-scope='scope'>
-                 <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" class="avatarUrl"/>
+                 <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" style="height:20px"/>
               </template>
             </el-table-column>
           </el-table>

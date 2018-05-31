@@ -164,7 +164,7 @@ export default {
         series: [
           {
             name: "访问量",
-            data: [1, 1],
+            data: [0, 0],
             type: "line",
             areaStyle: {}
           },
@@ -176,19 +176,19 @@ export default {
           },
           {
             name: "发布量",
-            data: [1, 1],
+            data: [0, 0],
             type: "line",
             areaStyle: {}
           },
           {
             name: "需求量",
-            data: [1, 1],
+            data: [0, 0],
             type: "line",
             areaStyle: {}
           },
           {
             name: "会员量",
-            data: [100, 100],
+            data: [0, 0],
             type: "line",
             areaStyle: {}
           }

@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import MD5 from "md5";
 import url from "@/utils/url";
 let rules = {
   nickName: [
@@ -128,7 +129,6 @@ export default {
         // 获取经纪人信息
         let brokerId = (this.brokerId = this.$route.params.id);
         url.get(`/broker/${brokerId}`).then(res => {
-          console.log(res);
           let data = res.data.data;
           this.form = data.brokerInfo;
           this.changeUser = data;
@@ -136,66 +136,81 @@ export default {
       }
     },
     saveData() {
-      // this.$refs["form1"].validate(valid => {
-      //   if (valid) {
-      //     alert("submit!");
-      //     return;
-      //   } else {
-      //     console.log("error submit!!");
-      //     return false;
-      //   }
-      // });
-      let {
-        brokerAvatarUrl,
-        brokerName,
-        brokerPhone,
-        loginId,
-        brokerPwd
-      } = this.form;
+      this.$refs["form1"].validate(valid => {
+        if (valid) {
+          // this.$refs["form1"].validate(valid => {
+          //   if (valid) {
+          //     alert("submit!");
+          //     return;
+          //   } else {
+          //     console.log("error submit!!");
+          //     return false;
+          //   }
+          // });
+          let {
+            brokerAvatarUrl,
+            brokerName,
+            brokerPhone,
+            loginId,
+            brokerPwd
+          } = this.form;
 
-      if (
-        brokerAvatarUrl == "" ||
-        brokerName == "" ||
-        brokerPhone == "" ||
-        loginId == "" ||
-        brokerPwd == ""
-      ) {
-        const h = this.$createElement;
+          if (
+            brokerAvatarUrl == "" ||
+            brokerName == "" ||
+            brokerPhone == "" ||
+            loginId == "" ||
+            brokerPwd == ""
+          ) {
+            const h = this.$createElement;
 
-        this.$notify({
-          title: "添加经纪人",
-          message: h("i", { style: "color: teal" }, "请认真填写信息")
-        });
-        return;
-      }
-      let data = {
-        _id: this.changeUser._id,
-        brokerInfo: this.form
-      };
-      url
-        .post("/checkBrokerId", {
-          _id: this.changeUser._id,
-          loginId: this.form.loginId
-        })
-        .then(res => {
-          if (res.data.code == 200) {
-            // 新增经纪人
-            url.post(`/broker/`, data).then(res => {
+            this.$notify({
+              title: "添加经纪人",
+              message: h("i", { style: "color: teal" }, "请认真填写信息")
+            });
+            return;
+          }
+          let data = {
+            _id: this.changeUser._id,
+            brokerInfo: this.form
+          };
+          if (this.form.loginId == "admin") {
+            this.$message.error("非法操作");
+            return;
+          }
+          url
+            .post("/checkBrokerId", {
+              _id: this.changeUser._id,
+              loginId: this.form.loginId
+            })
+            .then(res => {
               if (res.data.code == 200) {
-                this.$router.push("/broker/list");
+                // 新增经纪人
+                // MD5密码加密 + 浅拷贝
+                let dataMd5 = new Object();
+                for (let attr in data) {
+                  dataMd5[attr] = data[attr];
+                }
+                dataMd5.brokerInfo.brokerPwd = MD5(data.brokerInfo.brokerPwd);
+                // console.log('dataMd5 :', dataMd5);
+                url.post(`/broker/`, dataMd5).then(res => {
+                  if (res.data.code == 200) {
+                    this.$router.push("/broker/list");
+                  }
+                });
+                //经纪人二维码生成
+                url.post("/qrcode", { id: this.changeUser._id });
+              } else if (res.data.code == 400) {
+                this.$notify({
+                  title: "警告",
+                  message: "重复登录账号，请尝试更换",
+                  type: "warning"
+                });
               }
             });
-            //经纪人二维码生成
-            url.post("/qrcode", { id: this.changeUser._id });
-          } else if (res.data.code == 400) {
-            this.$notify({
-              title: "警告",
-              message: "重复登录账号，请尝试更换",
-              type: "warning"
-            });
-          }
-        });
-      return;
+          return;
+        }
+      });
     },
     showUserLists() {
       // 选择用户弹出 已注册用户信息

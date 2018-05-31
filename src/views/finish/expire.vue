@@ -50,11 +50,11 @@
         </el-form-item>
       </el-form>
     <!-- 到期提醒 -->
-    <el-table :data="lists" :stripe="true">
+    <el-table :data="lists" :stripe="true" max-height="400px">
       
-      <el-table-column label="剩余时间" :fixed="true">
+      <el-table-column label="剩余时间" :fixed="true" >
         <template slot-scope='scope'>
-           <span v-if="scope.row.expireTime > nowTime" v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span>
+           <span style="font-weight: bolder;" v-if="scope.row.expireTime > nowTime" v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span>
            <span v-else style="color:red">已到期</span>
         </template>
       </el-table-column>
@@ -206,8 +206,30 @@ export default {
     },
     getExpireList() {
       url.post("/getExpireList", this.form).then(res => {
+
+
         this.lists = res.data;
+        let testLists = res.data;
+        testLists.sort(this.testArr)
+
       });
+    },
+    testArr(a,b){
+      // console.log('a :', new Date(a.expireTime).toLocaleString());
+      // console.log('b :', new Date(b.expireTime).toLocaleString());
+      
+      if(a.expireTime<this.nowTime || b.expireTime<this.nowTime){
+        console.log('小于现在时间');
+        return 
+      }else{
+        if(a.expireTime>b.expireTime){
+          // console.log(a.expireTime-b.expireTime);
+          
+          return a.expireTime-b.expireTime
+        }
+        console.log('大于现在的事件');
+        
+      }
     }
   }
 };

@@ -30,7 +30,7 @@
 
         <el-table-column label="房源面积" prop="area">
           <template slot-scope='scope'>
-             ㎡
+             <span v-text="`${scope.row.area}㎡`"></span>
           </template>
         </el-table-column>
         <el-table-column label="户型" prop="houseType">
@@ -76,9 +76,20 @@
 
         <el-table-column label="状态" v-else>
           <template slot-scope='scope'>
+            <div v-if="scope.row.brokerId">
              <span v-if="scope.row.status == 0">未处理</span>
              <span v-if="scope.row.status == 1">处理中</span>
              <span v-if="scope.row.status == 2">已处理</span>
+            </div>
+            <div v-else>
+            <span v-if="scope.row.status == 0">未处理
+               <el-button type="primary" size="mini" @click="changeStatus(scope.row._id,1)">点击处理</el-button>
+             </span>
+             <span v-if="scope.row.status == 1">处理中
+               <el-button type="primary" size="mini" @click="changeStatus(scope.row._id,2)">处理完成</el-button>
+             </span>
+             <span v-if="scope.row.status == 2">已处理</span>
+            </div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="操作">

@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column label="房源图片" prop="houseImg">
           <template slot-scope='scope'>
-            <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" style="height:100px"/>
+            <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" style="height:50px"/>
           </template>
         </el-table-column>
         <el-table-column label="房源价格" prop="price"></el-table-column>
@@ -101,10 +101,7 @@ export default {
        */
       let { time, houseType, brokerId } = this.$props;
       let condition = {
-        time: {
-          $gt: time[0],
-          $lt: time[1]
-        },
+        time,
         houseType,
         // broker,
         brokerId

@@ -43,6 +43,10 @@
       <el-form-item label="售出价格">
         <el-input v-model="form.price" placeholder="“1000元/月” 或 “100万/套”" class="w20"></el-input>
       </el-form-item>
+      <el-form-item label="佣金提成">
+        <el-input-number v-model.number="form.brokerage" controls-position="right"  type="number" placeholder="" class="w20">
+        </el-input-number>
+      </el-form-item>
       <el-form-item label="客户姓名">
         <el-input v-model="form.userName" placeholder="请输入客户姓名" class="w20"></el-input>
       </el-form-item>
@@ -50,7 +54,7 @@
         <el-input v-model="form.phone" placeholder="请输入联系方式" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="form.remark" placeholder="" type="textarea" class="w20"></el-input>
+        <el-input v-model="form.remark" placeholder="请输入成交备注" type="textarea" class="w20"></el-input>
       </el-form-item>
       <el-form-item label="">
         <el-button type="success" @click="saveData">确认成交</el-button>
@@ -294,6 +298,9 @@ export default {
                 //   message: "已取消删除"
                 // });
               });
+          }else{
+                this.$router.push("./list");
+            
           }
         });
 
@@ -302,7 +309,7 @@ export default {
     saveDataAndSend() {
       this.saveData();
       url.post("/send", this.form).then(res => {
-        console.log(res);
+
       });
     },
     getBrokerList() {

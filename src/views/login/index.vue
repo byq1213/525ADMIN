@@ -7,19 +7,19 @@
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="请输入用户名" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password"></svg-icon>
         </span>
         <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
-          placeholder="password"></el-input>
+          placeholder="请输入密码"></el-input>
           <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-          Sign in
+          登录
         </el-button>
       </el-form-item>
       <!-- <div class="tips">
@@ -32,7 +32,7 @@
 
 <script>
 import { isvalidUsername } from "@/utils/validate";
-
+import MD5 from 'md5';
 export default {
   name: "login",
   data() {
@@ -57,8 +57,8 @@ export default {
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "admin"
+        username: "",
+        password: ""
       },
       loginRules: {
         username: [
@@ -82,8 +82,13 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
+          let data={
+            username:this.loginForm.username,
+            password:MD5(this.loginForm.password)
+          }
+          // console.log('this.loginForm :', this.loginForm);
           this.$store
-            .dispatch("Login", this.loginForm)
+            .dispatch("Login", data)
             .then(() => {
               this.loading = false;
               this.$router.push({ path: "/" });

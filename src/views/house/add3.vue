@@ -166,6 +166,17 @@
               <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
             </el-form-item> -->
         </el-form-item>
+                <el-form-item label="附加信息">
+          <el-input v-model="form.cell" placeholder="请输入小区名" class="w10"></el-input> 小区
+          <el-input v-model="form.build" placeholder="请输入楼区信息" class="w10"></el-input> 号楼
+          <el-input v-model="form.unit" placeholder="请输入单元信息" class="w10"></el-input> 单元
+          <el-input v-model="form.floor" placeholder="请输入楼层信息" class="w10"></el-input> 层
+          <el-input v-model="form.number" placeholder="请输入房间信息" class="w10"></el-input> 室
+        </el-form-item>
+        <el-form-item label="添加备注">
+          <el-input v-model="form.remark" placeholder="添加单元楼信息" type="textarea" class="w20"></el-input>
+        </el-form-item>
+
         <el-form-item label="">
           <el-button type="" @click="saveData">立即上传</el-button>
           <!-- <el-button type="success" @click="saveData">保存并通知经纪人</el-button> -->

@@ -204,7 +204,7 @@ export const asyncRouterMap = [{
         meta: {
           title: '修改租123房信息',
           icon: '',
-          roles: ['admin','view']
+          roles: ['admin', 'view']
         }
       },
       {
@@ -216,7 +216,7 @@ export const asyncRouterMap = [{
         meta: {
           title: '修改租房信息',
           icon: '',
-          roles: ['admin','view']
+          roles: ['admin', 'view']
         }
       },
       {
@@ -227,7 +227,7 @@ export const asyncRouterMap = [{
         meta: {
           title: '房源列表',
           icon: '',
-          roles: [ 'view']
+          roles: ['view']
         }
       },
     ]
@@ -250,7 +250,7 @@ export const asyncRouterMap = [{
           icon: '',
           roles: ['admin']
         }
-      }, 
+      },
       {
         path: 'testPag12311231345234523452345e',
         name: 'EditA1d123d3',
@@ -258,9 +258,9 @@ export const asyncRouterMap = [{
         meta: {
           title: '修改租房信息',
           icon: '',
-          roles: ['admin','view']
+          roles: ['admin', 'view']
         }
-      },{
+      }, {
         path: 'list',
         name: 'finishList',
         // hidden: true,
@@ -283,15 +283,14 @@ export const asyncRouterMap = [{
       title: '提醒设置',
       icon: '图文管理'
     },
-    children: [
-      {
+    children: [{
         path: 'testPag11232311231345234523452345e',
         name: 'EditA1d112323d3',
         hidden: true,
         meta: {
           title: '修改租房信息',
           icon: '',
-          roles: ['admin','view']
+          roles: ['admin', 'view']
         }
       },
       {
@@ -376,6 +375,17 @@ export const asyncRouterMap = [{
           import ('@/views/setting/swiper'),
         meta: {
           title: '轮播设置',
+          icon: '',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'aksjs',
+        name: 'manageSetting',
+        component: () =>
+          import ('@/views/setting/manage'),
+        meta: {
+          title: '修改密码',
           icon: '',
           roles: ['admin']
         }
@@ -535,6 +545,26 @@ export const asyncRouterMap = [{
         }
       },
     ]
+  },
+  {
+    path: '/followHouse',
+    component: Layout,
+    meta: {
+      title: '跟进房源',
+      icon: 'form',
+      roles: ['admin','view']
+    },
+    children: [{
+      path: 'index',
+      name: 'followHouse',
+      component: () =>
+        import ('@/views/followHouse/index'),
+      meta: {
+        title: '跟进房源',
+        icon: 'form',
+        roles: ['admin','view']
+      }
+    }]
   },
   {
     path: '*',

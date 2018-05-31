@@ -23,13 +23,47 @@
             <el-option v-for="(item,index) in brokerLists" :key="index" :label="item.brokerInfo.brokerName" :value="item._id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="">
+          <el-input v-model="form.keyword" placeholder="搜索房源或者备注"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-select v-model="form.houseType" placeholder="">
+            <el-option value="0" label="全部"></el-option>
+            <el-option value="2" label="二手房"></el-option>
+            <el-option value="3" label="租房"></el-option>
+            <el-option value="1" label="新房"></el-option>
+          </el-select>
+        </el-form-item>
           <el-form-item label="">
-            <el-button type="primary" @click="search">查询</el-button>
+            <el-button type="primary" @click="search" native-type="submit">查询</el-button>
           </el-form-item>
           <el-form-item label="">
           </el-form-item>
       </el-form>
-      <el-table :data="lists">
+      <el-row class="app-item" :gutter="20">
+        <el-col :span="8">
+          <el-card>二手房
+            <span >
+              成交<span style="font-size:40px" v-text="houseCount[1]"></span>套
+            </span>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card>租房
+            <span >
+              成交<span style="font-size:40px" v-text="houseCount[2]">100</span>套
+            </span>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card>新房
+            <span >
+              成交<span style="font-size:40px" v-text="houseCount[0]">100</span>套
+            </span>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-table :data="lists" stripe >
         <el-table-column label="经纪人姓名" prop="brokerId.brokerInfo.brokerName"></el-table-column>
         <el-table-column label="成交时间" prop="">
           <template slot-scope='scope'>
@@ -46,16 +80,26 @@
         </el-table-column>
         <el-table-column label="房源图片" prop="houseImg">
           <template slot-scope='scope'>
-            <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" style="height:100px"/>
+            <img :src="`${BASE_API}uploads/${scope.row.houseImg[0]}`" style="height:50px"/>
           </template>
         </el-table-column>
         <el-table-column label="房源价格" prop="price"></el-table-column>
+        <el-table-column label="佣金提成" >
+          <template slot-scope='scope'>
+             <span v-if="scope.row.brokerage"   v-text="`${scope.row.brokerage}元`"></span>
+          </template>
+        </el-table-column>
         <el-table-column label="客户姓名" prop="userName"></el-table-column>
         <el-table-column label="联系方式" prop="phone"></el-table-column>
         <el-table-column label="备注" prop="remark"></el-table-column>
-        <el-table-column label="操作" prop="" width="200">
-          <template slot-scope='scope'>
+        <el-table-column label="操作" prop="" width="200" v-if="!this.isBroker()">
+          <template slot-scope='scope' >
           <el-button type="" size="mini" @click="delFinish(scope.row._id)">删除</el-button>
+          <el-button type="primary" size="mini" @click="showHouseInfo(scope.row)">房源详情</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" prop="" width="200" v-else>
+          <template slot-scope='scope' >
           <el-button type="primary" size="mini" @click="showHouseInfo(scope.row)">房源详情</el-button>
           </template>
         </el-table-column>
@@ -107,12 +151,13 @@ export default {
       BASE_API: process.env.BASE_API,
       lists: [],
       form: {
-        type: "",
         time: [
           new Date().getTime() - 3600 * 24 * 7 * 1000,
           new Date().getTime()
         ],
-        broker: ""
+        broker: "",
+        houseType:'0',
+        keyword:''
       },
       limit: this.$store.state.app.limit,
       count: 0,
@@ -121,6 +166,7 @@ export default {
       house3ViewVisible: false, //房源信息
       houseId: "",
       houseType:0,
+      houseCount :[]
     };
   },
   methods: {
@@ -163,26 +209,23 @@ export default {
         $lt: lt
       }
        */
-      let { time, type, broker } = this.form;
+      let { time, type, broker,houseType,keyword } = this.form;
       let condition = {
-        time: {
-          $gt: time[0],
-          $lt: time[1]
-        },
-
-        brokerId: broker
+        time,
+        brokerId: broker,
+        houseType,
+        keyword
       };
       // // 如果经纪人为空则删除经纪人条件
       // if (condition.brokerId == "") {
       //   delete condition["brokerId"];
       // }
-      console.log(condition);
-
       url
         .post(`/finishLists`, { condition, limit: limit, skip: skip * limit })
         .then(res => {
           this.lists = res.data.userList;
           this.count = res.data.count;
+          this.houseCount = res.data.houseCount;
         });
     },
     getBrokerList() {
