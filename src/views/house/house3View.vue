@@ -36,10 +36,29 @@
             <template slot="prepend">付</template>
           </el-input>
       </el-form-item>
-      <el-form-item label="房源户型">
+      <!-- <el-form-item label="房源户型">
           <el-select v-model="info.room" placeholder="" disabled="">
             <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
+      </el-form-item> -->
+            <el-form-item label="房源户型">
+        <el-input disabled="" v-model="info.room.s" placeholder="" class="w10">
+          <template slot="append">
+            室
+          </template>
+        </el-input>
+        <div></div>
+        <el-input disabled="" v-model="info.room.t" placeholder="" class="w10">
+          <template slot="append">
+            厅
+          </template>
+        </el-input>
+        <div></div>
+        <el-input disabled="" v-model="info.room.w" placeholder="" class="w10">
+          <template slot="append">
+            卫
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="楼层">
         <span v-if="info.level == 1"> 

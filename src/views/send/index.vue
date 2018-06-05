@@ -74,6 +74,12 @@
              <span v-text="`${scope.row.area}㎡`"></span>
           </template>
         </el-table-column>
+        <el-table-column label="价格" prop="">
+          <template slot-scope='scope'>
+             <span v-if="scope.row.mode == 2 || scope.row.mode==1" v-text="`${scope.row.price}元/月`"></span>
+             <span v-else v-text="`${scope.row.price}万元`"></span>
+          </template>
+        </el-table-column>
         <el-table-column label="房源地址" prop="address" width="300"></el-table-column>
         <el-table-column label="出租方式" prop="rentMode">
           <template slot-scope='scope'>
@@ -88,11 +94,9 @@
         </el-table-column>
         <el-table-column label="户型">
           <template slot-scope='scope'>
-             <span v-if="scope.row.houseType == 0" v-text="`一居室`"></span>
-             <span v-if="scope.row.houseType == 1" v-text="`两居室`"></span>
-             <span v-if="scope.row.houseType == 2" v-text="`三居室`"></span>
-             <span v-if="scope.row.houseType == 3" v-text="`四居室`"></span>
-             <span v-if="scope.row.houseType == 4" v-text="`五居室及以上`"></span>
+            <span v-text="`${scope.row.houseType.s}室`"></span>
+            <span v-text="`${scope.row.houseType.t}厅`"></span>
+            <span v-text="`${scope.row.houseType.w}卫`"></span>
           </template>
         </el-table-column>
         <el-table-column label="房源描述" prop="remarks" width="100"></el-table-column>
@@ -137,18 +141,20 @@
           <el-table-column label="租金/价格" prop="">
           <template slot-scope='scope'>
               <span v-if="matchInfo.mode == 2" v-text="`${scope.row.rent}元/月`"></span>
+              <span v-else v-text="`${scope.row.rent}万元`"></span>
              <!-- <span @click="test(scope)">测试scope</span> -->
           </template>
           </el-table-column>
           <el-table-column label="面积" prop="">
             <template slot-scope='scope'>
-              <span v-if="matchInfo.mode == 2" v-text="`${scope.row.proportion}㎡`"></span>
+              <span  v-text="`${scope.row.proportion}㎡`"></span>
             </template>
           </el-table-column>
-          <el-table-column label="出租类型" prop="">
+          <el-table-column label="出租类型" prop="" >
             <template slot-scope='scope'>
               <span v-if="scope.row.type == 1" v-text="`合租`"></span>
               <span v-else-if="scope.row.type == 0" v-text="`整租`"></span>
+              <span v-else >----</span>
             </template>
           </el-table-column>
         </el-table>
@@ -182,9 +188,9 @@
             
           </el-form-item>
           <el-form-item label="户型" >
-            <el-select v-model="editNeedForm.houseType" placeholder="">
-              <el-option v-for="item in miniHouseType" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
+            <el-input v-model="editNeedForm.houseType.s" placeholder="" class="w10" ></el-input>室
+            <el-input v-model="editNeedForm.houseType.t" placeholder="" class="w10" ></el-input>厅
+            <el-input v-model="editNeedForm.houseType.w" placeholder="" class="w10" ></el-input>卫
           </el-form-item>
           <el-form-item label="出租方式" v-if="editNeedForm.mode == 2">
             <el-select v-model="editNeedForm.rentMode" placeholder="">
@@ -244,7 +250,7 @@ export default {
       matchDialog: false,
       editInfoDialog: false,
       chooseAddressDialog: false,
-      editNeedForm: {},
+      editNeedForm: {houseType:{s:1,t:1,w:1}},
       form: {
         mode: "",
         time: [
@@ -253,7 +259,7 @@ export default {
         ],
         brokerId: ""
       },
-      lists: [{ uid: {} }],
+      lists: [{ uid: {},houseType:{s:1,t:1,w:1} }],
       limit: this.$store.state.app.limit,
       count: 0,
       skip: 0,

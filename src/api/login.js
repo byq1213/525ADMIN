@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import url from '@/utils/url'
 
 export function login(username, password) {
   return request({
@@ -23,5 +24,11 @@ export function logout() {
   return request({
     url: '/login/logout',
     method: 'post'
+  })
+}
+export function getStoreInfo() {
+  return url({
+    url: '/mini/storeInfo',
+    method: 'get'
   })
 }

@@ -50,12 +50,20 @@
         </el-form-item>
       </el-form>
     <!-- 到期提醒 -->
-    <el-table :data="lists" :stripe="true" max-height="400px">
+    <el-table :data="lists" :stripe="true" height="600">
       
-      <el-table-column label="剩余时间" :fixed="true" >
+      <el-table-column label="剩余时间" :fixed="true" class-name="testTcol" cell-class-name="testTcol">
         <template slot-scope='scope'>
-           <span style="font-weight: bolder;" v-if="scope.row.expireTime > nowTime" v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span>
-           <span v-else style="color:red">已到期</span>
+           <!-- <span  class="expDay" v-if="scope.row.expireTime > nowTime" v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span> -->
+           <span v-if="scope.row.expireTime > nowTime">
+
+            <span v-if="Math.floor((scope.row.expireTime - nowTime) /1000/24/3600) >30"  class="expDay"  v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span>
+            <span v-else  class="expDay" style="background:red;" v-text="`${Math.floor((scope.row.expireTime - nowTime) /1000/24/3600)}天`"></span>
+           </span>
+           <span v-else style="    color: red;
+    background: #ffffffff;
+    border: 1px solid red;
+    padding: 0px;" class="expDay">已到期</span>
         </template>
       </el-table-column>
             <el-table-column label="到期时间" width="140">
@@ -235,5 +243,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.expDay{
+      font-weight: bolder;
+    background: rgb(57, 155, 255);
+    padding: 2px;
+    color: rgb(255, 255, 255);
+    border-radius: 16%;
+}
 </style>

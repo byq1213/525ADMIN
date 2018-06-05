@@ -17,7 +17,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="">
-          <el-button type="" @click="search">查询</el-button>
+          <el-button type="primary" @click="search">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row :gutter="20">
@@ -42,6 +42,14 @@
                      <span v-else v-text="'0'"></span>
                   </template>
                 </el-table-column>
+
+                <el-table-column label="佣金量" prop="brokerageCount">
+                  <template slot-scope='scope'>
+                    <span v-if="scope.row.brokerageCount" v-text="scope.row.brokerageCount"></span>
+                     <span v-else v-text="'0'"></span>
+                  </template>
+                </el-table-column>
+
                 <el-table-column label="访问量" prop="viewCount">
                   <template slot-scope='scope'>
                     <span v-if="scope.row.viewCount" v-text="scope.row.viewCount"></span>
@@ -76,7 +84,30 @@
             </div>
           </el-card>
         </el-col>
-        
+         <el-col :span="12" class="app-item">
+          <el-card >
+            <div slot="header">
+              <span>佣金排名</span>
+            </div>
+            <div>
+              <el-table :data="brokerageLists" size="small">
+                <el-table-column label="" type="index"></el-table-column>
+                <el-table-column label="">
+                  <template slot-scope='scope'>
+                  <img :src="`${BASE_API}uploads/${scope.row.brokerInfo.brokerAvatarUrl}`" alt="" class="avatarUrl">
+                  </template>
+                </el-table-column>
+                <el-table-column label="经纪人" prop="brokerInfo.brokerName"></el-table-column>
+                <el-table-column label="佣金" prop="count">
+                  <template slot-scope='scope'>
+                     <span v-if="scope.row.count" v-text="scope.row.count"></span>
+                     <span v-else v-text="'0'"></span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-card>
+        </el-col>       
         <el-col :span="12" class="app-item">
           <el-card >
             <div slot="header">
@@ -211,7 +242,8 @@ export default {
     this.getIssueRank();
     this.getNeedRank();
     this.getUsersRank();
-    this.getLoginRank()
+    this.getLoginRank();
+    this.getBrokeraegRank();
   },
   data() {
     return {
@@ -278,6 +310,15 @@ export default {
             brokerAvatarUrl: ""
           }
         }
+      ],
+      brokerageLists: [
+        {
+          brokerName: "王五",
+          num: 123,
+          brokerInfo: {
+            brokerAvatarUrl: ""
+          }
+        }
       ]
     };
   },
@@ -289,6 +330,7 @@ export default {
       this.getIssueRank();
       this.getNeedRank();
       this.getUsersRank();
+      this.getBrokeraegRank();
     },
     getBrokerList() {
       url.get("broker").then(res => {
@@ -320,7 +362,13 @@ export default {
               item.usersCount = item5.count ? item5.count : 0;
             }
           });
+          this.brokerageLists.forEach(item6 => {
+            if (item._id == item6._id) {
+              item.brokerageCount = item6.count ? item6.count : 0;
+            }
+          });
           item.result =
+            item.brokerageCount+
             item.viewCount +
             item.usersCount +
             item.needCount +
@@ -374,7 +422,13 @@ export default {
     getLoginRank() {
       url.post("/rank/login", { time: this.form.time }).then(res => {
         this.loginLists = res.data.sort(this.ArrSort("count"));
-        this.getBrokerList();
+        // this.getBrokerList();
+      });
+    },
+    getBrokeraegRank() {
+      url.post("/rank/brokerage", { time: this.form.time }).then(res => {
+        this.brokerageLists = res.data.sort(this.ArrSort("count"));
+        // this.getBrokerList();
       });
     },
     ArrSort(property) {

@@ -142,7 +142,7 @@
              </el-select>
            </el-form-item>
            <el-form-item label="付款方式">
-             <el-input v-model="expireForm.payType" placeholder="" class="w20"></el-input>
+             <el-input v-model="expireForm.payType" placeholder="“押一付三”" class="w20"></el-input>
            </el-form-item>
            <el-form-item label="客户姓名">
              <el-input v-model="expireForm.userName" placeholder="请输入客户姓名" class="w20"></el-input>

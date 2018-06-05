@@ -167,7 +167,7 @@
               <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
             </el-form-item> -->
         </el-form-item>
-        <el-form-item label="附加信息">
+        <el-form-item label="内部信息">
           <el-input v-model="form.cell" placeholder="请输入小区名" class="w10"></el-input> 小区
           <el-input v-model="form.build" placeholder="请输入楼区信息" class="w10"></el-input> 号楼
           <el-input v-model="form.unit" placeholder="请输入单元信息" class="w10"></el-input> 单元

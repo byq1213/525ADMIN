@@ -28,10 +28,31 @@
       <el-form-item label="房源朝向">
         <el-input v-model="form.orientation" placeholder="" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源户型">
+      <!-- <el-form-item label="房源户型">
         <el-select v-model="form.room" placeholder="请选择居室数量">
           <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
+      </el-form-item> -->
+            <el-form-item label="房源户型" >
+        <el-input v-model="form.room.s" placeholder="" size="small" class="w10">
+          <template slot="append">
+            室
+          </template>
+        </el-input>
+        <el-input v-model="form.room.t" placeholder="" size="small" class="w10">
+          <template slot="append">
+            厅
+          </template>
+        </el-input>
+        <el-input v-model="form.room.w" placeholder="" size="small" class="w10">
+          <template slot="append">
+            卫
+          </template>
+        </el-input>
+
+        <!-- <el-select v-model="form.room" placeholder="请选择居室数量">
+          <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-select> -->
       </el-form-item>
       <el-form-item label="房源年代">
         <el-date-picker v-model="form.age"
@@ -166,7 +187,7 @@
               <el-input size="mini" v-model="form.addressComponents.street" placeholder="请选择街道" class="w20"></el-input>
             </el-form-item> -->
         </el-form-item>
-                <el-form-item label="附加信息">
+                <el-form-item label="内部信息">
           <el-input v-model="form.cell" placeholder="请输入小区名" class="w10"></el-input> 小区
           <el-input v-model="form.build" placeholder="请输入楼区信息" class="w10"></el-input> 号楼
           <el-input v-model="form.unit" placeholder="请输入单元信息" class="w10"></el-input> 单元
@@ -219,6 +240,11 @@ export default {
       BASE_API: process.env.BASE_API,
 
       form: {
+        room: {
+          s: 1,
+          t: 1,
+          w: 1
+        },
         code: `Z${houseCodeFormat(new Date().getTime())}`,
         payType: {
           charge: 1,

@@ -1,5 +1,9 @@
 import Cookies from 'js-cookie'
 import url from '@/utils/url'
+import {
+  getStoreInfo
+} from '@/api/login'
+
 const app = {
   state: {
     limit: 5, //分页数量
@@ -75,10 +79,16 @@ const app = {
     brokers: [{
       label: '王五',
       value: '12312341234'
-    }]
+    }],
+    storeInfo: {
+
+    },
 
   },
   mutations: {
+    GET_STORE_INFO: (state, info) => {
+      state.storeInfo = info.data
+    },
     TOGGLE_SIDEBAR: state => {
       if (state.sidebar.opened) {
         Cookies.set('sidebarStatus', 1)
@@ -95,6 +105,9 @@ const app = {
     },
   },
   actions: {
+    // GetStoreInfo({commit},storeInfo) {
+
+    // },
     ToggleSideBar: ({
       commit
     }) => {
@@ -102,7 +115,20 @@ const app = {
     },
     GetBroker: () => {
       console.log('GetBroker');
-
+    },
+    //获取店铺信息
+    GetStoreInfo({
+      commit,
+      state
+    }) {
+      return new Promise((resolve, reject) => {
+        getStoreInfo().then(res => {
+          commit('GET_STORE_INFO', res.data)
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      });
     },
     beforeUpload: ({
       commit

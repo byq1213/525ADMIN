@@ -202,9 +202,8 @@ export default {
     getMyqrCode() {
       this.qrcodeDialog = true;
     },
-    downloadImg(){
-      console.log('下载图片');
-      
+    downloadImg() {
+      console.log("下载图片");
     },
     showTable(i) {
       this.showTableIndex = i;
@@ -231,9 +230,9 @@ export default {
     //   this.count[0].value = viewData.count;
     // },
     // 登录量
-       async getLoginChart(lt, gt, broker, houseType) {
+    async getLoginChart(lt, gt, broker, houseType) {
       let viewData = await chartIndex("/data/login", lt, gt, broker, houseType);
-      console.log('getLoginChart :', viewData);
+      console.log("getLoginChart :", viewData);
       this.view.xAxis.data = viewData.xData;
       this.view.series[0].data = viewData.yData;
       this.count[0].value = viewData.count;
@@ -285,7 +284,7 @@ export default {
     async BrokerLists() {
       let a = await getBrokerLists();
       this.brokerLists = a.data;
-    },
+    }
   },
   created() {
     if (this.isBroker()) {
@@ -315,10 +314,10 @@ export default {
     font-size: 1.5em;
   }
 }
-.dataQRcode{
+.dataQRcode {
   text-align: center;
-  img{
-    width:100%;
+  img {
+    width: 100%;
   }
 }
 </style>

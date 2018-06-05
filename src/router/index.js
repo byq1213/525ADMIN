@@ -79,6 +79,27 @@ export const asyncRouterMap = [{
     ]
   },
   {
+    path: '/brokerage',
+    component: Layout,
+    meta: {
+      title: '佣金数据',
+      icon: '',
+      roles: ['admin']
+    },
+    children: [{
+      path: 'index',
+      name: 'brokerage',
+      component: () =>
+        import ('@/views/brokerage/index'),
+      meta: {
+        title: '佣金数据',
+        icon: 'form',
+        roles: ['admin']
+      }
+    }]
+  },
+  
+  {
     path: '/index',
     component: Layout,
     meta: {
@@ -549,10 +570,11 @@ export const asyncRouterMap = [{
   {
     path: '/followHouse',
     component: Layout,
+    hidden:true,
     meta: {
       title: '跟进房源',
       icon: 'form',
-      roles: ['admin','view']
+      roles: ['admin',]
     },
     children: [{
       path: 'index',
@@ -562,11 +584,11 @@ export const asyncRouterMap = [{
       meta: {
         title: '跟进房源',
         icon: 'form',
-        roles: ['admin','view']
+        roles: ['admin', ]
       }
     }]
   },
-  {
+   {
     path: '*',
     redirect: '/404',
     hidden: true

@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
       class="card-box login-form">
-      <h3 class="title">一兜租房、二手房</h3>
+      <h3 class="title" v-text="title"></h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
@@ -32,16 +32,19 @@
 
 <script>
 import { isvalidUsername } from "@/utils/validate";
-import MD5 from 'md5';
+import MD5 from "md5";
 export default {
+  mounted() {
+    this.$store
+      .dispatch("GetStoreInfo")
+      .then(res => {
+      })
+      .catch(err => {
+      });
+  },
   name: "login",
   data() {
     const validateUsername = (rule, value, callback) => {
-      // if (!isvalidUsername(value)) {
-      //   callback(new Error('请输入正确的用户名'))
-      // } else {
-      //   callback()
-      // }
       if (false) {
         callback(new Error("请输入正确的用户名"));
       } else {
@@ -82,11 +85,10 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          let data={
-            username:this.loginForm.username,
-            password:MD5(this.loginForm.password)
-          }
-          // console.log('this.loginForm :', this.loginForm);
+          let data = {
+            username: this.loginForm.username,
+            password: MD5(this.loginForm.password)
+          };
           this.$store
             .dispatch("Login", data)
             .then(() => {
@@ -101,6 +103,11 @@ export default {
           return false;
         }
       });
+    }
+  },
+  computed:{
+    title(){
+      return this.$store.state.app.storeInfo.storeName
     }
   }
 };

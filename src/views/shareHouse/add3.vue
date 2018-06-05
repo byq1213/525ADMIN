@@ -28,10 +28,31 @@
       <el-form-item label="房源朝向">
         <el-input v-model="form.orientation" placeholder="" class="w20"></el-input>
       </el-form-item>
-      <el-form-item label="房源户型">
+      <!-- <el-form-item label="房源户型">
         <el-select v-model="form.room" placeholder="请选择居室数量">
           <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
+      </el-form-item> -->
+                  <el-form-item label="房源户型" >
+        <el-input v-model="form.room.s" placeholder="" size="small" class="w10">
+          <template slot="append">
+            室
+          </template>
+        </el-input>
+        <el-input v-model="form.room.t" placeholder="" size="small" class="w10">
+          <template slot="append">
+            厅
+          </template>
+        </el-input>
+        <el-input v-model="form.room.w" placeholder="" size="small" class="w10">
+          <template slot="append">f
+            卫
+          </template>
+        </el-input>
+
+        <!-- <el-select v-model="form.room" placeholder="请选择居室数量">
+          <el-option v-for="item in this.$store.state.app.room" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-select> -->
       </el-form-item>
       <el-form-item label="房源年代">
         <el-date-picker v-model="form.age"
@@ -208,6 +229,11 @@ export default {
       BASE_API: process.env.BASE_API,
 
       form: {
+        room: {
+          s: 1,
+          t: 1,
+          w: 1
+        },
         code: `Z${houseCodeFormat(new Date().getTime())}`,
         payType: {
           charge: 1,
@@ -395,7 +421,7 @@ export default {
               message: "请上传房源图片",
               type: "success"
             });
-            return 
+            return;
           }
           this.form.share = true;
           this.form.addBroker = this.getBroker();
