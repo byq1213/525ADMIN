@@ -37,12 +37,28 @@ export const constantRouterMap = [{
   {
     path: '/',
     component: Layout,
-    name: 'Index',
     hidden: true,
     children: [{
+      name: 'index',
+
       path: '',
       component: () =>
         import ('@/views/data/index')
+    }]
+  },
+  {
+    path: '/iotest',
+    component: Layout,
+    hidden: false,
+    meta: {
+      title: 'IO测试'
+    },
+    children: [{
+    name: 'ioTest',
+      
+      path: '',
+      component: () =>
+        import ('@/views/ioTest/index')
     }]
   },
 ]
@@ -77,47 +93,6 @@ export const asyncRouterMap = [{
       },
 
     ]
-  },
-  {
-    path: '/brokerage',
-    component: Layout,
-    meta: {
-      title: '佣金数据',
-      icon: '',
-      roles: ['admin']
-    },
-    children: [{
-      path: 'index',
-      name: 'brokerage',
-      component: () =>
-        import ('@/views/brokerage/index'),
-      meta: {
-        title: '佣金数据',
-        icon: 'form',
-        roles: ['admin']
-      }
-    }]
-  },
-  
-  {
-    path: '/index',
-    component: Layout,
-    meta: {
-      title: '经纪人排名',
-      icon: '用户管理',
-      roles: ['admin', 'view']
-    },
-    children: [{
-      path: 'rank',
-      name: 'data_rank',
-      component: () =>
-        import ('@/views/data/rank'),
-      meta: {
-        title: '经纪人排名',
-        icon: '用户管理',
-        roles: ['admin', 'view']
-      }
-    }, ]
   },
   {
     path: '/userAnalyze',
@@ -274,7 +249,7 @@ export const asyncRouterMap = [{
       },
       {
         path: 'testPag12311231345234523452345e',
-        name: 'EditA1d123d3',
+        name: 'EditA1d1231d3',
         hidden: true,
         meta: {
           title: '修改租房信息',
@@ -327,49 +302,7 @@ export const asyncRouterMap = [{
       },
     ]
   },
-  {
-    path: '/broker',
-    component: Layout,
-    meta: {
-      title: '经纪人管理',
-      icon: '分销管理'
-    },
-    children: [{
-        path: 'list',
-        name: 'brokerList',
-        component: () =>
-          import ('@/views/broker/list'),
-        meta: {
-          title: '经纪人列表',
-          icon: '',
-          roles: ['admin']
-        }
-      },
-      {
-        path: 'add',
-        name: 'brokerAdd',
-        component: () =>
-          import ('@/views/broker/add'),
-        meta: {
-          title: '添加经纪人',
-          icon: '',
-          roles: ['admin']
-        }
-      },
-      {
-        path: 'edit/:id',
-        name: 'brokerEdit',
-        hidden: true,
-        component: () =>
-          import ('@/views/broker/add'),
-        meta: {
-          title: '修改经纪人',
-          icon: '',
-          roles: ['admin']
-        }
-      },
-    ]
-  },
+
   {
     path: '/storeSetting',
     component: Layout,
@@ -528,7 +461,7 @@ export const asyncRouterMap = [{
     path: '/meng/shareHouse',
     component: Layout,
     meta: {
-      title: '管理共享房源',
+      title: '共享房源',
       icon: '基础管理',
       roles: ['view']
     },
@@ -570,11 +503,11 @@ export const asyncRouterMap = [{
   {
     path: '/followHouse',
     component: Layout,
-    hidden:true,
+    hidden: true,
     meta: {
       title: '跟进房源',
       icon: 'form',
-      roles: ['admin',]
+      roles: ['admin', ]
     },
     children: [{
       path: 'index',
@@ -588,7 +521,82 @@ export const asyncRouterMap = [{
       }
     }]
   },
-   {
+  {
+    path: '/broker',
+    component: Layout,
+    meta: {
+      title: '经纪人管理',
+      icon: '分销管理'
+    },
+    children: [
+      {
+        path: 'add',
+        name: 'brokerAdd',
+        component: () =>
+          import ('@/views/broker/add'),
+        meta: {
+          title: '添加经纪人',
+          icon: '',
+          roles: ['admin']
+        }
+      },{
+        path: 'list',
+        name: 'brokerList',
+        component: () =>
+          import ('@/views/broker/list'),
+        meta: {
+          title: '经纪人列表',
+          icon: '',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'list1',
+        name: 'brokerList1',
+        hidden:true,
+        component: () =>
+          import ('@/views/broker/list'),
+        meta: {
+          title: '经纪人列表1',
+          icon: '',
+          roles: ['admin','view']
+        }
+      },
+     
+      {
+        path: 'rank',
+        name: 'data_rank',
+        component: () =>
+          import ('@/views/data/rank'),
+        meta: {
+          title: '经纪人排名',
+          roles: ['admin', 'view']
+        }
+      },
+      {
+        path: 'index',
+        name: 'brokerage',
+        component: () =>
+          import ('@/views/brokerage/index'),
+        meta: {
+          title: '经纪人佣金',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'edit/:id',
+        name: 'brokerEdit',
+        hidden: true,
+        component: () =>
+          import ('@/views/broker/add'),
+        meta: {
+          title: '修改经纪人',
+          roles: ['admin']
+        }
+      },
+    ]
+  },
+  {
     path: '*',
     redirect: '/404',
     hidden: true

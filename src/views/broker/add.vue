@@ -160,13 +160,22 @@ export default {
             brokerName == "" ||
             brokerPhone == "" ||
             loginId == "" ||
-            brokerPwd == ""
+            brokerPwd == "" 
+            
           ) {
             const h = this.$createElement;
 
             this.$notify({
               title: "添加经纪人",
               message: h("i", { style: "color: teal" }, "请认真填写信息")
+            });
+            return;
+          }
+          if(!this.changeUser._id){
+            const h = this.$createElement;
+            this.$notify({
+              title: "添加经纪人",
+              message: h("i", { style: "color: teal" }, "请选择用户成为经纪人")
             });
             return;
           }
