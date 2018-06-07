@@ -6,6 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN'
 import '@/styles/index.scss' // global css
 import VueSocketio from 'vue-socket.io';
+import socketio from 'socket.io-client';
 import App from './App'
 import router from './router'
 import store from './store'
@@ -14,7 +15,9 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import {isBroker,getBroker,getcsrf,format} from '@/utils/auth'; //判断是否为经纪人
 Vue.use(ElementUI, { locale })
-Vue.use(VueSocketio,  process.env.BASE_API);
+// Vue.use(VueSocketio,  'http://127.0.0.1/');
+
+Vue.use(VueSocketio,  socketio('http://127.0.0.1:7001'));
 Vue.config.productionTip = false
 new Vue({
   el: '#app',

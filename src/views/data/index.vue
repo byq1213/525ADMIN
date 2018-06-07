@@ -80,7 +80,13 @@
     </a>
   </div>
   </el-dialog>
+    <audio  ref="audio1" height="100" width="100">
+      <source src="../../mp3/123.mp3" type="audio/mp3" />
+    <embed height="100" width="100" src="song.mp3" />
+    </audio>
     </el-main>
+
+
   </div>
 </template>
 
@@ -222,6 +228,10 @@ export default {
       this.getUsersChart(time[1], time[0], broker, houseType);
       this.getLoginChart(time[1], time[0], broker, houseType);
     },
+    playAudio(){
+      let audio = this.$refs['audio1'];
+      audio.play()
+    },
     // 获取访问量
     // async getViewChart(lt, gt, broker, houseType) {
     //   let viewData = await chartIndex("/data/views", lt, gt, broker, houseType);
@@ -300,6 +310,31 @@ export default {
     this.getUsersChart(time[1], time[0], broker, houseType);
     this.getLoginChart(time[1], time[0], broker, houseType);
     this.BrokerLists();
+  },
+  sockets: {
+    addUser(res) {
+     
+      if(this.getBroker()){
+        // 如果经纪人登录
+        if(res.brokerId){
+          // 如果用户的经纪人存在
+          if(res.brokerId == this.getBroker()){
+            //相同经纪人执行
+            console.log(true);
+            this.playAudio()
+          }else{
+            console.log(false)
+          }
+        }else{
+          //待定  未绑定经纪人用户
+        }
+      }else{
+        //直接执行
+        console.log(true)
+            this.playAudio()
+        
+      }
+    }
   }
 };
 </script>
