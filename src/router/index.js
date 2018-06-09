@@ -46,21 +46,21 @@ export const constantRouterMap = [{
         import ('@/views/data/index')
     }]
   },
-  {
-    path: '/iotest',
-    component: Layout,
-    hidden: false,
-    meta: {
-      title: 'IO测试'
-    },
-    children: [{
-    name: 'ioTest',
+  // {
+  //   path: '/iotest',
+  //   component: Layout,
+  //   hidden: false,
+  //   meta: {
+  //     title: 'IO测试'
+  //   },
+  //   children: [{
+  //   name: 'ioTest',
       
-      path: '',
-      component: () =>
-        import ('@/views/ioTest/index')
-    }]
-  },
+  //     path: '',
+  //     component: () =>
+  //       import ('@/views/ioTest/index')
+  //   }]
+  // },
 ]
 
 export default new Router({

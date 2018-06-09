@@ -231,6 +231,20 @@ export default {
     playAudio(){
       let audio = this.$refs['audio1'];
       audio.play()
+     this.$notify({
+          title: '提示',
+          message: '您有新的会员注册！'
+        });
+        // setTimeout(() => {
+          
+        //   location.reload()
+        // }, 2000);
+        // if(this.showTableIndex!==4){
+        //   this.showTableIndex=4;
+        // }else{
+        //   this.showTableIndex=100;
+        //   this.showTableIndex=4;
+        // }
     },
     // 获取访问量
     // async getViewChart(lt, gt, broker, houseType) {
@@ -302,6 +316,7 @@ export default {
     }
   },
   async mounted() {
+
     let { time, broker, houseType } = this.form;
     // this.getViewChart(time[1], time[0], broker, houseType);
     this.getFinishChart(time[1], time[0], broker, houseType);
