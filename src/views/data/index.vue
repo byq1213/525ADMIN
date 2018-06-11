@@ -37,7 +37,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary" @click="search">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" :loading="searchLoading" @click="search">查询</el-button>
       </el-form-item>
       <el-form-item v-if="this.isBroker()" label="">
         <el-button type="success" @click="getMyqrCode">我的二维码</el-button>
@@ -117,7 +117,7 @@ export default {
   data() {
     return {
       BASE_API: process.env.BASE_API,
-
+      searchLoading:false,
       qrcodeDialog: false, //获取二维码
       form: {
         time: [
@@ -215,6 +215,7 @@ export default {
       this.showTableIndex = i;
     },
     search() {
+      this.searchLoading = true;
       //查询
       /**@augments
        * 传入 开始时间- 结束时间
@@ -227,6 +228,8 @@ export default {
       this.getNeedChart(time[1], time[0], broker, houseType);
       this.getUsersChart(time[1], time[0], broker, houseType);
       this.getLoginChart(time[1], time[0], broker, houseType);
+      this.searchLoading = false;
+
     },
     playAudio(){
       let audio = this.$refs['audio1'];

@@ -77,9 +77,24 @@
             
           </el-form-item>
           <el-form-item label="户型" >
-            <el-select v-model="addNeedForm.houseType" placeholder="">
+            <!-- <el-select v-model="addNeedForm.houseType" placeholder="">
               <el-option v-for="item in miniHouseType" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
+            </el-select> -->
+            <el-input v-model.number="addNeedForm.houseType.s"  placeholder="" class="w5">
+              <template slot="append">
+                 室
+              </template>
+            </el-input>
+            <el-input v-model="addNeedForm.houseType.t" placeholder="" class="w5">
+              <template slot="append">
+                 厅
+              </template>
+            </el-input>
+            <el-input v-model="addNeedForm.houseType.w" placeholder="" class="w5">
+              <template slot="append">
+                 卫
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item label="出租方式" v-if="addNeedForm.mode == 2">
             <el-select v-model="addNeedForm.rentMode" placeholder="">
@@ -90,13 +105,13 @@
           <el-form-item label="房源备注">
             <el-input v-model="addNeedForm.remarks" placeholder="" type="textarea"></el-input>
           </el-form-item>
-          <el-form-item label="选择地址" prop="address" :rules="{ required: true, message: '请选择地址', trigger: 'blur' }">
-            <el-input v-model="addNeedForm.address" placeholder=""></el-input>
-          </el-form-item>
-          <el-form-item label="">
+                    <el-form-item label="选择地址">
             <el-button type="" @click="chooseAddress">选择地址</el-button>
-            
           </el-form-item>
+          <el-form-item label="" prop="address"  :rules="{ required: true, message: '请选择地址', trigger: 'blur' }">
+            <el-input v-model="addNeedForm.address" disabled="" placeholder=""></el-input>
+          </el-form-item>
+
           <el-form-item label="">
             <el-button type="success" @click="saveData">添加</el-button>
             <el-button type="" @click="addNeedDialog = false">取消</el-button>
@@ -151,7 +166,11 @@ export default {
       addNeedDialog: false,
       addNeedForm: {
         mode: 2,
-        houseType: 0,
+        houseType: {
+          s: 1,
+          t: 1,
+          w: 1
+        },
         rentMode: 0
       },
       chooseAddressDialog: false,
@@ -181,11 +200,13 @@ export default {
       this.addNeedForm.uid = _id;
     },
     saveData() {
-      this.addNeedForm.brokerId = this.form.brokerId;
-      this.$refs['addNeedForm'].validate(valid => {
+      if (this.form.brokerId) {
+        this.addNeedForm.brokerId = this.form.brokerId;
+      }
+      this.$refs["addNeedForm"].validate(valid => {
         if (valid) {
-          return
-        } 
+          return;
+        }
       });
       url.post("/addNeed", this.addNeedForm).then(res => {
         if (res.data) {
@@ -211,4 +232,7 @@ export default {
 </script>
 
 <style scoped>
+.w5 {
+  width: 100px;
+}
 </style>

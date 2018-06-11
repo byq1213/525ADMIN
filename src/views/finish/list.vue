@@ -35,7 +35,7 @@
           </el-select>
         </el-form-item>
           <el-form-item label="">
-            <el-button type="primary" @click="search" native-type="submit">查询</el-button>
+            <el-button type="primary" @click="search" native-type="submit" icon="el-icon-search" :loading="searchLoading">查询</el-button>
           </el-form-item>
           <el-form-item label="">
           </el-form-item>
@@ -148,6 +148,7 @@ export default {
   },
   data() {
     return {
+      searchLoading:false,
       BASE_API: process.env.BASE_API,
       lists: [],
       form: {
@@ -200,6 +201,7 @@ export default {
       this.getBrokerList();
     },
     getViewsLists(skip = this.skip, limit = this.limit) {
+      this.searchLoading = true
       // 获取发布列表
       /**
        * body.lt 最大值 现在时间
@@ -226,6 +228,8 @@ export default {
           this.lists = res.data.userList;
           this.count = res.data.count;
           this.houseCount = res.data.houseCount;
+      this.searchLoading = false
+
         });
     },
     getBrokerList() {

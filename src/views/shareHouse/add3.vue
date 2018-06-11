@@ -45,7 +45,7 @@
           </template>
         </el-input>
         <el-input v-model="form.room.w" placeholder="" size="small" class="w10">
-          <template slot="append">f
+          <template slot="append">
             卫
           </template>
         </el-input>
