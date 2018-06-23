@@ -102,6 +102,7 @@ import users from "./users";
 import login from "./login";
 import url from "@/utils/url";
 import { dataChart, chartIndex, getBrokerLists } from "@/utils/data";
+import socketio from "socket.io-client";
 
 export default {
   components: {
@@ -117,7 +118,7 @@ export default {
   data() {
     return {
       BASE_API: process.env.BASE_API,
-      searchLoading:false,
+      searchLoading: false,
       qrcodeDialog: false, //获取二维码
       form: {
         time: [
@@ -204,6 +205,14 @@ export default {
     };
   },
   methods: {
+    socketIo() {
+      let socket = socketio("wss://www.baidu.com/waweqwe/");
+      socket.on("connect", () => {
+      });
+      socket.on("addUser", () => {
+        this.playAudio();
+      });
+    },
     // 获取二维码
     getMyqrCode() {
       this.qrcodeDialog = true;
@@ -229,25 +238,24 @@ export default {
       this.getUsersChart(time[1], time[0], broker, houseType);
       this.getLoginChart(time[1], time[0], broker, houseType);
       this.searchLoading = false;
-
     },
-    playAudio(){
-      let audio = this.$refs['audio1'];
-      audio.play()
-     this.$notify({
-          title: '提示',
-          message: '您有新的会员注册！'
-        });
-        // setTimeout(() => {
-          
-        //   location.reload()
-        // }, 2000);
-        // if(this.showTableIndex!==4){
-        //   this.showTableIndex=4;
-        // }else{
-        //   this.showTableIndex=100;
-        //   this.showTableIndex=4;
-        // }
+    playAudio() {
+      let audio = this.$refs["audio1"];
+      audio.play();
+      this.$notify({
+        title: "提示",
+        message: "您有新的会员注册！"
+      });
+      // setTimeout(() => {
+
+      //   location.reload()
+      // }, 2000);
+      // if(this.showTableIndex!==4){
+      //   this.showTableIndex=4;
+      // }else{
+      //   this.showTableIndex=100;
+      //   this.showTableIndex=4;
+      // }
     },
     // 获取访问量
     // async getViewChart(lt, gt, broker, houseType) {
@@ -319,7 +327,7 @@ export default {
     }
   },
   async mounted() {
-
+    this.socketIo();
     let { time, broker, houseType } = this.form;
     // this.getViewChart(time[1], time[0], broker, houseType);
     this.getFinishChart(time[1], time[0], broker, houseType);
@@ -331,26 +339,24 @@ export default {
   },
   sockets: {
     addUser(res) {
-     
-      if(this.getBroker()){
+      if (this.getBroker()) {
         // 如果经纪人登录
-        if(res.brokerId){
+        if (res.brokerId) {
           // 如果用户的经纪人存在
-          if(res.brokerId == this.getBroker()){
+          if (res.brokerId == this.getBroker()) {
             //相同经纪人执行
             console.log(true);
-            this.playAudio()
-          }else{
-            console.log(false)
+            this.playAudio();
+          } else {
+            console.log(false);
           }
-        }else{
+        } else {
           //待定  未绑定经纪人用户
         }
-      }else{
+      } else {
         //直接执行
-        console.log(true)
-            this.playAudio()
-        
+        console.log(true);
+        this.playAudio();
       }
     }
   }

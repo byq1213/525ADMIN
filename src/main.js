@@ -17,7 +17,9 @@ import {isBroker,getBroker,getcsrf,format} from '@/utils/auth'; //判断是否�
 Vue.use(ElementUI, { locale })
 // Vue.use(VueSocketio,  'http://127.0.0.1/');
 
-Vue.use(VueSocketio,  socketio(process.env.BASE_API));
+// Vue.use(VueSocketio,  socketio(process.env.BASE_API));
+
+
 Vue.config.productionTip = false
 new Vue({
   el: '#app',

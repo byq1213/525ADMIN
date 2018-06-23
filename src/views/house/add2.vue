@@ -95,7 +95,9 @@
           :on-success="uploadSuccess"
           :before-upload="this.beforeUpload"
           :file-list="uploadImg"
-          :headers="this.getcsrf()">
+          :headers="this.getcsrf()"
+          multiple=""
+          :limit="8">
           <i class="el-icon-plus"></i>
           </el-upload>
         <span class="imgImpose">*请上传不大于 1M ，长宽比 尽可能 16：9的图片。（首张图片为主图）</span>
@@ -140,7 +142,21 @@
               @blur="handleInputConfirm"
             >
           </el-input>
-          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加自定义标签</el-button>
+          <span v-else>
+          <el-button  class="button-new-tag" size="small" @click="showInput">+ 添加自定义标签</el-button>
+          <el-button  class="button-new-tag" size="small" @click="addTags">添加标签</el-button>
+            <el-dialog
+              title="添加标签"
+              :visible.sync="addTagsDialog"
+              width="40%"
+              custom-class="tag"
+              >
+              <p v-for="(item,index) in this.$store.state.app.houseTags" :key="index">
+              <span v-text="item.title"></span>
+                <el-button v-for="(itemSub,indexSub) in item.sub" :key="indexSub" @click='touchTag(itemSub)' size="small" class="button-new-tag" v-text="itemSub"></el-button>
+              </p>
+            </el-dialog>
+          </span>
         </el-form-item>
         <el-form-item label="坐标选择">
           <div id="mapNode" ref="mapNode" style="height:300px;width:100%;margin-bottom:20px"></div>
@@ -237,10 +253,28 @@ export default {
       searchService: {},
       selectLatLng: {},
       cityLocation: {},
-      geocoder: {}
+      geocoder: {},
+      addTagsDialog: false,
     };
   },
   methods: {
+    touchTag(text) {
+      if (this.form.tags.length < 4) {
+        this.form.tags.push(text);
+      }else{
+         this.tagNotify("标签字数不能多于四个");
+      }
+      this.addTagsDialog = false;
+    },
+    //添加现有标签
+    addTags() {
+      if (this.form.tags.length < 4) {
+        this.addTagsDialog = true;
+      }else{
+         this.tagNotify("标签字数不能多于四个");
+
+      }
+    },
     // 修改二手房信息
     editHouse2() {
       if (this.$route.params.id) {
@@ -389,7 +423,7 @@ export default {
               message: "请上传房源图片",
               type: "success"
             });
-            return
+            return;
           }
           url.post("/house2", this.form).then(res => {
             this.$router.push("/House/list");
