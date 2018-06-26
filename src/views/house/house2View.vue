@@ -97,6 +97,44 @@
       <el-form-item label="详细地址">
         <el-input disabled="" v-model="info.address" placeholder=""></el-input>
       </el-form-item>
+            <el-form-item label="小区">
+        <el-input disabled="" v-model="info.cell" placeholder="" >
+          <template slot="append">
+            小区
+          </template>
+        </el-input>
+        <div></div>
+        <el-input disabled="" v-model="info.build" placeholder="" >
+          <template slot="append">
+            楼/座/栋
+          </template>
+        </el-input>
+        <div></div>
+        <el-input disabled="" v-model="info.unit" placeholder="" >
+          <template slot="append">
+           单元
+          </template>
+        </el-input>
+        <div></div>
+        <el-input disabled="" v-model="info.floor" placeholder="" >
+          <template slot="append">
+           层
+          </template>
+        </el-input>
+        <div></div>
+        <el-input disabled="" v-model="info.number" placeholder="" >
+          <template slot="append">
+           室
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="房东姓名">
+        <el-input disabled="" v-model="info.hostName" placeholder=""></el-input>
+      </el-form-item>
+      <el-form-item label="联系方式">
+        <el-input disabled="" v-model="info.hostPhone" placeholder=""></el-input>
+      </el-form-item>
+      
     </el-form>
   </div>
 </template>

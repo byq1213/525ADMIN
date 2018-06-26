@@ -189,7 +189,12 @@
           <el-input v-model="form.unit" placeholder="请输入单元信息" class="w10"></el-input> 单元
           <el-input v-model="form.floor" placeholder="请输入楼层信息" class="w10"></el-input> 层
           <el-input v-model="form.number" placeholder="请输入房间信息" class="w10"></el-input> 室
+
         </el-form-item>
+        <el-form-item label="房东信息">
+        房东姓名 <el-input v-model="form.hostName" placeholder="" class="w10"></el-input>
+        联系方式 <el-input v-model="form.hostPhone" placeholder="" class="w10"></el-input>
+          </el-form-item>
         <el-form-item label="添加备注">
           <el-input v-model="form.remark" placeholder="添加单元楼信息" type="textarea" class="w20"></el-input>
         </el-form-item>
