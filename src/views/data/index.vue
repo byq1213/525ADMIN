@@ -42,6 +42,9 @@
       <el-form-item v-if="this.isBroker()" label="">
         <el-button type="success" @click="getMyqrCode">我的二维码</el-button>
       </el-form-item>
+      <el-form-item v-else label="">
+        <el-button type="success" @click="getstoreqrCode">店铺二维码</el-button>
+      </el-form-item>
     </el-form>
     <!-- 总体数据 点击进入详情  访问量 。。。 -->
     <el-row :gutter="20" class="count app-item">
@@ -77,6 +80,15 @@
   <div class="dataQRcode">
     <a :href="`${BASE_API}qrcode/${this.getBroker()}.png`" download="我的二维码">
     <img  @click="downloadImg" :src="`${BASE_API}qrcode/${this.getBroker()}.png`" :download="`${BASE_API}qrcode/${this.getBroker()}.png`" class="" />
+    </a>
+  </div>
+  </el-dialog>
+      <el-dialog  title="店铺二维码"
+  :visible.sync="storeQrcodeDialog"
+  width="400px">
+  <div class="dataQRcode">
+    <a :href="`${BASE_API}qrcode/store.jpg`" download="店铺二维码">
+    <img  @click="downloadImg" :src="`${BASE_API}qrcode/store.jpg`" :download="`${BASE_API}qrcode/store.jpg`" class="" />
     </a>
   </div>
   </el-dialog>
@@ -120,6 +132,7 @@ export default {
       BASE_API: process.env.BASE_API,
       searchLoading: false,
       qrcodeDialog: false, //获取二维码
+      storeQrcodeDialog:false,
       form: {
         time: [
           new Date().getTime() - 3600 * 24 * 7 * 1000,
@@ -216,6 +229,8 @@ export default {
     // 获取二维码
     getMyqrCode() {
       this.qrcodeDialog = true;
+    },    getstoreqrCode() {
+      this.storeQrcodeDialog = true;
     },
     downloadImg() {
       console.log("下载图片");
